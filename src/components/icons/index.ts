@@ -1,19 +1,20 @@
-// Export all icons from a single file for easy importing
-export { ChocolateCoinIcon } from './ChocolateCoinIcon';
-export { TreasureChestIcon } from './TreasureChestIcon';
-export { BarChartIcon } from './BarChartIcon';
-export { FactoryIcon } from './FactoryIcon';
-export { CheckboxIcon } from './CheckboxIcon';
-export { GiftIcon } from './GiftIcon';
-export { ProfileIcon } from './ProfileIcon';
-export { ApproveIcon } from './ApproveIcon';
-export { RejectIcon } from './RejectIcon';
-export { EditIcon } from './EditIcon';
-export { PlusIcon } from './PlusIcon';
-export { SettingsIcon } from './SettingsIcon';
-export { ClockIcon } from './ClockIcon';
-export { DashboardIcon } from './DashboardIcon';
-export { LockIcon } from './LockIcon';
-export { ArrowIcon } from './ArrowIcon';
-export { NotificationIcon } from './NotificationIcon';
-export { HomeIcon } from './HomeIcon';
+export {ChocolateCoinIcon} from './ChocolateCoinIcon';
+export {TreasureChestIcon} from './TreasureChestIcon';
+export {BarChartIcon} from './BarChartIcon';
+export {FactoryIcon} from './FactoryIcon';
+export {CheckboxIcon} from './CheckboxIcon';
+export {GiftIcon} from './GiftIcon';
+export {ProfileIcon} from './ProfileIcon';
+export {ApproveIcon} from './ApproveIcon';
+export {RejectIcon} from './RejectIcon';
+export {EditIcon} from './EditIcon';
+export {PlusIcon} from './PlusIcon';
+export {SettingsIcon} from './SettingsIcon';
+export {ClockIcon} from './ClockIcon';
+export {DashboardIcon} from './DashboardIcon';
+export {LockIcon} from './LockIcon';
+export {ArrowIcon} from './ArrowIcon';
+export {NotificationIcon} from './NotificationIcon';
+export {HomeIcon} from './HomeIcon';
+
+

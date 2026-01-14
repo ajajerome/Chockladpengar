@@ -1,34 +1,27 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { colors } from '../theme/colors';
+import {View, Text, StyleSheet} from 'react-native';
+import {colors} from '../theme/colors';
+import {ChocolateCoinIcon} from './icons/ChocolateCoinIcon';
 
 interface ChocolateCoinProps {
   amount: number;
   size?: 'small' | 'medium' | 'large';
-  showIcon?: boolean;
+  showLabel?: boolean;
 }
 
 export const ChocolateCoin: React.FC<ChocolateCoinProps> = ({
   amount,
   size = 'medium',
-  showIcon = true,
+  showLabel = true,
 }) => {
-  const sizeStyles = {
-    small: { fontSize: 12, iconSize: 16, coinSize: 16 },
-    medium: { fontSize: 16, iconSize: 20, coinSize: 20 },
-    large: { fontSize: 20, iconSize: 24, coinSize: 24 },
-  };
-
-  const { fontSize, coinSize } = sizeStyles[size];
+  const iconSize = size === 'small' ? 16 : size === 'medium' ? 24 : 32;
+  const fontSize = size === 'small' ? 14 : size === 'medium' ? 18 : 24;
 
   return (
     <View style={styles.container}>
-      {showIcon && (
-        <View style={[styles.coinIcon, { width: coinSize, height: coinSize }]}>
-          <View style={styles.coinInner} />
-        </View>
-      )}
-      <Text style={[styles.amount, { fontSize }]}>{amount}</Text>
+      <ChocolateCoinIcon size={iconSize} />
+      <Text style={[styles.amount, {fontSize}]}>{amount}</Text>
+      {showLabel && <Text style={styles.label}>chokladpengar</Text>}
     </View>
   );
 };
@@ -37,24 +30,16 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
-  },
-  coinIcon: {
-    borderRadius: 100,
-    backgroundColor: colors.secondary,
-    borderWidth: 2,
-    borderColor: colors.chocolate,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  coinInner: {
-    width: '50%',
-    height: '50%',
-    borderRadius: 100,
-    backgroundColor: colors.secondaryLight,
+    gap: 8,
   },
   amount: {
-    color: colors.chocolate,
+    color: colors.accent,
     fontWeight: 'bold',
   },
+  label: {
+    color: colors.textMuted,
+    fontSize: 12,
+  },
 });
+
+

@@ -1,56 +1,28 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { colors } from '../../theme/colors';
+import Svg, {Circle, Path} from 'react-native-svg';
+import {colors} from '../../theme/colors';
 
 interface ApproveIconProps {
   size?: number;
+  color?: string;
 }
 
-export const ApproveIcon: React.FC<ApproveIconProps> = ({ size = 24 }) => {
+export const ApproveIcon: React.FC<ApproveIconProps> = ({
+  size = 24,
+  color = colors.success,
+}) => {
   return (
-    <View style={[styles.container, { width: size, height: size, borderRadius: size * 0.25 }]}>
-      {/* Checkmark */}
-      <View style={[styles.checkShort, { 
-        width: size * 0.3, 
-        height: 3,
-        left: size * 0.15,
-        top: size * 0.48
-      }]} />
-      <View style={[styles.checkLong, { 
-        width: size * 0.5, 
-        height: 3,
-        right: size * 0.15,
-        top: size * 0.35
-      }]} />
-    </View>
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <Circle cx="12" cy="12" r="10" fill={color} />
+      <Path
+        d="M7 12 L10 15 L17 8"
+        stroke={colors.textWhite}
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </Svg>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.success,
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'relative',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 3,
-    elevation: 2,
-    borderWidth: 2,
-    borderColor: '#45A049',
-  },
-  checkShort: {
-    backgroundColor: colors.backgroundLight,
-    position: 'absolute',
-    transform: [{ rotate: '-45deg' }],
-    borderRadius: 2,
-  },
-  checkLong: {
-    backgroundColor: colors.backgroundLight,
-    position: 'absolute',
-    transform: [{ rotate: '45deg' }],
-    borderRadius: 2,
-  },
-});
 

@@ -1,93 +1,36 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { colors } from '../../theme/colors';
+import Svg, {Path, Circle} from 'react-native-svg';
+import {colors} from '../../theme/colors';
 
 interface NotificationIconProps {
   size?: number;
+  color?: string;
   hasNotification?: boolean;
 }
 
-export const NotificationIcon: React.FC<NotificationIconProps> = ({ 
+export const NotificationIcon: React.FC<NotificationIconProps> = ({
   size = 24,
-  hasNotification = false 
+  color = colors.text,
+  hasNotification = false,
 }) => {
   return (
-    <View style={[styles.container, { width: size, height: size }]}>
-      {/* Bell body */}
-      <View style={[styles.bell, { 
-        width: size * 0.6, 
-        height: size * 0.5,
-        borderRadius: size * 0.3,
-        top: size * 0.15
-      }]} />
-      {/* Bell top */}
-      <View style={[styles.top, { 
-        width: size * 0.2, 
-        height: size * 0.15,
-        borderRadius: size * 0.1,
-        top: size * 0.05
-      }]} />
-      {/* Bell bottom edge */}
-      <View style={[styles.bottom, { 
-        width: size * 0.7, 
-        height: size * 0.1,
-        borderRadius: size * 0.05,
-        top: size * 0.6
-      }]} />
-      {/* Clapper */}
-      <View style={[styles.clapper, { 
-        width: size * 0.1, 
-        height: size * 0.12,
-        borderRadius: size * 0.05,
-        top: size * 0.68
-      }]} />
-      
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <Path
+        d="M18 8 C18 6.4087 17.3679 4.88258 16.2426 3.75736 C15.1174 2.63214 13.5913 2 12 2 C10.4087 2 8.88258 2.63214 7.75736 3.75736 C6.63214 4.88258 6 6.4087 6 8 C6 15 3 17 3 17 L21 17 C21 17 18 15 18 8 Z"
+        fill={color}
+      />
+      <Path
+        d="M13.73 21 C13.5542 21.3031 13.3019 21.5547 12.9982 21.7295 C12.6946 21.9044 12.3504 21.9965 12 21.9965 C11.6496 21.9965 11.3054 21.9044 11.0018 21.7295 C10.6982 21.5547 10.4458 21.3031 10.27 21"
+        stroke={color}
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
       {hasNotification && (
-        <View style={[styles.badge, { 
-          width: size * 0.3, 
-          height: size * 0.3,
-          borderRadius: size * 0.15,
-          top: 0,
-          right: 0
-        }]} />
+        <Circle cx="18" cy="6" r="4" fill={colors.error} />
       )}
-    </View>
+    </Svg>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    position: 'relative',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  bell: {
-    backgroundColor: colors.secondary,
-    position: 'absolute',
-    borderWidth: 2,
-    borderColor: '#B8941F',
-    borderTopLeftRadius: 0,
-    borderTopRightRadius: 0,
-  },
-  top: {
-    backgroundColor: '#B8941F',
-    position: 'absolute',
-  },
-  bottom: {
-    backgroundColor: colors.secondaryLight,
-    position: 'absolute',
-    borderWidth: 1,
-    borderColor: colors.secondary,
-  },
-  clapper: {
-    backgroundColor: '#8B5A2B',
-    position: 'absolute',
-  },
-  badge: {
-    backgroundColor: colors.error,
-    position: 'absolute',
-    borderWidth: 2,
-    borderColor: colors.backgroundLight,
-  },
-});
 

@@ -1,72 +1,30 @@
-import { Fund, FactoryStageInfo } from '../types';
-
-export const FUNDS: Fund[] = [
-  {
-    id: 'milk',
+export const FUNDS = {
+  milk: {
     name: 'Mjölkchokladfonden',
-    description: 'Stabil och trygg tillväxt. Ingen negativ utveckling.',
-    riskLevel: 'low',
-    icon: 'M',
+    description: 'Låg risk, stabil avkastning',
+    risk: 'low' as const,
+    minReturn: 0.02,
+    maxReturn: 0.05,
+    color: '#8B6F47',
   },
-  {
-    id: 'nougat',
-    name: 'Nougatmixen',
-    description: 'Lite upp och ner. Medelrisk och medelavkastning.',
-    riskLevel: 'medium',
-    icon: 'N',
+  nougat: {
+    name: 'Nougat Mix',
+    description: 'Medelhög risk, balanserad avkastning',
+    risk: 'medium' as const,
+    minReturn: 0.00,
+    maxReturn: 0.10,
+    color: '#C68642',
   },
-  {
-    id: 'gold',
+  gold: {
     name: 'Guldchokladgruvan',
-    description: 'Stora svängningar. Hög chans till vinst eller förlust.',
-    riskLevel: 'high',
-    icon: 'G',
+    description: 'Hög risk, högre potential',
+    risk: 'high' as const,
+    minReturn: -0.10,
+    maxReturn: 0.20,
+    color: '#D4AF37',
   },
-];
+};
 
-export const FACTORY_STAGES: FactoryStageInfo[] = [
-  {
-    id: 'foundation',
-    name: 'Grund',
-    cost: 100,
-    order: 1,
-    description: 'Lägg grunden för din chokladfabrik',
-  },
-  {
-    id: 'machine1',
-    name: 'Maskiner',
-    cost: 150,
-    order: 2,
-    description: 'Installera de första maskinerna',
-  },
-  {
-    id: 'formStation',
-    name: 'Formstation',
-    cost: 150,
-    order: 3,
-    description: 'Bygg stationen där chokladen får sin form',
-  },
-  {
-    id: 'pralineLine',
-    name: 'Pralinlinje',
-    cost: 200,
-    order: 4,
-    description: 'Lägg till en pralinlinje för lyxigare choklad',
-  },
-  {
-    id: 'sign',
-    name: 'Skylt',
-    cost: 50,
-    order: 5,
-    description: 'En fin skylt för din fabrik',
-  },
-  {
-    id: 'grandOpening',
-    name: 'Grand Opening',
-    cost: 100,
-    order: 6,
-    description: 'Invigning av din färdiga fabrik!',
-  },
-];
+export type FundType = keyof typeof FUNDS;
 
-export const WEEKLY_PRODUCTION = 1;
+

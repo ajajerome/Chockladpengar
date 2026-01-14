@@ -1,101 +1,81 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Task } from '../types';
-import { colors } from '../theme/colors';
-import { ChocolateCoin } from './ChocolateCoin';
-import { format } from 'date-fns';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {Task} from '../types';
+import {colors} from '../theme/colors';
+import {ChocolateCoinIcon} from './icons/ChocolateCoinIcon';
+import {CheckboxIcon} from './icons/CheckboxIcon';
+import {ClockIcon} from './icons/ClockIcon';
 
 interface TaskCardProps {
   task: Task;
   onPress?: () => void;
-  showStatus?: boolean;
+  showActions?: boolean;
 }
 
 export const TaskCard: React.FC<TaskCardProps> = ({
   task,
   onPress,
-  showStatus = false,
+  showActions = false,
 }) => {
-  const getStatusIcon = () => {
+  const getStatusColor = () => {
     switch (task.status) {
-      case 'pending':
-        return (
-          <View style={styles.checkbox}>
-            <View style={styles.checkboxInner} />
-          </View>
-        );
       case 'completed':
-        return (
-          <View style={[styles.checkbox, styles.checkboxPending]}>
-            <Text style={styles.checkboxText}>...</Text>
-          </View>
-        );
+        return colors.info;
       case 'approved':
-        return (
-          <View style={[styles.checkbox, styles.checkboxApproved]}>
-            <Text style={styles.checkboxText}>✓</Text>
-          </View>
-        );
+        return colors.success;
       case 'rejected':
-        return (
-          <View style={[styles.checkbox, styles.checkboxRejected]}>
-            <Text style={styles.checkboxText}>✗</Text>
-          </View>
-        );
+        return colors.error;
       default:
-        return (
-          <View style={styles.checkbox}>
-            <View style={styles.checkboxInner} />
-          </View>
-        );
+        return colors.textMuted;
     }
   };
 
   const getStatusText = () => {
     switch (task.status) {
       case 'pending':
-        return 'Pågående';
+        return 'Att göra';
       case 'completed':
-        return 'Väntar på godkännande';
+        return 'Inväntar godkännande';
       case 'approved':
         return 'Godkänd';
       case 'rejected':
-        return 'Nekad';
-      default:
-        return '';
+        return 'Ej godkänd';
     }
   };
 
   return (
     <TouchableOpacity
-      style={[
-        styles.container,
-        task.status === 'approved' && styles.approved,
-        task.status === 'rejected' && styles.rejected,
-      ]}
+      style={[styles.card, {borderLeftColor: getStatusColor()}]}
       onPress={onPress}
       disabled={!onPress}
-    >
+      activeOpacity={0.7}>
       <View style={styles.header}>
         <View style={styles.titleRow}>
-          {getStatusIcon()}
+          {task.status === 'approved' && (
+            <CheckboxIcon size={20} color={colors.success} checked={true} />
+          )}
           <Text style={styles.title}>{task.title}</Text>
         </View>
-        <ChocolateCoin amount={task.points} size="medium" />
+        <View style={styles.pointsContainer}>
+          <ChocolateCoinIcon size={16} />
+          <Text style={styles.points}>{task.points}</Text>
+        </View>
       </View>
 
-      {task.description && (
-        <Text style={styles.description}>{task.description}</Text>
-      )}
+      <Text style={styles.description}>{task.description}</Text>
 
       <View style={styles.footer}>
-        {showStatus && (
-          <Text style={styles.status}>{getStatusText()}</Text>
-        )}
+        <View style={[styles.statusBadge, {backgroundColor: getStatusColor()}]}>
+          <Text style={styles.statusText}>{getStatusText()}</Text>
+        </View>
+
         {task.deadline && (
-          <Text style={styles.deadline}>
-            Deadline: {format(new Date(task.deadline), 'dd MMM')}
-          </Text>
+          <View style={styles.deadlineContainer}>
+            <ClockIcon size={14} color={colors.textMuted} />
+            <Text style={styles.deadline}>
+              {new Date(task.deadline).toLocaleDateString('sv-SE')}
+            </Text>
+          </View>
         )}
       </View>
     </TouchableOpacity>
@@ -103,71 +83,29 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 };
 
 const styles = StyleSheet.create({
-  container: {
+  card: {
     backgroundColor: colors.backgroundLight,
     borderRadius: 12,
     padding: 16,
-    marginBottom: 12,
-    borderWidth: 1,
-    borderColor: colors.border,
+    marginVertical: 8,
+    borderLeftWidth: 4,
     shadowColor: colors.shadow,
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
   },
-  approved: {
-    borderColor: colors.success,
-    backgroundColor: '#F1F8F4',
-  },
-  rejected: {
-    borderColor: colors.error,
-    backgroundColor: '#FFF4F4',
-  },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     marginBottom: 8,
   },
   titleRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 8,
     flex: 1,
-    gap: 12,
-  },
-  checkbox: {
-    width: 24,
-    height: 24,
-    borderRadius: 6,
-    borderWidth: 2,
-    borderColor: colors.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.backgroundLight,
-  },
-  checkboxInner: {
-    width: 12,
-    height: 12,
-    borderRadius: 3,
-    backgroundColor: 'transparent',
-  },
-  checkboxPending: {
-    backgroundColor: colors.warning,
-    borderColor: colors.warning,
-  },
-  checkboxApproved: {
-    backgroundColor: colors.success,
-    borderColor: colors.success,
-  },
-  checkboxRejected: {
-    backgroundColor: colors.error,
-    borderColor: colors.error,
-  },
-  checkboxText: {
-    color: colors.backgroundLight,
-    fontSize: 16,
-    fontWeight: 'bold',
   },
   title: {
     fontSize: 16,
@@ -175,23 +113,49 @@ const styles = StyleSheet.create({
     color: colors.text,
     flex: 1,
   },
+  pointsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: colors.backgroundDark,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  points: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: colors.accent,
+  },
   description: {
     fontSize: 14,
     color: colors.textLight,
-    marginBottom: 8,
+    marginBottom: 12,
   },
   footer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  status: {
+  statusBadge: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  statusText: {
     fontSize: 12,
-    color: colors.textMuted,
-    fontStyle: 'italic',
+    color: colors.textWhite,
+    fontWeight: '600',
+  },
+  deadlineContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
   },
   deadline: {
     fontSize: 12,
     color: colors.textMuted,
   },
 });
+
+

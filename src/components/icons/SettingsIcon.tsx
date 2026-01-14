@@ -1,73 +1,27 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import Svg, {Circle, Path} from 'react-native-svg';
+import {colors} from '../../theme/colors';
 
 interface SettingsIconProps {
   size?: number;
+  color?: string;
 }
 
-export const SettingsIcon: React.FC<SettingsIconProps> = ({ size = 24 }) => {
+export const SettingsIcon: React.FC<SettingsIconProps> = ({
+  size = 24,
+  color = colors.text,
+}) => {
   return (
-    <View style={[styles.container, { width: size, height: size }]}>
-      {/* Gear center */}
-      <View style={[styles.center, { 
-        width: size * 0.4, 
-        height: size * 0.4,
-        borderRadius: size * 0.2
-      }]} />
-      {/* Gear teeth */}
-      <View style={[styles.tooth, { 
-        width: size * 0.25, 
-        height: size * 0.15,
-        borderRadius: size * 0.04,
-        top: 0,
-        left: size * 0.375
-      }]} />
-      <View style={[styles.tooth, { 
-        width: size * 0.15, 
-        height: size * 0.25,
-        borderRadius: size * 0.04,
-        top: size * 0.375,
-        right: 0
-      }]} />
-      <View style={[styles.tooth, { 
-        width: size * 0.25, 
-        height: size * 0.15,
-        borderRadius: size * 0.04,
-        bottom: 0,
-        left: size * 0.375
-      }]} />
-      <View style={[styles.tooth, { 
-        width: size * 0.15, 
-        height: size * 0.25,
-        borderRadius: size * 0.04,
-        top: size * 0.375,
-        left: 0
-      }]} />
-    </View>
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <Circle cx="12" cy="12" r="3" fill={color} />
+      <Path
+        d="M12 3 L12 5 M12 19 L12 21 M3 12 L5 12 M19 12 L21 12 M5.64 5.64 L7.05 7.05 M16.95 16.95 L18.36 18.36 M5.64 18.36 L7.05 16.95 M16.95 7.05 L18.36 5.64"
+        stroke={color}
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+    </Svg>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    position: 'relative',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  center: {
-    backgroundColor: '#4A2E1A',
-    borderWidth: 2,
-    borderColor: '#3E2723',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.15,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  tooth: {
-    backgroundColor: '#6B4423',
-    position: 'absolute',
-    borderWidth: 1.5,
-    borderColor: '#4A2E1A',
-  },
-});
 

@@ -1,70 +1,29 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { colors } from '../../theme/colors';
+import Svg, {Path} from 'react-native-svg';
+import {colors} from '../../theme/colors';
 
 interface EditIconProps {
   size?: number;
+  color?: string;
 }
 
-export const EditIcon: React.FC<EditIconProps> = ({ size = 24 }) => {
+export const EditIcon: React.FC<EditIconProps> = ({
+  size = 24,
+  color = colors.text,
+}) => {
   return (
-    <View style={[styles.container, { width: size, height: size }]}>
-      {/* Pencil body */}
-      <View style={[styles.body, { 
-        width: size * 0.2, 
-        height: size * 0.7,
-        borderRadius: size * 0.04,
-        transform: [{ rotate: '135deg' }],
-        top: size * 0.05,
-        left: size * 0.25
-      }]} />
-      {/* Pencil tip */}
-      <View style={[styles.tip, { 
-        width: 0,
-        height: 0,
-        borderLeftWidth: size * 0.1,
-        borderRightWidth: size * 0.1,
-        borderBottomWidth: size * 0.18,
-        transform: [{ rotate: '135deg' }],
-        top: size * 0.58,
-        left: size * 0.25
-      }]} />
-      {/* Eraser */}
-      <View style={[styles.eraser, { 
-        width: size * 0.2, 
-        height: size * 0.15,
-        borderRadius: size * 0.03,
-        transform: [{ rotate: '135deg' }],
-        top: -size * 0.02,
-        left: size * 0.25
-      }]} />
-    </View>
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <Path
+        d="M3 17 L3 21 L7 21 L18 10 L14 6 L3 17 Z"
+        fill={color}
+      />
+      <Path
+        d="M19 9 L15 5 L17 3 C17.5 2.5 18.5 2.5 19 3 L21 5 C21.5 5.5 21.5 6.5 21 7 L19 9 Z"
+        fill={color}
+        opacity="0.8"
+      />
+    </Svg>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    position: 'relative',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  body: {
-    backgroundColor: colors.secondary,
-    position: 'absolute',
-    borderWidth: 1.5,
-    borderColor: '#B8941F',
-  },
-  tip: {
-    position: 'absolute',
-    borderLeftColor: 'transparent',
-    borderRightColor: 'transparent',
-    borderBottomColor: '#6B4423',
-  },
-  eraser: {
-    backgroundColor: '#E8B878',
-    position: 'absolute',
-    borderWidth: 1,
-    borderColor: '#D4A857',
-  },
-});
 

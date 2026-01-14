@@ -1,45 +1,63 @@
 export const colors = {
-  // Primary chocolate theme
-  primary: '#6B4423',
-  primaryLight: '#8B5A3C',
-  primaryDark: '#4A2C1A',
-  
-  // Secondary colors
-  secondary: '#D4AF37', // Gold for coins
-  secondaryLight: '#F4CF57',
-  
-  // Chocolate money
-  chocolate: '#8B4513',
-  chocolateLight: '#A0522D',
-  
+  // Primary - Dark Chocolate
+  primary: '#3D2817',
+  primaryLight: '#5C4033',
+  primaryDark: '#2A1B10',
+
+  // Secondary - Milk Chocolate
+  secondary: '#8B6F47',
+  secondaryLight: '#A68968',
+  secondaryDark: '#6B5537',
+
+  // Accent - Gold
+  accent: '#D4AF37',
+  accentLight: '#F4CF67',
+  accentDark: '#B4941F',
+
+  // Chocolate Coin
+  coin: '#D4AF37',
+  coinShine: '#FFD700',
+  coinShadow: '#B8941D',
+
+  // Caramel
+  caramel: '#C68642',
+  caramelLight: '#E5A762',
+  caramelDark: '#A66822',
+
   // Background
-  background: '#F5F0E8',
+  background: '#FFF9F0',
   backgroundLight: '#FFFFFF',
-  backgroundDark: '#E8DCC8',
-  
-  // Text
-  text: '#2C1810',
-  textLight: '#5C4A3A',
-  textMuted: '#8B7A6A',
-  
-  // Status colors
+  backgroundDark: '#F5E6D3',
+
+  // Status
   success: '#4CAF50',
   error: '#F44336',
   warning: '#FF9800',
   info: '#2196F3',
-  
-  // Fund colors
-  fundLow: '#8B4513',
-  fundMedium: '#D2691E',
-  fundHigh: '#FFD700',
-  
-  // Factory
-  factory: '#795548',
-  
-  // UI elements
+
+  // Text
+  text: '#2A1B10',
+  textLight: '#6B5537',
+  textMuted: '#9E8B7B',
+  textWhite: '#FFFFFF',
+
+  // Border
   border: '#D4C4B0',
-  shadow: 'rgba(0, 0, 0, 0.1)',
-  overlay: 'rgba(0, 0, 0, 0.5)',
+  borderLight: '#E8DCC8',
+
+  // Shadow
+  shadow: 'rgba(61, 40, 23, 0.15)',
+  shadowDark: 'rgba(61, 40, 23, 0.3)',
+
+  // Funds
+  fundMilk: '#8B6F47',
+  fundNougat: '#C68642',
+  fundGold: '#D4AF37',
+
+  // Risk levels
+  riskLow: '#4CAF50',
+  riskMedium: '#FF9800',
+  riskHigh: '#F44336',
 };
 
 

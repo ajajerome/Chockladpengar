@@ -1,15 +1,19 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, ActivityIndicator } from 'react-native';
-import { colors } from '../theme/colors';
+import {
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+} from 'react-native';
+import {colors} from '../theme/colors';
 
 interface ButtonProps {
   title: string;
   onPress: () => void;
-  variant?: 'primary' | 'secondary' | 'outline' | 'danger';
+  variant?: 'primary' | 'secondary' | 'outline';
   size?: 'small' | 'medium' | 'large';
   disabled?: boolean;
   loading?: boolean;
-  fullWidth?: boolean;
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -19,34 +23,31 @@ export const Button: React.FC<ButtonProps> = ({
   size = 'medium',
   disabled = false,
   loading = false,
-  fullWidth = false,
 }) => {
-  const buttonStyle = [
-    styles.button,
-    styles[variant],
-    styles[`${size}Size`],
-    fullWidth && styles.fullWidth,
-    (disabled || loading) && styles.disabled,
-  ];
-
-  const textStyle = [
-    styles.text,
-    styles[`${variant}Text`],
-    styles[`${size}Text`],
-  ];
-
   return (
     <TouchableOpacity
-      style={buttonStyle}
+      style={[
+        styles.button,
+        styles[variant],
+        styles[size],
+        disabled && styles.disabled,
+      ]}
       onPress={onPress}
       disabled={disabled || loading}
-    >
+      activeOpacity={0.8}>
       {loading ? (
         <ActivityIndicator
-          color={variant === 'outline' ? colors.primary : colors.backgroundLight}
+          color={variant === 'outline' ? colors.primary : colors.textWhite}
         />
       ) : (
-        <Text style={textStyle}>{title}</Text>
+        <Text
+          style={[
+            styles.text,
+            variant === 'outline' && styles.outlineText,
+            styles[`${size}Text`],
+          ]}>
+          {title}
+        </Text>
       )}
     </TouchableOpacity>
   );
@@ -54,66 +55,56 @@ export const Button: React.FC<ButtonProps> = ({
 
 const styles = StyleSheet.create({
   button: {
-    borderRadius: 8,
-    justifyContent: 'center',
+    borderRadius: 12,
     alignItems: 'center',
-    flexDirection: 'row',
+    justifyContent: 'center',
+    shadowColor: colors.shadow,
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
   },
   primary: {
     backgroundColor: colors.primary,
   },
   secondary: {
-    backgroundColor: colors.secondary,
+    backgroundColor: colors.accent,
   },
   outline: {
     backgroundColor: 'transparent',
     borderWidth: 2,
     borderColor: colors.primary,
   },
-  danger: {
-    backgroundColor: colors.error,
-  },
-  smallSize: {
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-  },
-  mediumSize: {
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-  },
-  largeSize: {
-    paddingVertical: 16,
-    paddingHorizontal: 32,
-  },
-  fullWidth: {
-    width: '100%',
-  },
   disabled: {
     opacity: 0.5,
   },
+  small: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+  },
+  medium: {
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+  },
+  large: {
+    paddingVertical: 16,
+    paddingHorizontal: 32,
+  },
   text: {
+    color: colors.textWhite,
     fontWeight: '600',
   },
-  primaryText: {
-    color: colors.backgroundLight,
+  smallText: {
+    fontSize: 14,
   },
-  secondaryText: {
-    color: colors.text,
+  mediumText: {
+    fontSize: 16,
+  },
+  largeText: {
+    fontSize: 18,
   },
   outlineText: {
     color: colors.primary,
-  },
-  dangerText: {
-    color: colors.backgroundLight,
-  },
-  smallText: {
-    fontSize: 12,
-  },
-  mediumText: {
-    fontSize: 14,
-  },
-  largeText: {
-    fontSize: 16,
   },
 });
 

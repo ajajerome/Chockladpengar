@@ -1,166 +1,125 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
   StyleSheet,
-  SafeAreaView,
+  TextInput,
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import { useStore } from '../../store/useStore';
-import { Button } from '../../components/Button';
-import { colors } from '../../theme/colors';
-import { ProfileIcon, HomeIcon } from '../../components/icons';
-import { NavigationProp } from '@react-navigation/native';
+import {useStore} from '../../store/useStore';
+import {colors} from '../../theme/colors';
+import {Button} from '../../components/Button';
+import {ChocolateCoinIcon} from '../../components/icons';
 
-interface Props {
-  navigation: NavigationProp<any>;
-}
-
-export const LoginScreen: React.FC<Props> = ({ navigation }) => {
-  const { setCurrentUser, users } = useStore();
+export const LoginScreen = ({navigation}: any) => {
+  const {users, login} = useStore();
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
+  const [pin, setPin] = useState('');
+  const [error, setError] = useState('');
 
-  // Group users by family
-  const families = users.reduce((acc, user) => {
-    if (!acc[user.familyId]) {
-      acc[user.familyId] = [];
+  const handleLogin = async () => {
+    if (!selectedUser) {
+      setError('Välj en användare');
+      return;
     }
-    acc[user.familyId].push(user);
-    return acc;
-  }, {} as Record<string, typeof users>);
 
-  const handleLogin = () => {
-    if (!selectedUser) return;
-    const user = users.find((u) => u.id === selectedUser);
-    if (user) {
-      setCurrentUser(user);
+    const user = users.find(u => u.id === selectedUser);
+    if (user?.pin) {
+      if (pin.length !== 4) {
+        setError('PIN-koden måste vara 4 siffror');
+        return;
+      }
+    }
+
+    const success = await login(selectedUser, pin || undefined);
+    if (!success) {
+      setError('Fel PIN-kod');
+      setPin('');
     }
   };
 
-  const hasFamilies = Object.keys(families).length > 0;
+  if (users.length === 0) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <ChocolateCoinIcon size={64} />
+          <Text style={styles.title}>Chokladpengar</Text>
+          <Text style={styles.subtitle}>Välkommen till din chokladfabrik!</Text>
+        </View>
 
-  return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.content}>
-          <View style={styles.header}>
-            <View style={styles.logoContainer}>
-              <View style={styles.logo}>
-                <Text style={styles.logoText}>C</Text>
-              </View>
-            </View>
-            <Text style={styles.title}>Chokladpengar</Text>
-            <Text style={styles.subtitle}>Motivationsapp för familjer</Text>
-          </View>
-
-          {hasFamilies ? (
-            <>
-              <Text style={styles.sectionTitle}>Välj vem du är</Text>
-              <View style={styles.userList}>
-                {Object.entries(families).map(([familyId, familyUsers]) => {
-                  const parent = familyUsers.find((u) => u.role === 'parent');
-                  const children = familyUsers.filter((u) => u.role === 'child');
-
-                  return (
-                    <View key={familyId} style={styles.familySection}>
-                      <View style={styles.familyHeader}>
-                        <HomeIcon size={16} color={colors.primary} />
-                        <Text style={styles.familyName}>
-                          {parent?.name}s familj
-                        </Text>
-                      </View>
-
-                      {/* Parent */}
-                      {parent && (
-                        <TouchableOpacity
-                          style={[
-                            styles.userCard,
-                            styles.parentCard,
-                            selectedUser === parent.id && styles.userCardSelected,
-                          ]}
-                          onPress={() => setSelectedUser(parent.id)}
-                        >
-                          <View style={styles.userIcon}>
-                            <ProfileIcon size={40} />
-                          </View>
-                          <View style={styles.userInfo}>
-                            <Text style={styles.userName}>{parent.name}</Text>
-                            <Text style={styles.userRole}>Förälder</Text>
-                          </View>
-                          {selectedUser === parent.id && (
-                            <View style={styles.checkmark}>
-                              <Text style={styles.checkmarkText}>✓</Text>
-                            </View>
-                          )}
-                        </TouchableOpacity>
-                      )}
-
-                      {/* Children */}
-                      {children.map((child) => (
-                        <TouchableOpacity
-                          key={child.id}
-                          style={[
-                            styles.userCard,
-                            styles.childCard,
-                            selectedUser === child.id && styles.userCardSelected,
-                          ]}
-                          onPress={() => setSelectedUser(child.id)}
-                        >
-                          <View style={styles.userIcon}>
-                            <ProfileIcon size={40} />
-                          </View>
-                          <View style={styles.userInfo}>
-                            <Text style={styles.userName}>{child.name}</Text>
-                            <Text style={styles.userRole}>Barn</Text>
-                          </View>
-                          {selectedUser === child.id && (
-                            <View style={styles.checkmark}>
-                              <Text style={styles.checkmarkText}>✓</Text>
-                            </View>
-                          )}
-                        </TouchableOpacity>
-                      ))}
-                    </View>
-                  );
-                })}
-              </View>
-
-              <Button
-                title="Logga in"
-                onPress={handleLogin}
-                variant="primary"
-                size="large"
-                fullWidth
-                disabled={!selectedUser}
-              />
-            </>
-          ) : (
-            <View style={styles.emptyState}>
-              <HomeIcon size={64} color={colors.textMuted} />
-              <Text style={styles.emptyTitle}>Ingen familj ännu</Text>
-              <Text style={styles.emptyText}>
-                Skapa din familj för att komma igång med Chokladpengar
-              </Text>
-            </View>
-          )}
-
-          <View style={styles.divider}>
-            <View style={styles.dividerLine} />
-            <Text style={styles.dividerText}>eller</Text>
-            <View style={styles.dividerLine} />
-          </View>
-
+          <Text style={styles.message}>
+            Ingen familj hittades. Skapa en ny familj för att komma igång!
+          </Text>
           <Button
-            title="Skapa ny familj"
+            title="Skapa familj"
             onPress={() => navigation.navigate('CreateFamily')}
-            variant="secondary"
-            size="large"
-            fullWidth
           />
         </View>
-      </ScrollView>
-    </SafeAreaView>
+      </View>
+    );
+  }
+
+  return (
+    <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
+      <View style={styles.header}>
+        <ChocolateCoinIcon size={64} />
+        <Text style={styles.title}>Chokladpengar</Text>
+        <Text style={styles.subtitle}>Välj vem du är</Text>
+      </View>
+
+      <View style={styles.content}>
+        <Text style={styles.label}>Användare:</Text>
+        {users.map(user => (
+          <TouchableOpacity
+            key={user.id}
+            style={[
+              styles.userCard,
+              selectedUser === user.id && styles.userCardSelected,
+            ]}
+            onPress={() => {
+              setSelectedUser(user.id);
+              setError('');
+              setPin('');
+            }}>
+            <Text style={styles.userName}>{user.name}</Text>
+            <Text style={styles.userRole}>
+              {user.role === 'parent' ? 'Förälder' : 'Barn'}
+            </Text>
+          </TouchableOpacity>
+        ))}
+
+        {selectedUser && users.find(u => u.id === selectedUser)?.pin && (
+          <View style={styles.pinContainer}>
+            <Text style={styles.label}>PIN-kod:</Text>
+            <TextInput
+              style={styles.pinInput}
+              value={pin}
+              onChangeText={setPin}
+              placeholder="4 siffror"
+              keyboardType="number-pad"
+              maxLength={4}
+              secureTextEntry
+            />
+          </View>
+        )}
+
+        {error ? <Text style={styles.error}>{error}</Text> : null}
+
+        <Button
+          title="Logga in"
+          onPress={handleLogin}
+          disabled={!selectedUser}
+        />
+
+        <TouchableOpacity
+          style={styles.linkButton}
+          onPress={() => navigation.navigate('CreateFamily')}>
+          <Text style={styles.linkText}>Skapa ny familj</Text>
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
   );
 };
 
@@ -171,155 +130,88 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-  },
-  content: {
-    flex: 1,
-    padding: 24,
-    justifyContent: 'center',
+    padding: 20,
   },
   header: {
     alignItems: 'center',
+    marginTop: 40,
     marginBottom: 40,
-  },
-  logoContainer: {
-    marginBottom: 24,
-  },
-  logo: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: colors.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 4,
-    borderColor: colors.secondary,
-  },
-  logoText: {
-    fontSize: 48,
-    fontWeight: 'bold',
-    color: colors.backgroundLight,
   },
   title: {
     fontSize: 32,
     fontWeight: 'bold',
     color: colors.primary,
-    marginBottom: 8,
+    marginTop: 16,
   },
   subtitle: {
     fontSize: 16,
     color: colors.textLight,
+    marginTop: 8,
   },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: colors.text,
-    marginBottom: 16,
+  content: {
+    flex: 1,
   },
-  userList: {
-    marginBottom: 24,
-    gap: 20,
-  },
-  familySection: {
-    gap: 8,
-  },
-  familyHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginBottom: 8,
-    paddingLeft: 4,
-  },
-  familyName: {
-    fontSize: 14,
-    fontWeight: '600',
+  message: {
+    fontSize: 16,
     color: colors.textLight,
+    textAlign: 'center',
+    marginBottom: 24,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.text,
+    marginBottom: 12,
   },
   userCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
     backgroundColor: colors.backgroundLight,
-    padding: 16,
     borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
     borderWidth: 2,
-    borderColor: colors.border,
-  },
-  parentCard: {
-    borderLeftWidth: 4,
-    borderLeftColor: colors.primary,
-  },
-  childCard: {
-    borderLeftWidth: 4,
-    borderLeftColor: colors.secondary,
+    borderColor: 'transparent',
   },
   userCardSelected: {
-    backgroundColor: '#FFF8F0',
-    borderColor: colors.primary,
-    borderWidth: 3,
-  },
-  userIcon: {
-    marginRight: 12,
-  },
-  userInfo: {
-    flex: 1,
+    borderColor: colors.accent,
+    backgroundColor: colors.backgroundDark,
   },
   userName: {
     fontSize: 18,
-    fontWeight: '700',
+    fontWeight: '600',
     color: colors.text,
-    marginBottom: 2,
   },
   userRole: {
-    fontSize: 13,
+    fontSize: 14,
     color: colors.textMuted,
+    marginTop: 4,
   },
-  checkmark: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: colors.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  checkmarkText: {
-    color: colors.backgroundLight,
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  emptyState: {
-    alignItems: 'center',
-    padding: 40,
-    backgroundColor: colors.backgroundLight,
-    borderRadius: 16,
-    borderWidth: 2,
-    borderColor: colors.border,
-    borderStyle: 'dashed',
+  pinContainer: {
+    marginTop: 24,
     marginBottom: 24,
   },
-  emptyTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: colors.text,
-    marginTop: 16,
-    marginBottom: 8,
-  },
-  emptyText: {
-    fontSize: 14,
-    color: colors.textMuted,
+  pinInput: {
+    backgroundColor: colors.backgroundLight,
+    borderRadius: 12,
+    padding: 16,
+    fontSize: 18,
+    borderWidth: 1,
+    borderColor: colors.border,
     textAlign: 'center',
+    letterSpacing: 8,
   },
-  divider: {
-    flexDirection: 'row',
+  error: {
+    color: colors.error,
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  linkButton: {
+    marginTop: 16,
     alignItems: 'center',
-    marginVertical: 24,
   },
-  dividerLine: {
-    flex: 1,
-    height: 1,
-    backgroundColor: colors.border,
-  },
-  dividerText: {
-    marginHorizontal: 16,
-    fontSize: 14,
-    color: colors.textMuted,
+  linkText: {
+    color: colors.accent,
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
+

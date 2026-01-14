@@ -1,65 +1,35 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { colors } from '../../theme/colors';
+import Svg, {Path} from 'react-native-svg';
+import {colors} from '../../theme/colors';
 
 interface HomeIconProps {
   size?: number;
   color?: string;
+  filled?: boolean;
 }
 
-export const HomeIcon: React.FC<HomeIconProps> = ({ size = 24, color = colors.primary }) => {
+export const HomeIcon: React.FC<HomeIconProps> = ({
+  size = 24,
+  color = colors.text,
+  filled = false,
+}) => {
   return (
-    <View style={[styles.container, { width: size, height: size }]}>
-      {/* House body */}
-      <View style={[styles.body, { 
-        width: size * 0.65, 
-        height: size * 0.5,
-        borderRadius: size * 0.06,
-        backgroundColor: color,
-        bottom: 0
-      }]} />
-      {/* Roof */}
-      <View style={[styles.roof, { 
-        width: 0,
-        height: 0,
-        borderLeftWidth: size * 0.45,
-        borderRightWidth: size * 0.45,
-        borderBottomWidth: size * 0.35,
-        borderBottomColor: color,
-        top: 0
-      }]} />
-      {/* Door */}
-      <View style={[styles.door, { 
-        width: size * 0.22, 
-        height: size * 0.3,
-        borderRadius: size * 0.04,
-        bottom: 0
-      }]} />
-    </View>
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <Path
+        d="M3 9 L12 2 L21 9 L21 20 C21 21 20 22 19 22 L5 22 C4 22 3 21 3 20 L3 9 Z"
+        fill={filled ? color : 'none'}
+        stroke={color}
+        strokeWidth="2"
+        strokeLinejoin="round"
+      />
+      <Path
+        d="M9 22 L9 13 L15 13 L15 22"
+        fill={filled ? colors.background : 'none'}
+        stroke={color}
+        strokeWidth="2"
+      />
+    </Svg>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    position: 'relative',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  body: {
-    position: 'absolute',
-    borderWidth: 2,
-    borderColor: colors.primaryDark,
-  },
-  roof: {
-    position: 'absolute',
-    borderLeftColor: 'transparent',
-    borderRightColor: 'transparent',
-  },
-  door: {
-    backgroundColor: colors.primaryDark,
-    position: 'absolute',
-    borderWidth: 1.5,
-    borderColor: '#2C1810',
-  },
-});
 

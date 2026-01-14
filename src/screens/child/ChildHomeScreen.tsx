@@ -1,157 +1,117 @@
-import React, { useState, useRef } from 'react';
+import React from 'react';
 import {
   View,
   Text,
   StyleSheet,
-  SafeAreaView,
   ScrollView,
+  SafeAreaView,
   TouchableOpacity,
-  Animated,
-  LayoutAnimation,
-  Platform,
-  UIManager,
 } from 'react-native';
 import { useStore } from '../../store/useStore';
 import { colors } from '../../theme/colors';
 import { ChocolateCoin } from '../../components/ChocolateCoin';
 import { TaskCard } from '../../components/TaskCard';
-import { NavigationProp } from '@react-navigation/native';
 
-if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
-  UIManager.setLayoutAnimationEnabledExperimental(true);
+interface ChildHomeScreenProps {
+  navigation: any;
 }
 
-interface Props {
-  navigation: NavigationProp<any>;
-}
-
-export const ChildHomeScreen: React.FC<Props> = ({ navigation }) => {
-  const { currentUser, tasks, getBalance, completeTask } = useStore();
-  const balance = currentUser ? getBalance(currentUser.id) : 0;
-  const scaleAnim = useRef(new Animated.Value(1)).current;
+export const ChildHomeScreen: React.FC<ChildHomeScreenProps> = ({ navigation }) => {
+  const currentUser = useStore((state) => state.currentUser);
+  const tasks = useStore((state) => state.tasks);
+  const balance = useStore((state) =>
+    currentUser ? state.getBalance(currentUser.id) : 0
+  );
+  const completeTask = useStore((state) => state.completeTask);
 
   const myTasks = tasks.filter(
     (task) =>
       task.assignedTo === currentUser?.id &&
-      (task.status === 'pending' || task.status === 'completed')
+      (task.status === 'pending' || task.status === 'rejected')
   );
 
-  const handleTaskPress = (taskId: string) => {
-    const task = tasks.find((t) => t.id === taskId);
-    if (task && task.status === 'pending' && currentUser) {
-      LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
+  const handleCompleteTask = (taskId: string) => {
+    if (currentUser) {
       completeTask(taskId, currentUser.id);
     }
   };
 
-  const animateBalance = () => {
-    Animated.sequence([
-      Animated.timing(scaleAnim, {
-        toValue: 1.2,
-        duration: 200,
-        useNativeDriver: true,
-      }),
-      Animated.timing(scaleAnim, {
-        toValue: 1,
-        duration: 200,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  };
-
-  React.useEffect(() => {
-    animateBalance();
-  }, [balance]);
-
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        {/* Balance Header */}
-        <View style={styles.balanceCard}>
-          <View style={styles.balanceContent}>
-            <View style={styles.coinLarge}>
-              <View style={styles.coinLargeInner} />
-            </View>
-            <View style={styles.balanceInfo}>
-              <Text style={styles.balanceLabel}>Chokladpengar</Text>
-              <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
-                <Text style={styles.balanceAmount}>{balance}</Text>
-              </Animated.View>
-            </View>
+      <ScrollView style={styles.scrollView}>
+        {/* Header with balance */}
+        <View style={styles.header}>
+          <Text style={styles.greeting}>Hej {currentUser?.name}! 👋</Text>
+          <View style={styles.balanceCard}>
+            <Text style={styles.balanceLabel}>Dina Chokladpengar</Text>
+            <ChocolateCoin amount={balance} size="large" />
           </View>
         </View>
 
-        {/* Tasks Section */}
+        {/* Today's tasks */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Dagens uppgifter</Text>
           {myTasks.length === 0 ? (
             <View style={styles.emptyState}>
-              <Text style={styles.emptyText}>Inga uppgifter just nu</Text>
-              <Text style={styles.emptySubtext}>Du är klar för idag!</Text>
+              <Text style={styles.emptyStateText}>
+                🎉 Inga uppgifter just nu!
+              </Text>
             </View>
           ) : (
             myTasks.map((task) => (
               <TaskCard
                 key={task.id}
                 task={task}
-                onPress={() => handleTaskPress(task.id)}
+                onPress={() => handleCompleteTask(task.id)}
                 showStatus
               />
             ))
           )}
         </View>
 
-        {/* Actions Section */}
+        {/* Action buttons */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Vad vill du göra?</Text>
 
           <TouchableOpacity
-            style={[styles.actionCard, { backgroundColor: '#FFF4E6' }]}
+            style={[styles.actionCard, { backgroundColor: '#FFE5E5' }]}
             onPress={() => navigation.navigate('RewardShop')}
-            activeOpacity={0.8}
           >
-            <View style={styles.actionIconContainer}>
-              <Text style={styles.actionIconText}>BELÖN</Text>
-            </View>
+            <Text style={styles.actionIcon}>🍬</Text>
             <View style={styles.actionContent}>
               <Text style={styles.actionTitle}>Chokladkassan</Text>
-              <Text style={styles.actionDescription}>Köp belöningar</Text>
+              <Text style={styles.actionDescription}>
+                Köp belöningar med dina chokladpengar
+              </Text>
             </View>
-            <Text style={styles.actionArrow}>›</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.actionCard, { backgroundColor: '#E8F5E9' }]}
+            style={[styles.actionCard, { backgroundColor: '#E5F5FF' }]}
             onPress={() => navigation.navigate('Investments')}
-            activeOpacity={0.8}
           >
-            <View style={styles.actionIconContainer}>
-              <Text style={styles.actionIconText}>FOND</Text>
-            </View>
+            <Text style={styles.actionIcon}>📈</Text>
             <View style={styles.actionContent}>
               <Text style={styles.actionTitle}>Chokladfonder</Text>
-              <Text style={styles.actionDescription}>Investera dina pengar</Text>
+              <Text style={styles.actionDescription}>
+                Investera och öka dina chokladpengar
+              </Text>
             </View>
-            <Text style={styles.actionArrow}>›</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.actionCard, { backgroundColor: '#FFF3E0' }]}
+            style={[styles.actionCard, { backgroundColor: '#F5E5FF' }]}
             onPress={() => navigation.navigate('Factory')}
-            activeOpacity={0.8}
           >
-            <View style={styles.actionIconContainer}>
-              <Text style={styles.actionIconText}>FAB</Text>
-            </View>
+            <Text style={styles.actionIcon}>🏭</Text>
             <View style={styles.actionContent}>
               <Text style={styles.actionTitle}>Chokladfabriken</Text>
-              <Text style={styles.actionDescription}>Bygg din fabrik</Text>
+              <Text style={styles.actionDescription}>
+                Bygg din fabrik och få passiv inkomst
+              </Text>
             </View>
-            <Text style={styles.actionArrow}>›</Text>
           </TouchableOpacity>
         </View>
-
-        <View style={{ height: 32 }} />
       </ScrollView>
     </SafeAreaView>
   );
@@ -165,123 +125,75 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
   },
+  header: {
+    padding: 20,
+    paddingTop: 10,
+  },
+  greeting: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: colors.text,
+    marginBottom: 16,
+  },
   balanceCard: {
-    backgroundColor: colors.primary,
-    margin: 16,
-    marginTop: 8,
-    padding: 24,
-    borderRadius: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
-    elevation: 8,
-  },
-  balanceContent: {
-    flexDirection: 'row',
+    backgroundColor: colors.backgroundLight,
+    borderRadius: 16,
+    padding: 20,
     alignItems: 'center',
-  },
-  coinLarge: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: colors.secondary,
-    borderWidth: 4,
-    borderColor: colors.chocolate,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 16,
-  },
-  coinLargeInner: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: colors.secondaryLight,
-  },
-  balanceInfo: {
-    flex: 1,
+    borderWidth: 2,
+    borderColor: colors.secondary,
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 4,
   },
   balanceLabel: {
-    color: colors.backgroundLight,
     fontSize: 16,
-    fontWeight: '500',
-    marginBottom: 4,
-    opacity: 0.9,
-  },
-  balanceAmount: {
-    color: colors.secondary,
-    fontSize: 48,
-    fontWeight: 'bold',
-    textShadowColor: 'rgba(0, 0, 0, 0.2)',
-    textShadowOffset: { width: 2, height: 2 },
-    textShadowRadius: 4,
+    color: colors.textMuted,
+    marginBottom: 8,
   },
   section: {
-    padding: 16,
-    paddingTop: 8,
+    padding: 20,
+    paddingTop: 10,
   },
   sectionTitle: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: 'bold',
     color: colors.text,
     marginBottom: 16,
   },
   emptyState: {
-    backgroundColor: colors.backgroundLight,
     padding: 40,
-    borderRadius: 16,
     alignItems: 'center',
-    borderWidth: 2,
-    borderColor: colors.border,
-    borderStyle: 'dashed',
   },
-  emptyText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: colors.text,
-    marginBottom: 4,
-  },
-  emptySubtext: {
-    fontSize: 14,
+  emptyStateText: {
+    fontSize: 16,
     color: colors.textMuted,
+    textAlign: 'center',
   },
   actionCard: {
     flexDirection: 'row',
-    alignItems: 'center',
-    padding: 20,
-    borderRadius: 16,
+    padding: 16,
+    borderRadius: 12,
     marginBottom: 12,
-    borderWidth: 2,
-    borderColor: colors.border,
-    shadowColor: colors.shadow,
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.15,
-    shadowRadius: 6,
-    elevation: 3,
-  },
-  actionIconContainer: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 16,
-    borderWidth: 2,
-    borderColor: colors.primary,
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
-  actionIconText: {
-    fontSize: 10,
-    fontWeight: 'bold',
-    color: colors.primary,
-    textAlign: 'center',
+  actionIcon: {
+    fontSize: 40,
+    marginRight: 16,
   },
   actionContent: {
     flex: 1,
   },
   actionTitle: {
     fontSize: 18,
-    fontWeight: '700',
+    fontWeight: '600',
     color: colors.text,
     marginBottom: 4,
   },
@@ -289,9 +201,5 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.textLight,
   },
-  actionArrow: {
-    fontSize: 32,
-    color: colors.primary,
-    fontWeight: 'bold',
-  },
 });
+

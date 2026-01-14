@@ -1,46 +1,48 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
   StyleSheet,
-  SafeAreaView,
   ScrollView,
+  SafeAreaView,
   Alert,
 } from 'react-native';
 import { useStore } from '../../store/useStore';
 import { colors } from '../../theme/colors';
 import { ChocolateCoin } from '../../components/ChocolateCoin';
 import { RewardCard } from '../../components/RewardCard';
-import { TreasureChestIcon } from '../../components/icons';
-import { NavigationProp } from '@react-navigation/native';
 
-interface Props {
-  navigation: NavigationProp<any>;
-}
+export const RewardShopScreen: React.FC = () => {
+  const currentUser = useStore((state) => state.currentUser);
+  const rewards = useStore((state) => state.rewards);
+  const balance = useStore((state) =>
+    currentUser ? state.getBalance(currentUser.id) : 0
+  );
+  const purchaseReward = useStore((state) => state.purchaseReward);
 
-export const RewardShopScreen: React.FC<Props> = ({ navigation }) => {
-  const { currentUser, rewards, getBalance, purchaseReward } = useStore();
-  const balance = currentUser ? getBalance(currentUser.id) : 0;
+  const availableRewards = rewards.filter((r) => r.available);
 
-  const handlePurchase = (rewardId: string) => {
-    const reward = rewards.find((r) => r.id === rewardId);
-    if (!reward || !currentUser) return;
+  const handlePurchase = (rewardId: string, rewardTitle: string, cost: number) => {
+    if (!currentUser) return;
 
-    if (balance < reward.cost) {
-      Alert.alert('Inte råd', 'Du har inte tillräckligt med chokladpengar.');
+    if (balance < cost) {
+      Alert.alert(
+        'Inte tillräckligt med chokladpengar',
+        `Du behöver ${cost - balance} chokladpengar till.`
+      );
       return;
     }
 
     Alert.alert(
       'Köp belöning',
-      `Vill du köpa "${reward.title}" för ${reward.cost} chokladpengar?`,
+      `Vill du köpa "${rewardTitle}" för ${cost} 🍫?`,
       [
         { text: 'Avbryt', style: 'cancel' },
         {
           text: 'Köp',
           onPress: () => {
             purchaseReward(rewardId, currentUser.id);
-            Alert.alert('Grattis!', `Du köpte ${reward.title}!`);
+            Alert.alert('Grattis! 🎉', 'Belöningen är din!');
           },
         },
       ]
@@ -50,42 +52,35 @@ export const RewardShopScreen: React.FC<Props> = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <View style={styles.headerTop}>
-          <TreasureChestIcon size={32} />
-          <Text style={styles.title}>Chokladkassan</Text>
-        </View>
-        <View style={styles.balanceCard}>
+        <Text style={styles.title}>🍬 Chokladkassan</Text>
+        <View style={styles.balanceContainer}>
           <Text style={styles.balanceLabel}>Ditt saldo:</Text>
-          <ChocolateCoin amount={balance} size="medium" />
+          <ChocolateCoin amount={balance} size="large" />
         </View>
       </View>
 
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+      <ScrollView style={styles.scrollView}>
         <View style={styles.section}>
-          {rewards.length === 0 ? (
+          {availableRewards.length === 0 ? (
             <View style={styles.emptyState}>
-              <TreasureChestIcon size={64} />
-              <Text style={styles.emptyText}>
-                Inga belöningar tillgängliga än
+              <Text style={styles.emptyStateText}>
+                Inga belöningar tillgängliga just nu 🎁
               </Text>
-              <Text style={styles.emptySubtext}>
-                Be din förälder lägga till belöningar!
+              <Text style={styles.emptyStateSubtext}>
+                Fråga dina föräldrar om att lägga till några!
               </Text>
             </View>
           ) : (
-            rewards
-              .filter((reward) => reward.available)
-              .map((reward) => (
-                <RewardCard
-                  key={reward.id}
-                  reward={reward}
-                  onPress={() => handlePurchase(reward.id)}
-                  canAfford={balance >= reward.cost}
-                />
-              ))
+            availableRewards.map((reward) => (
+              <RewardCard
+                key={reward.id}
+                reward={reward}
+                canAfford={balance >= reward.cost}
+                onPress={() => handlePurchase(reward.id, reward.title, reward.cost)}
+              />
+            ))
           )}
         </View>
-        <View style={{ height: 32 }} />
       </ScrollView>
     </SafeAreaView>
   );
@@ -97,59 +92,46 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   header: {
+    padding: 20,
     backgroundColor: colors.backgroundLight,
-    padding: 16,
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
-  },
-  headerTop: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    marginBottom: 12,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     color: colors.text,
+    marginBottom: 12,
   },
-  balanceCard: {
+  balanceContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.background,
-    padding: 12,
-    borderRadius: 12,
     gap: 8,
   },
   balanceLabel: {
-    fontSize: 14,
-    color: colors.textLight,
+    fontSize: 16,
+    color: colors.textMuted,
   },
   scrollView: {
     flex: 1,
   },
   section: {
-    padding: 16,
+    padding: 20,
   },
   emptyState: {
-    backgroundColor: colors.backgroundLight,
     padding: 40,
-    borderRadius: 16,
     alignItems: 'center',
-    borderWidth: 2,
-    borderColor: colors.border,
-    borderStyle: 'dashed',
   },
-  emptyText: {
-    fontSize: 16,
+  emptyStateText: {
+    fontSize: 18,
     color: colors.textMuted,
-    marginTop: 16,
-    marginBottom: 8,
     textAlign: 'center',
+    marginBottom: 8,
   },
-  emptySubtext: {
+  emptyStateSubtext: {
     fontSize: 14,
-    color: colors.textMuted,
+    color: colors.textLight,
     textAlign: 'center',
   },
 });
+

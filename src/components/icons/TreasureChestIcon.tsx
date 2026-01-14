@@ -1,83 +1,33 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { colors } from '../../theme/colors';
+import Svg, {Rect, Path, Circle} from 'react-native-svg';
+import {colors} from '../../theme/colors';
 
 interface TreasureChestIconProps {
   size?: number;
+  color?: string;
 }
 
-export const TreasureChestIcon: React.FC<TreasureChestIconProps> = ({ size = 32 }) => {
+export const TreasureChestIcon: React.FC<TreasureChestIconProps> = ({
+  size = 24,
+  color = colors.caramel,
+}) => {
   return (
-    <View style={[styles.container, { width: size, height: size }]}>
-      {/* Chest body */}
-      <View style={[styles.chest, { 
-        width: size * 0.85, 
-        height: size * 0.6,
-        borderRadius: size * 0.08 
-      }]} />
-      {/* Lid */}
-      <View style={[styles.lid, { 
-        width: size * 0.85, 
-        height: size * 0.25,
-        borderRadius: size * 0.08,
-        top: size * 0.1
-      }]} />
-      {/* Lock */}
-      <View style={[styles.lock, { 
-        width: size * 0.2, 
-        height: size * 0.25,
-        borderRadius: size * 0.04,
-        top: size * 0.2
-      }]} />
-      {/* Coins on top */}
-      <View style={[styles.coin, { 
-        width: size * 0.15, 
-        height: size * 0.15,
-        borderRadius: size * 0.075,
-        top: size * 0.05,
-        left: size * 0.15
-      }]} />
-      <View style={[styles.coin, { 
-        width: size * 0.15, 
-        height: size * 0.15,
-        borderRadius: size * 0.075,
-        top: size * 0.02,
-        right: size * 0.15
-      }]} />
-    </View>
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <Rect x="4" y="10" width="16" height="10" rx="1" fill={color} />
+      <Path
+        d="M4 10 L4 6 C4 5 5 4 6 4 L18 4 C19 4 20 5 20 6 L20 10"
+        fill={color}
+        opacity="0.8"
+      />
+      <Circle cx="12" cy="14" r="2" fill={colors.accent} />
+      <Rect x="11" y="13" width="2" height="4" fill={colors.accent} />
+      <Path
+        d="M7 10 L7 20 M17 10 L17 20"
+        stroke={colors.primaryDark}
+        strokeWidth="1.5"
+      />
+    </Svg>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    position: 'relative',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  chest: {
-    backgroundColor: '#8B5A2B',
-    position: 'absolute',
-    bottom: 0,
-    borderWidth: 2,
-    borderColor: '#6B4423',
-  },
-  lid: {
-    backgroundColor: '#A0643C',
-    position: 'absolute',
-    borderWidth: 2,
-    borderColor: '#6B4423',
-  },
-  lock: {
-    backgroundColor: colors.secondary,
-    position: 'absolute',
-    borderWidth: 1.5,
-    borderColor: '#B8941F',
-  },
-  coin: {
-    backgroundColor: colors.secondary,
-    position: 'absolute',
-    borderWidth: 1,
-    borderColor: '#B8941F',
-  },
-});
 

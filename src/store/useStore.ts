@@ -1,530 +1,592 @@
-import { create } from 'zustand';
+import {create} from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
-  AppState,
   User,
+  Family,
   Task,
   Reward,
   Investment,
   Factory,
-  Balance,
+  Transaction,
   Notification,
-  Purchase,
-  FundType,
-  BuildingStage,
-  TransactionHistory,
+  Balance,
 } from '../types';
-import { FACTORY_STAGES, WEEKLY_PRODUCTION } from '../constants/funds';
+import {createNotification} from '../utils/notifications';
+import {FUNDS} from '../constants/funds';
 
-const STORAGE_KEY = '@chokladpengar_store';
+interface AppState {
+  // Auth
+  currentUser: User | null;
+  users: User[];
+  families: Family[];
 
-interface StoreActions {
-  // Auth actions
-  setCurrentUser: (user: User | null) => void;
-  addUser: (user: User) => void;
-  
-  // Task actions
-  addTask: (task: Task) => void;
-  updateTask: (id: string, updates: Partial<Task>) => void;
-  completeTask: (id: string, childId: string) => void;
-  approveTask: (id: string) => void;
-  rejectTask: (id: string) => void;
-  
-  // Reward actions
-  addReward: (reward: Reward) => void;
-  updateReward: (id: string, updates: Partial<Reward>) => void;
-  purchaseReward: (rewardId: string, childId: string) => void;
-  
-  // Balance actions
-  getBalance: (childId: string) => number;
-  addTransaction: (childId: string, transaction: Omit<TransactionHistory, 'id'>) => void;
-  
-  // Investment actions
-  createInvestment: (childId: string, fundId: FundType, amount: number) => void;
-  updateInvestmentValues: () => void;
+  // Data
+  tasks: Task[];
+  rewards: Reward[];
+  investments: Investment[];
+  factories: Factory[];
+  balances: Balance[];
+  transactions: Transaction[];
+  notifications: Notification[];
+
+  // Auth Actions
+  login: (userId: string, pin?: string) => Promise<boolean>;
+  logout: () => void;
+  createFamily: (familyName: string, parentName: string, pin: string) => Promise<string>;
+  addChild: (familyId: string, name: string, pin: string) => Promise<string>;
+  addParent: (familyId: string, name: string, pin: string) => Promise<string>;
+
+  // Task Actions
+  createTask: (
+    title: string,
+    description: string,
+    points: number,
+    assignedTo: string,
+    deadline?: string,
+    recurring?: Task['recurring'],
+  ) => void;
+  completeTask: (taskId: string) => void;
+  approveTask: (taskId: string) => void;
+  rejectTask: (taskId: string) => void;
+
+  // Reward Actions
+  createReward: (
+    title: string,
+    description: string,
+    cost: number,
+    category: string,
+  ) => void;
+  purchaseReward: (rewardId: string) => boolean;
+
+  // Investment Actions
+  invest: (fundType: 'milk' | 'nougat' | 'gold', amount: number) => boolean;
   withdrawInvestment: (investmentId: string) => void;
-  
-  // Factory actions
-  getFactory: (childId: string) => Factory | undefined;
-  buildFactoryStage: (childId: string, stage: BuildingStage) => void;
-  processFactoryProduction: () => void;
-  
-  // Notification actions
-  addNotification: (notification: Omit<Notification, 'id' | 'createdAt'>) => void;
-  markNotificationRead: (id: string) => void;
-  clearNotifications: (userId: string) => void;
-  
+  updateInvestments: () => void;
+
+  // Factory Actions
+  buildFactoryStep: () => boolean;
+  collectFactoryIncome: () => void;
+
+  // Balance Actions
+  getBalance: (userId: string) => number;
+  addTransaction: (
+    userId: string,
+    type: Transaction['type'],
+    amount: number,
+    description: string,
+    relatedId?: string,
+  ) => void;
+
+  // Notification Actions
+  addNotification: (
+    userId: string,
+    title: string,
+    message: string,
+    type: Notification['type'],
+  ) => void;
+  markNotificationAsRead: (notificationId: string) => void;
+
   // Persistence
   loadData: () => Promise<void>;
   saveData: () => Promise<void>;
 }
 
-type Store = AppState & StoreActions;
-
-export const useStore = create<Store>((set, get) => ({
-  // Initial state
+export const useStore = create<AppState>((set, get) => ({
+  // Initial State
   currentUser: null,
   users: [],
+  families: [],
   tasks: [],
   rewards: [],
-  purchases: [],
   investments: [],
   factories: [],
   balances: [],
+  transactions: [],
   notifications: [],
 
-  // Auth actions
-  setCurrentUser: (user) => {
-    set({ currentUser: user });
-    get().saveData();
+  // Auth Actions
+  login: async (userId: string, pin?: string) => {
+    const user = get().users.find(u => u.id === userId);
+    if (!user) return false;
+    if (pin && user.pin !== pin) return false;
+
+    set({currentUser: user});
+    return true;
   },
 
-  addUser: (user) => {
-    set((state) => {
-      const users = [...state.users, user];
-      // Initialize balance for child users
-      const balances = user.role === 'child' 
-        ? [...state.balances, { childId: user.id, amount: 0, history: [] }]
-        : state.balances;
-      // Initialize factory for child users
-      const factories = user.role === 'child'
-        ? [...state.factories, {
-            childId: user.id,
-            currentStage: null,
-            completedStages: [],
-            isComplete: false,
-            weeklyProduction: WEEKLY_PRODUCTION,
-            totalProduced: 0,
-          }]
-        : state.factories;
-      return { users, balances, factories };
-    });
-    get().saveData();
+  logout: () => {
+    set({currentUser: null});
   },
 
-  // Task actions
-  addTask: (task) => {
-    set((state) => ({ tasks: [...state.tasks, task] }));
-    // Notify child
-    get().addNotification({
-      userId: task.assignedTo,
-      type: 'new_task',
-      title: 'Ny uppgift!',
-      message: `${task.title} - ${task.points} 🍫`,
-      read: false,
-      relatedId: task.id,
-    });
-    get().saveData();
+  createFamily: async (familyName: string, parentName: string, pin: string) => {
+    const familyId = Date.now().toString();
+    const parentId = `parent-${Date.now()}`;
+
+    const newFamily: Family = {
+      id: familyId,
+      name: familyName,
+      parentIds: [parentId],
+      childIds: [],
+      createdAt: new Date().toISOString(),
+    };
+
+    const newParent: User = {
+      id: parentId,
+      name: parentName,
+      role: 'parent',
+      familyId,
+      pin,
+    };
+
+    set(state => ({
+      families: [...state.families, newFamily],
+      users: [...state.users, newParent],
+    }));
+
+    await get().saveData();
+    return familyId;
   },
 
-  updateTask: (id, updates) => {
-    set((state) => ({
-      tasks: state.tasks.map((task) =>
-        task.id === id ? { ...task, ...updates } : task
+  addChild: async (familyId: string, name: string, pin: string) => {
+    const childId = `child-${Date.now()}`;
+
+    const newChild: User = {
+      id: childId,
+      name,
+      role: 'child',
+      familyId,
+      pin,
+    };
+
+    const newBalance: Balance = {
+      userId: childId,
+      amount: 0,
+    };
+
+    const newFactory: Factory = {
+      id: `factory-${childId}`,
+      userId: childId,
+      currentStep: 0,
+      totalSteps: 6,
+      isComplete: false,
+      weeklyIncome: 0,
+      totalInvested: 0,
+    };
+
+    set(state => ({
+      users: [...state.users, newChild],
+      balances: [...state.balances, newBalance],
+      factories: [...state.factories, newFactory],
+      families: state.families.map(f =>
+        f.id === familyId
+          ? {...f, childIds: [...f.childIds, childId]}
+          : f
       ),
     }));
+
+    await get().saveData();
+    return childId;
+  },
+
+  addParent: async (familyId: string, name: string, pin: string) => {
+    const parentId = `parent-${Date.now()}`;
+
+    const newParent: User = {
+      id: parentId,
+      name,
+      role: 'parent',
+      familyId,
+      pin,
+    };
+
+    set(state => ({
+      users: [...state.users, newParent],
+      families: state.families.map(f =>
+        f.id === familyId
+          ? {...f, parentIds: [...f.parentIds, parentId]}
+          : f
+      ),
+    }));
+
+    await get().saveData();
+    return parentId;
+  },
+
+  // Task Actions
+  createTask: (title, description, points, assignedTo, deadline, recurring) => {
+    const user = get().currentUser;
+    if (!user || user.role !== 'parent') return;
+
+    const newTask: Task = {
+      id: Date.now().toString(),
+      title,
+      description,
+      points,
+      status: 'pending',
+      createdBy: user.id,
+      assignedTo,
+      familyId: user.familyId,
+      deadline,
+      recurring,
+      createdAt: new Date().toISOString(),
+    };
+
+    set(state => ({
+      tasks: [...state.tasks, newTask],
+    }));
+
+    get().addNotification(
+      assignedTo,
+      'Ny uppgift!',
+      `Du har fått en ny uppgift: ${title}`,
+      'task',
+    );
+
     get().saveData();
   },
 
-  completeTask: (id, childId) => {
-    const task = get().tasks.find((t) => t.id === id);
+  completeTask: taskId => {
+    const task = get().tasks.find(t => t.id === taskId);
     if (!task) return;
 
-    get().updateTask(id, {
-      status: 'completed',
-      completedAt: new Date(),
-    });
+    set(state => ({
+      tasks: state.tasks.map(t =>
+        t.id === taskId
+          ? {...t, status: 'completed', completedAt: new Date().toISOString()}
+          : t
+      ),
+    }));
 
     // Notify parent
-    const parent = get().users.find((u) => u.role === 'parent' && u.familyId === task.createdBy);
-    if (parent) {
-      get().addNotification({
-        userId: parent.id,
-        type: 'new_task',
-        title: 'Uppgift klar för granskning',
-        message: `${task.title} väntar på godkännande`,
-        read: false,
-        relatedId: id,
+    const family = get().families.find(f => f.id === task.familyId);
+    if (family) {
+      family.parentIds.forEach(parentId => {
+        get().addNotification(
+          parentId,
+          'Uppgift klar!',
+          `${get().users.find(u => u.id === task.assignedTo)?.name} har slutfört: ${task.title}`,
+          'task',
+        );
       });
     }
+
+    get().saveData();
   },
 
-  approveTask: (id) => {
-    const task = get().tasks.find((t) => t.id === id);
+  approveTask: taskId => {
+    const task = get().tasks.find(t => t.id === taskId);
     if (!task) return;
 
-    get().updateTask(id, { status: 'approved' });
-
-    // Add chocolate money
-    get().addTransaction(task.assignedTo, {
-      type: 'earn',
-      amount: task.points,
-      description: `Uppgift: ${task.title}`,
-      date: new Date(),
-      relatedId: id,
-    });
-
-    // Notify child
-    get().addNotification({
-      userId: task.assignedTo,
-      type: 'task_approved',
-      title: 'Uppgift godkänd! 🎉',
-      message: `Du tjänade ${task.points} 🍫`,
-      read: false,
-      relatedId: id,
-    });
-
-    get().saveData();
-  },
-
-  rejectTask: (id) => {
-    const task = get().tasks.find((t) => t.id === id);
-    if (!task) return;
-
-    get().updateTask(id, { status: 'rejected' });
-
-    // Notify child
-    get().addNotification({
-      userId: task.assignedTo,
-      type: 'task_rejected',
-      title: 'Uppgift nekad',
-      message: `${task.title} behöver göras om`,
-      read: false,
-      relatedId: id,
-    });
-
-    get().saveData();
-  },
-
-  // Reward actions
-  addReward: (reward) => {
-    set((state) => ({ rewards: [...state.rewards, reward] }));
-    get().saveData();
-  },
-
-  updateReward: (id, updates) => {
-    set((state) => ({
-      rewards: state.rewards.map((reward) =>
-        reward.id === id ? { ...reward, ...updates } : reward
+    set(state => ({
+      tasks: state.tasks.map(t =>
+        t.id === taskId ? {...t, status: 'approved'} : t
       ),
     }));
+
+    get().addTransaction(
+      task.assignedTo,
+      'earn',
+      task.points,
+      `Godkänd uppgift: ${task.title}`,
+      taskId,
+    );
+
+    get().addNotification(
+      task.assignedTo,
+      'Uppgift godkänd! 🎉',
+      `Du fick ${task.points} chokladpengar för: ${task.title}`,
+      'task',
+    );
+
     get().saveData();
   },
 
-  purchaseReward: (rewardId, childId) => {
-    const reward = get().rewards.find((r) => r.id === rewardId);
-    if (!reward) return;
+  rejectTask: taskId => {
+    set(state => ({
+      tasks: state.tasks.map(t =>
+        t.id === taskId ? {...t, status: 'rejected'} : t
+      ),
+    }));
 
-    const balance = get().getBalance(childId);
-    if (balance < reward.cost) return;
+    const task = get().tasks.find(t => t.id === taskId);
+    if (task) {
+      get().addNotification(
+        task.assignedTo,
+        'Uppgift ej godkänd',
+        `Din uppgift "${task.title}" behöver göras om`,
+        'task',
+      );
+    }
 
-    // Deduct chocolate money
-    get().addTransaction(childId, {
-      type: 'spend',
-      amount: -reward.cost,
-      description: `Belöning: ${reward.title}`,
-      date: new Date(),
-      relatedId: rewardId,
-    });
+    get().saveData();
+  },
 
-    // Add purchase
-    const purchase: Purchase = {
+  // Reward Actions
+  createReward: (title, description, cost, category) => {
+    const user = get().currentUser;
+    if (!user || user.role !== 'parent') return;
+
+    const newReward: Reward = {
       id: Date.now().toString(),
+      title,
+      description,
+      cost,
+      category,
+      familyId: user.familyId,
+      createdBy: user.id,
+    };
+
+    set(state => ({
+      rewards: [...state.rewards, newReward],
+    }));
+
+    get().saveData();
+  },
+
+  purchaseReward: rewardId => {
+    const user = get().currentUser;
+    const reward = get().rewards.find(r => r.id === rewardId);
+    if (!user || !reward) return false;
+
+    const balance = get().getBalance(user.id);
+    if (balance < reward.cost) return false;
+
+    get().addTransaction(
+      user.id,
+      'spend',
+      -reward.cost,
+      `Köpte: ${reward.title}`,
       rewardId,
-      childId,
-      cost: reward.cost,
-      purchasedAt: new Date(),
-      status: 'pending',
-    };
-    set((state) => ({ purchases: [...state.purchases, purchase] }));
+    );
 
-    // Notify child and parent
-    get().addNotification({
-      userId: childId,
-      type: 'reward_purchased',
-      title: 'Belöning köpt! 🎁',
-      message: `Du köpte ${reward.title}`,
-      read: false,
-      relatedId: rewardId,
-    });
+    get().addNotification(
+      user.id,
+      'Belöning köpt!',
+      `Du köpte: ${reward.title}`,
+      'reward',
+    );
 
-    const child = get().users.find((u) => u.id === childId);
-    const parent = get().users.find((u) => u.role === 'parent' && u.familyId === child?.familyId);
-    if (parent) {
-      get().addNotification({
-        userId: parent.id,
-        type: 'reward_purchased',
-        title: 'Belöning köpt',
-        message: `${child?.name} köpte ${reward.title}`,
-        read: false,
-        relatedId: rewardId,
+    // Notify parents
+    const family = get().families.find(f => f.id === user.familyId);
+    if (family) {
+      family.parentIds.forEach(parentId => {
+        get().addNotification(
+          parentId,
+          'Belöning köpt',
+          `${user.name} köpte: ${reward.title}`,
+          'reward',
+        );
       });
     }
 
     get().saveData();
+    return true;
   },
 
-  // Balance actions
-  getBalance: (childId) => {
-    const balance = get().balances.find((b) => b.childId === childId);
-    return balance?.amount || 0;
-  },
+  // Investment Actions
+  invest: (fundType, amount) => {
+    const user = get().currentUser;
+    if (!user || user.role !== 'child') return false;
 
-  addTransaction: (childId, transaction) => {
-    set((state) => ({
-      balances: state.balances.map((balance) =>
-        balance.childId === childId
-          ? {
-              ...balance,
-              amount: balance.amount + transaction.amount,
-              history: [
-                ...balance.history,
-                { ...transaction, id: Date.now().toString() },
-              ],
-            }
-          : balance
-      ),
-    }));
-    get().saveData();
-  },
+    const balance = get().getBalance(user.id);
+    if (balance < amount || amount < 10) return false;
 
-  // Investment actions
-  createInvestment: (childId, fundId, amount) => {
-    const balance = get().getBalance(childId);
-    if (balance < amount) return;
-
-    // Deduct from balance
-    get().addTransaction(childId, {
-      type: 'invest',
-      amount: -amount,
-      description: `Investering i fond`,
-      date: new Date(),
-    });
-
-    // Create investment
-    const investment: Investment = {
+    const newInvestment: Investment = {
       id: Date.now().toString(),
-      childId,
-      fundId,
+      userId: user.id,
+      fundType,
       amount,
+      startDate: new Date().toISOString(),
       currentValue: amount,
-      investedAt: new Date(),
-      history: [{
-        date: new Date(),
-        value: amount,
-        change: 0,
-        changePercent: 0,
-      }],
+      totalReturn: 0,
     };
 
-    set((state) => ({ investments: [...state.investments, investment] }));
+    set(state => ({
+      investments: [...state.investments, newInvestment],
+    }));
+
+    get().addTransaction(
+      user.id,
+      'invest',
+      -amount,
+      `Investerade i ${FUNDS[fundType].name}`,
+      newInvestment.id,
+    );
+
+    get().addNotification(
+      user.id,
+      'Investering gjord!',
+      `Du investerade ${amount} chokladpengar i ${FUNDS[fundType].name}`,
+      'investment',
+    );
+
+    get().saveData();
+    return true;
+  },
+
+  withdrawInvestment: investmentId => {
+    const investment = get().investments.find(i => i.id === investmentId);
+    if (!investment) return;
+
+    get().addTransaction(
+      investment.userId,
+      'withdraw',
+      investment.currentValue,
+      `Uttag från ${FUNDS[investment.fundType].name}`,
+      investmentId,
+    );
+
+    set(state => ({
+      investments: state.investments.filter(i => i.id !== investmentId),
+    }));
+
+    get().addNotification(
+      investment.userId,
+      'Uttag genomfört',
+      `Du tog ut ${investment.currentValue} chokladpengar`,
+      'investment',
+    );
+
     get().saveData();
   },
 
-  updateInvestmentValues: () => {
-    set((state) => ({
-      investments: state.investments.map((investment) => {
-        // Calculate return based on fund risk level
-        let changePercent = 0;
-        switch (investment.fundId) {
-          case 'milk': // Low risk: 0-2%
-            changePercent = Math.random() * 2;
-            break;
-          case 'nougat': // Medium risk: -3% to 5%
-            changePercent = (Math.random() * 8) - 3;
-            break;
-          case 'gold': // High risk: -10% to 15%
-            changePercent = (Math.random() * 25) - 10;
-            break;
-        }
-
-        const change = investment.currentValue * (changePercent / 100);
-        const newValue = Math.max(0, investment.currentValue + change);
+  updateInvestments: () => {
+    set(state => ({
+      investments: state.investments.map(inv => {
+        const fund = FUNDS[inv.fundType];
+        const returnRate =
+          Math.random() * (fund.maxReturn - fund.minReturn) + fund.minReturn;
+        const weeklyReturn = inv.currentValue * returnRate;
+        const newValue = Math.max(0, inv.currentValue + weeklyReturn);
 
         return {
-          ...investment,
+          ...inv,
           currentValue: newValue,
-          history: [
-            ...investment.history,
-            {
-              date: new Date(),
-              value: newValue,
-              change,
-              changePercent,
-            },
-          ],
+          totalReturn: inv.totalReturn + weeklyReturn,
         };
       }),
     }));
 
-    // Notify users about investment updates
-    get().investments.forEach((investment) => {
-      get().addNotification({
-        userId: investment.childId,
-        type: 'investment_updated',
-        title: 'Investering uppdaterad',
-        message: 'Din fond har uppdaterats denna vecka',
-        read: false,
-        relatedId: investment.id,
-      });
-    });
-
     get().saveData();
   },
 
-  withdrawInvestment: (investmentId) => {
-    const investment = get().investments.find((i) => i.id === investmentId);
-    if (!investment) return;
+  // Factory Actions
+  buildFactoryStep: () => {
+    const user = get().currentUser;
+    if (!user || user.role !== 'child') return false;
 
-    // Add to balance
-    get().addTransaction(investment.childId, {
-      type: 'withdraw',
-      amount: investment.currentValue,
-      description: 'Uttag från fond',
-      date: new Date(),
-      relatedId: investmentId,
-    });
+    const factory = get().factories.find(f => f.userId === user.id);
+    if (!factory || factory.isComplete) return false;
 
-    // Remove investment
-    set((state) => ({
-      investments: state.investments.filter((i) => i.id !== investmentId),
-    }));
+    const stepCosts = [50, 100, 150, 200, 250, 300];
+    const cost = stepCosts[factory.currentStep];
 
-    get().saveData();
-  },
+    const balance = get().getBalance(user.id);
+    if (balance < cost) return false;
 
-  // Factory actions
-  getFactory: (childId) => {
-    return get().factories.find((f) => f.childId === childId);
-  },
+    const newStep = factory.currentStep + 1;
+    const isComplete = newStep >= factory.totalSteps;
 
-  buildFactoryStage: (childId, stage) => {
-    const stageInfo = FACTORY_STAGES.find((s) => s.id === stage);
-    if (!stageInfo) return;
-
-    const balance = get().getBalance(childId);
-    if (balance < stageInfo.cost) return;
-
-    // Deduct cost
-    get().addTransaction(childId, {
-      type: 'spend',
-      amount: -stageInfo.cost,
-      description: `Fabrikssteg: ${stageInfo.name}`,
-      date: new Date(),
-    });
-
-    // Update factory
-    set((state) => ({
-      factories: state.factories.map((factory) =>
-        factory.childId === childId
+    set(state => ({
+      factories: state.factories.map(f =>
+        f.userId === user.id
           ? {
-              ...factory,
-              currentStage: stage,
-              completedStages: [...factory.completedStages, stage],
-              isComplete: stage === 'grandOpening',
+              ...f,
+              currentStep: newStep,
+              isComplete,
+              weeklyIncome: isComplete ? 1 : 0,
+              totalInvested: f.totalInvested + cost,
             }
-          : factory
+          : f
       ),
     }));
 
-    // Check if next stage is available
-    const nextStage = FACTORY_STAGES.find((s) => s.order === stageInfo.order + 1);
-    if (nextStage) {
-      get().addNotification({
-        userId: childId,
-        type: 'new_stage_available',
-        title: 'Nytt fabrikssteg tillgängligt!',
-        message: `Du kan nu bygga: ${nextStage.name}`,
-        read: false,
-      });
+    get().addTransaction(
+      user.id,
+      'spend',
+      -cost,
+      `Byggde steg ${newStep} i chokladfabriken`,
+    );
+
+    if (isComplete) {
+      get().addNotification(
+        user.id,
+        'Chokladfabriken klar! 🏭',
+        'Din fabrik producerar nu 1 chokladpeng per vecka!',
+        'factory',
+      );
     } else {
-      // Factory complete!
-      get().addNotification({
-        userId: childId,
-        type: 'factory_production',
-        title: 'Grattis! 🏭🎉',
-        message: 'Din fabrik är klar och börjar producera chokladpengar!',
-        read: false,
-      });
+      get().addNotification(
+        user.id,
+        'Fabrikssteg byggt!',
+        `Steg ${newStep}/${factory.totalSteps} klart!`,
+        'factory',
+      );
     }
 
     get().saveData();
+    return true;
   },
 
-  processFactoryProduction: () => {
-    const now = new Date();
+  collectFactoryIncome: () => {
+    const user = get().currentUser;
+    if (!user || user.role !== 'child') return;
 
-    set((state) => ({
-      factories: state.factories.map((factory) => {
-        if (!factory.isComplete) return factory;
+    const factory = get().factories.find(f => f.userId === user.id);
+    if (!factory || !factory.isComplete) return;
 
-        const lastProduction = factory.lastProductionDate
-          ? new Date(factory.lastProductionDate)
-          : new Date(0);
+    get().addTransaction(
+      user.id,
+      'passive',
+      factory.weeklyIncome,
+      'Veckovinst från chokladfabriken',
+    );
 
-        const daysSinceProduction = Math.floor(
-          (now.getTime() - lastProduction.getTime()) / (1000 * 60 * 60 * 24)
-        );
-
-        if (daysSinceProduction >= 7) {
-          // Produce chocolate money
-          get().addTransaction(factory.childId, {
-            type: 'factory_production',
-            amount: factory.weeklyProduction,
-            description: 'Fabriksproduktion',
-            date: now,
-          });
-
-          // Notify child
-          get().addNotification({
-            userId: factory.childId,
-            type: 'factory_production',
-            title: 'Fabriksproduktion! 🏭',
-            message: `Din fabrik producerade ${factory.weeklyProduction} 🍫`,
-            read: false,
-          });
-
-          return {
-            ...factory,
-            lastProductionDate: now,
-            totalProduced: factory.totalProduced + factory.weeklyProduction,
-          };
-        }
-
-        return factory;
-      }),
-    }));
+    get().addNotification(
+      user.id,
+      'Fabriksvinst!',
+      `Du fick ${factory.weeklyIncome} chokladpengar från din fabrik`,
+      'factory',
+    );
 
     get().saveData();
   },
 
-  // Notification actions
-  addNotification: (notification) => {
-    set((state) => ({
-      notifications: [
-        ...state.notifications,
-        {
-          ...notification,
-          id: Date.now().toString(),
-          createdAt: new Date(),
-        },
-      ],
-    }));
-    get().saveData();
+  // Balance Actions
+  getBalance: userId => {
+    const transactions = get().transactions.filter(t => t.userId === userId);
+    return transactions.reduce((sum, t) => sum + t.amount, 0);
   },
 
-  markNotificationRead: (id) => {
-    set((state) => ({
-      notifications: state.notifications.map((notif) =>
-        notif.id === id ? { ...notif, read: true } : notif
+  addTransaction: (userId, type, amount, description, relatedId) => {
+    const newTransaction: Transaction = {
+      id: Date.now().toString(),
+      userId,
+      type,
+      amount,
+      description,
+      timestamp: new Date().toISOString(),
+      relatedId,
+    };
+
+    set(state => ({
+      transactions: [...state.transactions, newTransaction],
+    }));
+  },
+
+  // Notification Actions
+  addNotification: (userId, title, message, type) => {
+    const notification = createNotification(userId, title, message, type);
+    set(state => ({
+      notifications: [...state.notifications, notification],
+    }));
+  },
+
+  markNotificationAsRead: notificationId => {
+    set(state => ({
+      notifications: state.notifications.map(n =>
+        n.id === notificationId ? {...n, isRead: true} : n
       ),
-    }));
-    get().saveData();
-  },
-
-  clearNotifications: (userId) => {
-    set((state) => ({
-      notifications: state.notifications.filter((n) => n.userId !== userId),
     }));
     get().saveData();
   },
@@ -532,33 +594,43 @@ export const useStore = create<Store>((set, get) => ({
   // Persistence
   loadData: async () => {
     try {
-      const data = await AsyncStorage.getItem(STORAGE_KEY);
+      const data = await AsyncStorage.getItem('chokladpengar_data');
       if (data) {
-        const parsedData = JSON.parse(data);
-        set(parsedData);
+        const parsed = JSON.parse(data);
+        set({
+          users: parsed.users || [],
+          families: parsed.families || [],
+          tasks: parsed.tasks || [],
+          rewards: parsed.rewards || [],
+          investments: parsed.investments || [],
+          factories: parsed.factories || [],
+          balances: parsed.balances || [],
+          transactions: parsed.transactions || [],
+          notifications: parsed.notifications || [],
+        });
       }
     } catch (error) {
-      console.error('Failed to load data:', error);
+      console.error('Error loading data:', error);
     }
   },
 
   saveData: async () => {
     try {
       const state = get();
-      const dataToSave = {
-        currentUser: state.currentUser,
+      const data = {
         users: state.users,
+        families: state.families,
         tasks: state.tasks,
         rewards: state.rewards,
-        purchases: state.purchases,
         investments: state.investments,
         factories: state.factories,
         balances: state.balances,
+        transactions: state.transactions,
         notifications: state.notifications,
       };
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
+      await AsyncStorage.setItem('chokladpengar_data', JSON.stringify(data));
     } catch (error) {
-      console.error('Failed to save data:', error);
+      console.error('Error saving data:', error);
     }
   },
 }));

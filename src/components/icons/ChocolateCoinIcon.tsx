@@ -1,41 +1,34 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { colors } from '../../theme/colors';
+import Svg, {Circle, Path, Defs, RadialGradient, Stop} from 'react-native-svg';
+import {colors} from '../../theme/colors';
 
 interface ChocolateCoinIconProps {
   size?: number;
+  color?: string;
 }
 
-export const ChocolateCoinIcon: React.FC<ChocolateCoinIconProps> = ({ size = 24 }) => {
+export const ChocolateCoinIcon: React.FC<ChocolateCoinIconProps> = ({
+  size = 24,
+  color = colors.coin,
+}) => {
   return (
-    <View style={[styles.container, { width: size, height: size, borderRadius: size / 2 }]}>
-      <View style={[styles.gloss, { width: size * 0.6, height: size * 0.6, borderRadius: size / 3 }]} />
-      <View style={[styles.center, { width: size * 0.4, height: size * 0.4, borderRadius: size / 4 }]} />
-    </View>
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <Defs>
+        <RadialGradient id="coinGradient" cx="0.3" cy="0.3">
+          <Stop offset="0%" stopColor={colors.coinShine} stopOpacity="1" />
+          <Stop offset="100%" stopColor={color} stopOpacity="1" />
+        </RadialGradient>
+      </Defs>
+      <Circle cx="12" cy="12" r="10" fill="url(#coinGradient)" />
+      <Circle cx="12" cy="12" r="7" fill="none" stroke={colors.coinShadow} strokeWidth="1" />
+      <Path
+        d="M12 8 L12 16 M8 12 L16 12"
+        stroke={colors.coinShadow}
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+    </Svg>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.secondary,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 3,
-    elevation: 2,
-    borderWidth: 2,
-    borderColor: '#B8941F',
-  },
-  gloss: {
-    position: 'absolute',
-    top: '15%',
-    left: '20%',
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
-  },
-  center: {
-    backgroundColor: colors.secondaryLight,
-  },
-});
 

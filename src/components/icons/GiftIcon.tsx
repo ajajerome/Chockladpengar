@@ -1,104 +1,34 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { colors } from '../../theme/colors';
+import Svg, {Rect, Path} from 'react-native-svg';
+import {colors} from '../../theme/colors';
 
 interface GiftIconProps {
   size?: number;
-  withPlus?: boolean;
+  color?: string;
 }
 
-export const GiftIcon: React.FC<GiftIconProps> = ({ size = 32, withPlus = false }) => {
+export const GiftIcon: React.FC<GiftIconProps> = ({
+  size = 24,
+  color = colors.accent,
+}) => {
   return (
-    <View style={[styles.container, { width: size, height: size }]}>
-      {/* Gift box */}
-      <View style={[styles.box, { 
-        width: size * 0.75, 
-        height: size * 0.6,
-        borderRadius: size * 0.08,
-        bottom: 0
-      }]} />
-      {/* Ribbon horizontal */}
-      <View style={[styles.ribbonH, { 
-        width: size * 0.75, 
-        height: size * 0.15,
-        borderRadius: size * 0.04,
-        bottom: size * 0.225
-      }]} />
-      {/* Ribbon vertical */}
-      <View style={[styles.ribbonV, { 
-        width: size * 0.15, 
-        height: size * 0.6,
-        borderRadius: size * 0.04,
-        bottom: 0
-      }]} />
-      {/* Bow */}
-      <View style={[styles.bow, { 
-        width: size * 0.3, 
-        height: size * 0.25,
-        borderRadius: size * 0.15,
-        top: size * 0.05
-      }]} />
-      
-      {withPlus && (
-        <View style={styles.plusContainer}>
-          <View style={[styles.plusH, { width: size * 0.25, height: 2 }]} />
-          <View style={[styles.plusV, { width: 2, height: size * 0.25 }]} />
-        </View>
-      )}
-    </View>
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <Rect x="4" y="10" width="16" height="12" rx="2" fill={color} />
+      <Rect x="4" y="7" width="16" height="4" rx="1" fill={color} opacity="0.8" />
+      <Path
+        d="M12 7 L12 22"
+        stroke={colors.textWhite}
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+      <Path
+        d="M8 7 C8 5 9 3 11 3 C12 3 12 4 12 5 M16 7 C16 5 15 3 13 3 C12 3 12 4 12 5"
+        stroke={colors.textWhite}
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+    </Svg>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    position: 'relative',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  box: {
-    backgroundColor: '#8B5A2B',
-    position: 'absolute',
-    borderWidth: 2,
-    borderColor: '#6B4423',
-  },
-  ribbonH: {
-    backgroundColor: colors.secondary,
-    position: 'absolute',
-    borderWidth: 1.5,
-    borderColor: '#B8941F',
-  },
-  ribbonV: {
-    backgroundColor: colors.secondary,
-    position: 'absolute',
-    borderWidth: 1.5,
-    borderColor: '#B8941F',
-  },
-  bow: {
-    backgroundColor: colors.secondaryLight,
-    position: 'absolute',
-    borderWidth: 2,
-    borderColor: colors.secondary,
-  },
-  plusContainer: {
-    position: 'absolute',
-    top: -4,
-    right: -4,
-    width: 16,
-    height: 16,
-    borderRadius: 8,
-    backgroundColor: colors.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  plusH: {
-    backgroundColor: colors.backgroundLight,
-    position: 'absolute',
-    borderRadius: 1,
-  },
-  plusV: {
-    backgroundColor: colors.backgroundLight,
-    position: 'absolute',
-    borderRadius: 1,
-  },
-});
 

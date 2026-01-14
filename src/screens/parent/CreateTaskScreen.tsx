@@ -1,36 +1,31 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
   StyleSheet,
-  SafeAreaView,
-  ScrollView,
   TextInput,
+  ScrollView,
   Alert,
-  TouchableOpacity,
 } from 'react-native';
-import { useStore } from '../../store/useStore';
-import { colors } from '../../theme/colors';
-import { Button } from '../../components/Button';
-import { Task } from '../../types';
-import { ProfileIcon, CheckboxIcon } from '../../components/icons';
-import { NavigationProp } from '@react-navigation/native';
+import {useStore} from '../../store/useStore';
+import {colors} from '../../theme/colors';
+import {Button} from '../../components/Button';
+import {Picker} from '@react-native-picker/picker';
 
-interface Props {
-  navigation: NavigationProp<any>;
-}
+export const CreateTaskScreen = ({navigation}: any) => {
+  const currentUser = useStore(state => state.currentUser);
+  const family = useStore(state =>
+    state.families.find(f => f.id === currentUser?.familyId)
+  );
+  const children = useStore(state =>
+    state.users.filter(u => family?.childIds.includes(u.id))
+  );
+  const createTask = useStore(state => state.createTask);
 
-export const CreateTaskScreen: React.FC<Props> = ({ navigation }) => {
-  const { currentUser, users, addTask } = useStore();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [points, setPoints] = useState('');
-  const [selectedChild, setSelectedChild] = useState<string>('');
-  const [recurring, setRecurring] = useState<'none' | 'daily' | 'weekly' | 'monthly'>('none');
-
-  const children = users.filter(
-    (u) => u.role === 'child' && u.familyId === currentUser?.familyId
-  );
+  const [assignedTo, setAssignedTo] = useState(children[0]?.id || '');
 
   const handleCreate = () => {
     if (!title.trim()) {
@@ -38,178 +33,74 @@ export const CreateTaskScreen: React.FC<Props> = ({ navigation }) => {
       return;
     }
 
-    const pointsNum = parseInt(points);
-    if (isNaN(pointsNum) || pointsNum <= 0) {
-      Alert.alert('Fel', 'Ange ett giltigt poängvärde');
+    if (!description.trim()) {
+      Alert.alert('Fel', 'Ange en beskrivning');
       return;
     }
 
-    if (!selectedChild && children.length > 0) {
-      Alert.alert('Fel', 'Välj vilket barn uppgiften är till');
+    const pointsValue = parseInt(points, 10);
+    if (isNaN(pointsValue) || pointsValue <= 0) {
+      Alert.alert('Fel', 'Ange giltiga poäng');
       return;
     }
 
-    if (children.length === 0) {
-      Alert.alert('Fel', 'Du måste lägga till barn först');
+    if (!assignedTo) {
+      Alert.alert('Fel', 'Välj ett barn');
       return;
     }
 
-    if (!currentUser) return;
-
-    const task: Task = {
-      id: Date.now().toString(),
-      title: title.trim(),
-      description: description.trim(),
-      points: pointsNum,
-      status: 'pending',
-      createdBy: currentUser.id,
-      assignedTo: selectedChild || children[0]?.id,
-      createdAt: new Date(),
-      recurring: recurring !== 'none' ? recurring : undefined,
-    };
-
-    addTask(task);
-    
-    const selectedChildName = children.find(c => c.id === selectedChild)?.name || children[0]?.name;
-    Alert.alert('Uppgift skapad!', `${selectedChildName} har fått en ny uppgift!`);
+    createTask(title, description, pointsValue, assignedTo);
+    Alert.alert('Klart!', 'Uppgiften har skapats');
     navigation.goBack();
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        <View style={styles.section}>
-          <View style={styles.formGroup}>
-            <Text style={styles.label}>Titel *</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="T.ex. Städa rummet"
-              value={title}
-              onChangeText={setTitle}
-              placeholderTextColor={colors.textMuted}
-            />
-          </View>
+    <ScrollView style={styles.container}>
+      <View style={styles.form}>
+        <Text style={styles.label}>Titel</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="T.ex. Diska"
+          value={title}
+          onChangeText={setTitle}
+        />
 
-          <View style={styles.formGroup}>
-            <Text style={styles.label}>Beskrivning</Text>
-            <TextInput
-              style={[styles.input, styles.textArea]}
-              placeholder="Vad ska göras?"
-              value={description}
-              onChangeText={setDescription}
-              multiline
-              numberOfLines={4}
-              placeholderTextColor={colors.textMuted}
-            />
-          </View>
+        <Text style={styles.label}>Beskrivning</Text>
+        <TextInput
+          style={[styles.input, styles.textArea]}
+          placeholder="Beskriv uppgiften"
+          multiline
+          numberOfLines={4}
+          value={description}
+          onChangeText={setDescription}
+        />
 
-          <View style={styles.formGroup}>
-            <Text style={styles.label}>Poängvärde (chokladpengar) *</Text>
-            <View style={styles.inputWithIcon}>
-              <TextInput
-                style={[styles.input, { flex: 1 }]}
-                placeholder="0"
-                value={points}
-                onChangeText={setPoints}
-                keyboardType="number-pad"
-                placeholderTextColor={colors.textMuted}
-              />
-              <View style={styles.coinIcon}>
-                <View style={styles.coinInner} />
-              </View>
-            </View>
-          </View>
+        <Text style={styles.label}>Poäng (chokladpengar)</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="T.ex. 10"
+          keyboardType="numeric"
+          value={points}
+          onChangeText={setPoints}
+        />
 
-          <View style={styles.formGroup}>
-            <Text style={styles.label}>Återkommande</Text>
-            <View style={styles.optionsRow}>
-              {[
-                { value: 'none', label: 'Aldrig' },
-                { value: 'daily', label: 'Dagligen' },
-                { value: 'weekly', label: 'Veckovis' },
-                { value: 'monthly', label: 'Månadsvis' },
-              ].map((option) => (
-                <TouchableOpacity
-                  key={option.value}
-                  style={[
-                    styles.optionButton,
-                    recurring === option.value && styles.optionButtonSelected,
-                  ]}
-                  onPress={() => setRecurring(option.value as any)}
-                >
-                  <Text
-                    style={[
-                      styles.optionText,
-                      recurring === option.value && styles.optionTextSelected,
-                    ]}
-                  >
-                    {option.label}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </View>
-
-          <View style={styles.formGroup}>
-            <Text style={styles.label}>Tilldela till vilket barn? *</Text>
-            {children.length === 0 ? (
-              <View style={styles.emptyState}>
-                <Text style={styles.emptyText}>Inga barn tillagda</Text>
-                <Text style={styles.emptySubtext}>
-                  Lägg till barn från familjeinställningar
-                </Text>
-              </View>
-            ) : (
-              <View style={styles.childrenList}>
-                {children.map((child) => (
-                  <TouchableOpacity
-                    key={child.id}
-                    style={[
-                      styles.childOption,
-                      selectedChild === child.id && styles.childOptionSelected,
-                    ]}
-                    onPress={() => setSelectedChild(child.id)}
-                  >
-                    <ProfileIcon size={40} />
-                    <View style={styles.childInfo}>
-                      <Text
-                        style={[
-                          styles.childName,
-                          selectedChild === child.id && styles.childNameSelected,
-                        ]}
-                      >
-                        {child.name}
-                      </Text>
-                      <Text style={styles.childRole}>Barn</Text>
-                    </View>
-                    {selectedChild === child.id && (
-                      <CheckboxIcon size={24} checked={true} status="approved" />
-                    )}
-                  </TouchableOpacity>
-                ))}
-              </View>
-            )}
-          </View>
-
-          <View style={styles.infoBox}>
-            <Text style={styles.infoText}>
-              💡 Tips: Barnet får en notis när uppgiften skapas och kan börja arbeta på den direkt!
-            </Text>
-          </View>
-
-          <View style={styles.buttonContainer}>
-            <Button
-              title="Skapa uppgift"
-              onPress={handleCreate}
-              variant="primary"
-              size="large"
-              fullWidth
-              disabled={children.length === 0}
-            />
-          </View>
+        <Text style={styles.label}>Tilldela till</Text>
+        <View style={styles.pickerContainer}>
+          <Picker
+            selectedValue={assignedTo}
+            onValueChange={setAssignedTo}
+            style={styles.picker}>
+            {children.map(child => (
+              <Picker.Item key={child.id} label={child.name} value={child.id} />
+            ))}
+          </Picker>
         </View>
-      </ScrollView>
-    </SafeAreaView>
+
+        <View style={styles.buttonContainer}>
+          <Button title="Skapa uppgift" onPress={handleCreate} variant="primary" />
+        </View>
+      </View>
+    </ScrollView>
   );
 };
 
@@ -218,146 +109,41 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
-  scrollView: {
-    flex: 1,
-  },
-  section: {
+  form: {
     padding: 16,
-  },
-  formGroup: {
-    marginBottom: 24,
   },
   label: {
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: '600',
     color: colors.text,
-    marginBottom: 12,
+    marginBottom: 8,
+    marginTop: 12,
   },
   input: {
     backgroundColor: colors.backgroundLight,
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
-    padding: 16,
+    borderRadius: 8,
+    padding: 12,
     fontSize: 16,
     color: colors.text,
   },
   textArea: {
-    height: 120,
+    height: 100,
     textAlignVertical: 'top',
   },
-  inputWithIcon: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
-  coinIcon: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: colors.secondary,
-    borderWidth: 2,
-    borderColor: colors.chocolate,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  coinInner: {
-    width: 16,
-    height: 16,
+  pickerContainer: {
+    backgroundColor: colors.backgroundLight,
+    borderWidth: 1,
+    borderColor: colors.border,
     borderRadius: 8,
-    backgroundColor: colors.secondaryLight,
+    overflow: 'hidden',
   },
-  optionsRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  optionButton: {
-    backgroundColor: colors.backgroundLight,
-    borderWidth: 2,
-    borderColor: colors.border,
-    borderRadius: 20,
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-  },
-  optionButtonSelected: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary,
-  },
-  optionText: {
-    fontSize: 14,
-    fontWeight: '600',
+  picker: {
     color: colors.text,
-  },
-  optionTextSelected: {
-    color: colors.backgroundLight,
-  },
-  childrenList: {
-    gap: 12,
-  },
-  childOption: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.backgroundLight,
-    borderWidth: 2,
-    borderColor: colors.border,
-    borderRadius: 12,
-    padding: 16,
-    gap: 12,
-  },
-  childOptionSelected: {
-    backgroundColor: '#FFF8F0',
-    borderColor: colors.primary,
-    borderWidth: 3,
-  },
-  childInfo: {
-    flex: 1,
-  },
-  childName: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.text,
-    marginBottom: 2,
-  },
-  childNameSelected: {
-    color: colors.primary,
-  },
-  childRole: {
-    fontSize: 12,
-    color: colors.textMuted,
-  },
-  emptyState: {
-    backgroundColor: colors.backgroundLight,
-    padding: 24,
-    borderRadius: 12,
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: colors.border,
-    borderStyle: 'dashed',
-  },
-  emptyText: {
-    fontSize: 14,
-    color: colors.textMuted,
-    marginBottom: 4,
-  },
-  emptySubtext: {
-    fontSize: 12,
-    color: colors.textMuted,
-  },
-  infoBox: {
-    backgroundColor: '#E8F5E9',
-    padding: 14,
-    borderRadius: 12,
-    borderLeftWidth: 4,
-    borderLeftColor: colors.success,
-    marginBottom: 8,
-  },
-  infoText: {
-    fontSize: 13,
-    color: colors.textLight,
-    lineHeight: 20,
   },
   buttonContainer: {
-    marginTop: 16,
+    marginTop: 24,
   },
 });
+

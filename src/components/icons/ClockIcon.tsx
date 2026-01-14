@@ -1,59 +1,28 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import Svg, {Circle, Path} from 'react-native-svg';
+import {colors} from '../../theme/colors';
 
 interface ClockIconProps {
   size?: number;
+  color?: string;
 }
 
-export const ClockIcon: React.FC<ClockIconProps> = ({ size = 24 }) => {
+export const ClockIcon: React.FC<ClockIconProps> = ({
+  size = 24,
+  color = colors.textMuted,
+}) => {
   return (
-    <View style={[styles.container, { width: size, height: size, borderRadius: size / 2 }]}>
-      {/* Hour hand */}
-      <View style={[styles.hourHand, { 
-        width: 2.5, 
-        height: size * 0.3,
-        borderRadius: 2,
-        top: size * 0.2,
-        left: size * 0.5 - 1.25
-      }]} />
-      {/* Minute hand */}
-      <View style={[styles.minuteHand, { 
-        width: 2, 
-        height: size * 0.35,
-        borderRadius: 2,
-        top: size * 0.15,
-        left: size * 0.5 - 1
-      }]} />
-      {/* Center dot */}
-      <View style={[styles.center, { 
-        width: size * 0.12, 
-        height: size * 0.12,
-        borderRadius: size * 0.06
-      }]} />
-    </View>
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <Circle cx="12" cy="12" r="9" stroke={color} strokeWidth="2" fill="none" />
+      <Path
+        d="M12 7 L12 12 L15 15"
+        stroke={color}
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </Svg>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#8B5A2B',
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'relative',
-    borderWidth: 2.5,
-    borderColor: '#6B4423',
-  },
-  hourHand: {
-    backgroundColor: '#4A2E1A',
-    position: 'absolute',
-  },
-  minuteHand: {
-    backgroundColor: '#4A2E1A',
-    position: 'absolute',
-  },
-  center: {
-    backgroundColor: '#4A2E1A',
-    position: 'absolute',
-  },
-});
 

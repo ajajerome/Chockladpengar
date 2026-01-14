@@ -1,29 +1,18 @@
-import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  SafeAreaView,
-  TextInput,
-  Alert,
-  ScrollView,
-} from 'react-native';
-import { useStore } from '../../store/useStore';
-import { Button } from '../../components/Button';
-import { colors } from '../../theme/colors';
-import { User } from '../../types';
-import { NavigationProp } from '@react-navigation/native';
+import React, {useState} from 'react';
+import {View, Text, StyleSheet, TextInput, ScrollView, Alert} from 'react-native';
+import {useStore} from '../../store/useStore';
+import {colors} from '../../theme/colors';
+import {Button} from '../../components/Button';
 
-interface Props {
-  navigation: NavigationProp<any>;
-}
-
-export const CreateFamilyScreen: React.FC<Props> = ({ navigation }) => {
+export const CreateFamilyScreen = ({navigation}: any) => {
+  const {createFamily} = useStore();
   const [familyName, setFamilyName] = useState('');
   const [parentName, setParentName] = useState('');
-  const { setCurrentUser, addUser } = useStore();
+  const [pin, setPin] = useState('');
+  const [confirmPin, setConfirmPin] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleCreateFamily = () => {
+  const handleCreate = async () => {
     if (!familyName.trim()) {
       Alert.alert('Fel', 'Ange ett familjenamn');
       return;
@@ -34,104 +23,92 @@ export const CreateFamilyScreen: React.FC<Props> = ({ navigation }) => {
       return;
     }
 
-    // Create unique family ID
-    const familyId = `family_${Date.now()}`;
+    if (pin.length !== 4) {
+      Alert.alert('Fel', 'PIN-koden måste vara 4 siffror');
+      return;
+    }
 
-    // Create parent user
-    const parent: User = {
-      id: Date.now().toString(),
-      name: parentName.trim(),
-      role: 'parent',
-      familyId: familyId,
-    };
+    if (pin !== confirmPin) {
+      Alert.alert('Fel', 'PIN-koderna matchar inte');
+      return;
+    }
 
-    addUser(parent);
-    setCurrentUser(parent);
-
-    Alert.alert(
-      'Familj skapad!',
-      `Välkommen ${parentName}! Du kan nu lägga till barn i din familj.`,
-      [
+    setLoading(true);
+    try {
+      const familyId = await createFamily(familyName.trim(), parentName.trim(), pin);
+      Alert.alert('Klart!', 'Familjen har skapats. Nu kan du lägga till barn.', [
         {
           text: 'OK',
-          onPress: () => {
-            // Navigate to add child screen
-            navigation.replace('AddChild', { isFirstChild: true });
-          },
+          onPress: () => navigation.navigate('AddChild', {familyId}),
         },
-      ]
-    );
+      ]);
+    } catch (error) {
+      Alert.alert('Fel', 'Kunde inte skapa familjen. Försök igen.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.content}>
-          <View style={styles.header}>
-            <View style={styles.logo}>
-              <Text style={styles.logoText}>🏠</Text>
-            </View>
-            <Text style={styles.title}>Skapa Familj</Text>
-            <Text style={styles.subtitle}>
-              Börja använda Chokladpengar genom att skapa din familj
-            </Text>
-          </View>
+    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      <Text style={styles.title}>Skapa ny familj</Text>
+      <Text style={styles.subtitle}>
+        Börja med att skapa en familj och lägg dig själv som första föräldern
+      </Text>
 
-          <View style={styles.form}>
-            <View style={styles.formGroup}>
-              <Text style={styles.label}>Familjenamn *</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="T.ex. Familjen Andersson"
-                value={familyName}
-                onChangeText={setFamilyName}
-                autoCapitalize="words"
-                placeholderTextColor={colors.textMuted}
-              />
-              <Text style={styles.hint}>
-                Detta namn används endast för identifiering
-              </Text>
-            </View>
+      <View style={styles.form}>
+        <Text style={styles.label}>Familjenamn</Text>
+        <TextInput
+          style={styles.input}
+          value={familyName}
+          onChangeText={setFamilyName}
+          placeholder="t.ex. Familjen Andersson"
+        />
 
-            <View style={styles.formGroup}>
-              <Text style={styles.label}>Ditt namn (Förälder) *</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="T.ex. Anna"
-                value={parentName}
-                onChangeText={setParentName}
-                autoCapitalize="words"
-                placeholderTextColor={colors.textMuted}
-              />
-            </View>
+        <Text style={styles.label}>Ditt namn (Förälder)</Text>
+        <TextInput
+          style={styles.input}
+          value={parentName}
+          onChangeText={setParentName}
+          placeholder="t.ex. Mamma, Pappa"
+        />
 
-            <View style={styles.infoBox}>
-              <Text style={styles.infoTitle}>Nästa steg:</Text>
-              <Text style={styles.infoText}>
-                Efter att du skapat familjen kan du lägga till dina barn och
-                börja använda appen!
-              </Text>
-            </View>
+        <Text style={styles.label}>PIN-kod (4 siffror)</Text>
+        <TextInput
+          style={styles.input}
+          value={pin}
+          onChangeText={setPin}
+          placeholder="****"
+          keyboardType="number-pad"
+          maxLength={4}
+          secureTextEntry
+        />
 
-            <Button
-              title="Skapa Familj"
-              onPress={handleCreateFamily}
-              variant="primary"
-              size="large"
-              fullWidth
-            />
+        <Text style={styles.label}>Bekräfta PIN-kod</Text>
+        <TextInput
+          style={styles.input}
+          value={confirmPin}
+          onChangeText={setConfirmPin}
+          placeholder="****"
+          keyboardType="number-pad"
+          maxLength={4}
+          secureTextEntry
+        />
 
-            <Button
-              title="Tillbaka"
-              onPress={() => navigation.goBack()}
-              variant="outline"
-              size="medium"
-              fullWidth
-            />
-          </View>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+        <Button
+          title="Skapa familj"
+          onPress={handleCreate}
+          loading={loading}
+          disabled={loading}
+        />
+
+        <Button
+          title="Tillbaka"
+          onPress={() => navigation.goBack()}
+          variant="outline"
+        />
+      </View>
+    </ScrollView>
   );
 };
 
@@ -140,31 +117,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
-  scrollContent: {
-    flexGrow: 1,
-  },
   content: {
-    flex: 1,
-    padding: 24,
-    justifyContent: 'center',
-  },
-  header: {
-    alignItems: 'center',
-    marginBottom: 40,
-  },
-  logo: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: colors.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 16,
-    borderWidth: 4,
-    borderColor: colors.secondary,
-  },
-  logoText: {
-    fontSize: 48,
+    padding: 20,
   },
   title: {
     fontSize: 28,
@@ -173,53 +127,26 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   subtitle: {
-    fontSize: 14,
+    fontSize: 16,
     color: colors.textLight,
-    textAlign: 'center',
-    paddingHorizontal: 20,
+    marginBottom: 32,
   },
   form: {
-    gap: 20,
-  },
-  formGroup: {
-    gap: 8,
+    gap: 16,
   },
   label: {
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: '600',
     color: colors.text,
+    marginBottom: -8,
   },
   input: {
     backgroundColor: colors.backgroundLight,
-    borderWidth: 2,
-    borderColor: colors.border,
     borderRadius: 12,
     padding: 16,
     fontSize: 16,
-    color: colors.text,
-  },
-  hint: {
-    fontSize: 12,
-    color: colors.textMuted,
-    fontStyle: 'italic',
-  },
-  infoBox: {
-    backgroundColor: colors.backgroundLight,
-    padding: 16,
-    borderRadius: 12,
-    borderLeftWidth: 4,
-    borderLeftColor: colors.secondary,
-  },
-  infoTitle: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: colors.text,
-    marginBottom: 4,
-  },
-  infoText: {
-    fontSize: 13,
-    color: colors.textLight,
-    lineHeight: 20,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
 });
 
