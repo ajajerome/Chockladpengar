@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -11,6 +11,7 @@ import { useStore } from '../../store/useStore';
 import { colors } from '../../theme/colors';
 import { ChocolateCoin } from '../../components/ChocolateCoin';
 import { RewardCard } from '../../components/RewardCard';
+import { GradientBackground } from '../../components/GradientBackground';
 
 export const RewardShopScreen: React.FC = () => {
   const currentUser = useStore((state) => state.currentUser);
@@ -20,7 +21,8 @@ export const RewardShopScreen: React.FC = () => {
   );
   const purchaseReward = useStore((state) => state.purchaseReward);
 
-  const availableRewards = rewards.filter((r) => r.available);
+  // Filter rewards for current user's family
+  const availableRewards = rewards.filter((r) => r.familyId === currentUser?.familyId);
 
   const handlePurchase = (rewardId: string, rewardTitle: string, cost: number) => {
     if (!currentUser) return;
@@ -41,8 +43,10 @@ export const RewardShopScreen: React.FC = () => {
         {
           text: 'Köp',
           onPress: () => {
-            purchaseReward(rewardId, currentUser.id);
-            Alert.alert('Grattis! 🎉', 'Belöningen är din!');
+            const success = purchaseReward(rewardId);
+            if (success) {
+              Alert.alert('Grattis! 🎉', 'Belöningen är din!');
+            }
           },
         },
       ]
@@ -50,88 +54,124 @@ export const RewardShopScreen: React.FC = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <GradientBackground>
+      <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>🍬 Chokladkassan</Text>
-        <View style={styles.balanceContainer}>
-          <Text style={styles.balanceLabel}>Ditt saldo:</Text>
+        <Text style={styles.title}>Chokladkassan</Text>
+        <Text style={styles.subtitle}>Välj din belöning</Text>
+        <View style={styles.balanceCard}>
+          <Text style={styles.balanceLabel}>Ditt saldo</Text>
           <ChocolateCoin amount={balance} size="large" />
         </View>
       </View>
 
-      <ScrollView style={styles.scrollView}>
-        <View style={styles.section}>
-          {availableRewards.length === 0 ? (
-            <View style={styles.emptyState}>
-              <Text style={styles.emptyStateText}>
-                Inga belöningar tillgängliga just nu 🎁
-              </Text>
-              <Text style={styles.emptyStateSubtext}>
-                Fråga dina föräldrar om att lägga till några!
-              </Text>
-            </View>
-          ) : (
-            availableRewards.map((reward) => (
-              <RewardCard
-                key={reward.id}
-                reward={reward}
-                canAfford={balance >= reward.cost}
-                onPress={() => handlePurchase(reward.id, reward.title, reward.cost)}
-              />
-            ))
-          )}
-        </View>
+      <ScrollView 
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        {availableRewards.length === 0 ? (
+          <View style={styles.emptyState}>
+            <Text style={styles.emptyEmoji}>🎁</Text>
+            <Text style={styles.emptyText}>
+              Inga belöningar tillgängliga
+            </Text>
+            <Text style={styles.emptySubtext}>
+              Fråga dina föräldrar om att lägga till några!
+            </Text>
+          </View>
+        ) : (
+          availableRewards.map((reward) => (
+            <RewardCard
+              key={reward.id}
+              reward={reward}
+              canAfford={balance >= reward.cost}
+              onPress={() => handlePurchase(reward.id, reward.title, reward.cost)}
+            />
+          ))
+        )}
+        <View style={styles.bottomSpacing} />
       </ScrollView>
     </SafeAreaView>
+  </GradientBackground>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   header: {
-    padding: 20,
-    backgroundColor: colors.backgroundLight,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    padding: 24,
+    paddingTop: 16,
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontSize: 32,
+    fontWeight: '700',
     color: colors.text,
-    marginBottom: 12,
+    marginBottom: 8,
+    letterSpacing: -0.5,
   },
-  balanceContainer: {
-    flexDirection: 'row',
+  subtitle: {
+    fontSize: 17,
+    color: colors.textMuted,
+    marginBottom: 24,
+    fontWeight: '500',
+  },
+  balanceCard: {
+    backgroundColor: colors.cardBackground,
+    borderRadius: 20,
+    padding: 24,
     alignItems: 'center',
-    gap: 8,
+    shadowColor: colors.shadowCard,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 1,
+    shadowRadius: 12,
+    elevation: 2,
   },
   balanceLabel: {
     fontSize: 16,
     color: colors.textMuted,
+    marginBottom: 12,
+    fontWeight: '500',
   },
   scrollView: {
     flex: 1,
   },
-  section: {
-    padding: 20,
+  scrollContent: {
+    paddingHorizontal: 24,
+    paddingTop: 8,
+    paddingBottom: 32,
   },
   emptyState: {
-    padding: 40,
+    backgroundColor: colors.cardBackground,
+    borderRadius: 20,
+    padding: 48,
     alignItems: 'center',
+    marginTop: 20,
+    shadowColor: colors.shadowCard,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 1,
+    shadowRadius: 12,
+    elevation: 2,
   },
-  emptyStateText: {
-    fontSize: 18,
-    color: colors.textMuted,
+  emptyEmoji: {
+    fontSize: 56,
+    marginBottom: 16,
+  },
+  emptyText: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: colors.text,
     textAlign: 'center',
     marginBottom: 8,
   },
-  emptyStateSubtext: {
-    fontSize: 14,
-    color: colors.textLight,
+  emptySubtext: {
+    fontSize: 15,
+    color: colors.textMuted,
     textAlign: 'center',
   },
+  bottomSpacing: {
+    height: 16,
+  },
 });
-

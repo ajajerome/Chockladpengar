@@ -6,10 +6,12 @@ import {
   TextInput,
   ScrollView,
   Alert,
+  SafeAreaView,
 } from 'react-native';
 import {useStore} from '../../store/useStore';
 import {colors} from '../../theme/colors';
 import {Button} from '../../components/Button';
+import {GradientBackground} from '../../components/GradientBackground';
 import {Picker} from '@react-native-picker/picker';
 
 export const CreateTaskScreen = ({navigation}: any) => {
@@ -55,95 +57,128 @@ export const CreateTaskScreen = ({navigation}: any) => {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.form}>
-        <Text style={styles.label}>Titel</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="T.ex. Diska"
-          value={title}
-          onChangeText={setTitle}
-        />
+    <GradientBackground>
+      <SafeAreaView style={styles.container}>
+        <ScrollView 
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
+        >
+          <View style={styles.header}>
+            <Text style={styles.title}>Skapa uppgift</Text>
+            <Text style={styles.subtitle}>Lägg till en ny uppgift för ditt barn</Text>
+          </View>
 
-        <Text style={styles.label}>Beskrivning</Text>
-        <TextInput
-          style={[styles.input, styles.textArea]}
-          placeholder="Beskriv uppgiften"
-          multiline
-          numberOfLines={4}
-          value={description}
-          onChangeText={setDescription}
-        />
+          <View style={styles.form}>
+            <Text style={styles.label}>Titel</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="T.ex. Diska"
+              placeholderTextColor={colors.textMuted}
+              value={title}
+              onChangeText={setTitle}
+            />
 
-        <Text style={styles.label}>Poäng (chokladpengar)</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="T.ex. 10"
-          keyboardType="numeric"
-          value={points}
-          onChangeText={setPoints}
-        />
+            <Text style={styles.label}>Beskrivning</Text>
+            <TextInput
+              style={[styles.input, styles.textArea]}
+              placeholder="Beskriv uppgiften"
+              placeholderTextColor={colors.textMuted}
+              multiline
+              numberOfLines={4}
+              value={description}
+              onChangeText={setDescription}
+            />
 
-        <Text style={styles.label}>Tilldela till</Text>
-        <View style={styles.pickerContainer}>
-          <Picker
-            selectedValue={assignedTo}
-            onValueChange={setAssignedTo}
-            style={styles.picker}>
-            {children.map(child => (
-              <Picker.Item key={child.id} label={child.name} value={child.id} />
-            ))}
-          </Picker>
-        </View>
+            <Text style={styles.label}>Poäng (chokladpengar)</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="T.ex. 10"
+              placeholderTextColor={colors.textMuted}
+              keyboardType="numeric"
+              value={points}
+              onChangeText={setPoints}
+            />
 
-        <View style={styles.buttonContainer}>
-          <Button title="Skapa uppgift" onPress={handleCreate} variant="primary" />
-        </View>
-      </View>
-    </ScrollView>
+            <Text style={styles.label}>Tilldela till</Text>
+            <View style={styles.pickerContainer}>
+              <Picker
+                selectedValue={assignedTo}
+                onValueChange={setAssignedTo}
+                style={styles.picker}>
+                {children.map(child => (
+                  <Picker.Item key={child.id} label={child.name} value={child.id} />
+                ))}
+              </Picker>
+            </View>
+
+            <View style={styles.buttonContainer}>
+              <Button title="Skapa uppgift" onPress={handleCreate} variant="primary" />
+            </View>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </GradientBackground>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
   },
-  form: {
-    padding: 16,
+  scrollContent: {
+    paddingBottom: 32,
   },
-  label: {
-    fontSize: 16,
-    fontWeight: '600',
+  header: {
+    padding: 24,
+    paddingTop: 16,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: '700',
     color: colors.text,
     marginBottom: 8,
-    marginTop: 12,
+    letterSpacing: -0.5,
+  },
+  subtitle: {
+    fontSize: 17,
+    color: colors.textMuted,
+    fontWeight: '500',
+  },
+  form: {
+    paddingHorizontal: 24,
+    paddingTop: 8,
+  },
+  label: {
+    fontSize: 17,
+    fontWeight: '700',
+    color: colors.text,
+    marginBottom: 10,
+    marginTop: 16,
   },
   input: {
-    backgroundColor: colors.backgroundLight,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 8,
-    padding: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    borderWidth: 0,
+    borderRadius: 12,
+    padding: 16,
     fontSize: 16,
     color: colors.text,
+    fontWeight: '500',
   },
   textArea: {
-    height: 100,
+    height: 120,
     textAlignVertical: 'top',
   },
   pickerContainer: {
-    backgroundColor: colors.backgroundLight,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    borderWidth: 0,
+    borderRadius: 12,
     overflow: 'hidden',
   },
   picker: {
     color: colors.text,
   },
   buttonContainer: {
-    marginTop: 24,
+    marginTop: 32,
   },
 });
 

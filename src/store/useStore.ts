@@ -13,6 +13,7 @@ import {
 } from '../types';
 import {createNotification} from '../utils/notifications';
 import {FUNDS} from '../constants/funds';
+import {playCoinSound} from '../utils/sound';
 
 interface AppState {
   // Auth
@@ -283,6 +284,7 @@ export const useStore = create<AppState>((set, get) => ({
       ),
     }));
 
+    // Add coins to child's balance
     get().addTransaction(
       task.assignedTo,
       'earn',
@@ -290,6 +292,9 @@ export const useStore = create<AppState>((set, get) => ({
       `Godkänd uppgift: ${task.title}`,
       taskId,
     );
+
+    // Play ca-ching sound!
+    playCoinSound();
 
     get().addNotification(
       task.assignedTo,
