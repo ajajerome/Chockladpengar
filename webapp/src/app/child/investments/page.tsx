@@ -83,7 +83,6 @@ export default function InvestmentsPage() {
               <FundCard
                 key={fundType}
                 fundType={fundType}
-                onPress={() => setSelectedFund(fundType)}
                 isSelected={selectedFund === fundType}
                 onClick={() => setSelectedFund(fundType)}
               />
