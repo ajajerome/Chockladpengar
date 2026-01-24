@@ -79,7 +79,7 @@
   }
 
   .label {
-    @apply block text-sm font-medium text-text-primary mb-2;
+    @apply block text-sm font-medium text-primary mb-2;
   }
 
   /* Icon Circles */
