@@ -76,7 +76,7 @@ export default function RewardsPage() {
                   key={reward.id}
                   reward={reward}
                   canAfford={balance >= reward.cost}
-                  onPurchase={() => handlePurchase(reward.id)}
+                  onClick={() => handlePurchase(reward.id)}
                 />
               ))}
             </div>
