@@ -21,12 +21,9 @@ export const RewardCard: React.FC<RewardCardProps> = ({
       style={[styles.card, !canAfford && styles.cardDisabled]}
       onPress={onPress}
       disabled={!onPress || !canAfford}
-      activeOpacity={0.8}>
-      <View style={[
-        styles.iconContainer,
-        {backgroundColor: canAfford ? colors.cardGold : colors.border}
-      ]}>
-        <GiftIcon size={32} color={canAfford ? colors.accent : colors.textMuted} />
+      activeOpacity={0.7}>
+      <View style={styles.iconContainer}>
+        <GiftIcon size={48} color={canAfford ? colors.accent : colors.textMuted} />
       </View>
 
       <View style={styles.content}>
@@ -36,19 +33,12 @@ export const RewardCard: React.FC<RewardCardProps> = ({
         <Text style={styles.description} numberOfLines={2}>
           {reward.description}
         </Text>
-        <View style={styles.categoryTag}>
-          <Text style={styles.category}>{reward.category}</Text>
-        </View>
+        <Text style={styles.category}>{reward.category}</Text>
       </View>
 
-      <View style={[
-        styles.priceContainer,
-        {backgroundColor: canAfford ? colors.accent : colors.border}
-      ]}>
-        <ChocolateCoinIcon size={16} />
-        <Text style={[styles.price, !canAfford && styles.priceDisabled]}>
-          {reward.cost}
-        </Text>
+      <View style={[styles.priceContainer, !canAfford && styles.priceDisabled]}>
+        <ChocolateCoinIcon size={20} />
+        <Text style={styles.price}>{reward.cost}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -56,39 +46,38 @@ export const RewardCard: React.FC<RewardCardProps> = ({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: colors.cardBackground,
-    borderRadius: 20,
-    padding: 18,
-    marginBottom: 16,
+    backgroundColor: colors.backgroundLight,
+    borderRadius: 12,
+    padding: 16,
+    marginVertical: 8,
     flexDirection: 'row',
     alignItems: 'center',
-    shadowColor: colors.shadowCard,
-    shadowOffset: {width: 0, height: 4},
-    shadowOpacity: 1,
-    shadowRadius: 12,
+    gap: 12,
+    shadowColor: colors.shadow,
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
     elevation: 2,
   },
   cardDisabled: {
-    opacity: 0.5,
+    opacity: 0.6,
   },
   iconContainer: {
     width: 64,
     height: 64,
-    borderRadius: 32,
+    borderRadius: 12,
+    backgroundColor: colors.backgroundDark,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 16,
   },
   content: {
     flex: 1,
-    marginRight: 12,
   },
   title: {
-    fontSize: 18,
-    fontWeight: '700',
+    fontSize: 16,
+    fontWeight: '600',
     color: colors.text,
-    marginBottom: 6,
-    letterSpacing: -0.3,
+    marginBottom: 4,
   },
   titleDisabled: {
     color: colors.textMuted,
@@ -96,35 +85,30 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 14,
     color: colors.textLight,
-    marginBottom: 8,
-    lineHeight: 20,
-  },
-  categoryTag: {
-    alignSelf: 'flex-start',
-    backgroundColor: colors.cardCaramel,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 8,
+    marginBottom: 4,
   },
   category: {
     fontSize: 12,
-    color: colors.textLight,
-    fontWeight: '600',
+    color: colors.textMuted,
+    fontStyle: 'italic',
   },
   priceContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    borderRadius: 14,
+    gap: 4,
+    backgroundColor: colors.backgroundDark,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 8,
+  },
+  priceDisabled: {
+    backgroundColor: colors.border,
   },
   price: {
     fontSize: 16,
-    fontWeight: '700',
-    color: colors.text,
-  },
-  priceDisabled: {
-    color: colors.textWhite,
+    fontWeight: 'bold',
+    color: colors.accent,
   },
 });
+
+

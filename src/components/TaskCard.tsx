@@ -20,26 +20,13 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   const getStatusColor = () => {
     switch (task.status) {
       case 'completed':
-        return colors.warning;
+        return colors.info;
       case 'approved':
         return colors.success;
       case 'rejected':
         return colors.error;
       default:
-        return colors.info;
-    }
-  };
-
-  const getStatusBackground = () => {
-    switch (task.status) {
-      case 'completed':
-        return colors.cardGold;
-      case 'approved':
-        return colors.cardCream;
-      case 'rejected':
-        return colors.cardCaramel;
-      default:
-        return colors.cardBrown;
+        return colors.textMuted;
     }
   };
 
@@ -58,26 +45,24 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 
   return (
     <TouchableOpacity
-      style={[styles.card, {backgroundColor: getStatusBackground()}]}
+      style={[styles.card, {borderLeftColor: getStatusColor()}]}
       onPress={onPress}
       disabled={!onPress}
-      activeOpacity={0.8}>
+      activeOpacity={0.7}>
       <View style={styles.header}>
         <View style={styles.titleRow}>
           {task.status === 'approved' && (
-            <View style={styles.checkContainer}>
-              <CheckboxIcon size={20} color={colors.success} checked={true} />
-            </View>
+            <CheckboxIcon size={20} color={colors.success} checked={true} />
           )}
-          <Text style={styles.title} numberOfLines={2}>{task.title}</Text>
+          <Text style={styles.title}>{task.title}</Text>
         </View>
-        <View style={[styles.pointsContainer, {backgroundColor: getStatusColor()}]}>
-          <ChocolateCoinIcon size={14} />
+        <View style={styles.pointsContainer}>
+          <ChocolateCoinIcon size={16} />
           <Text style={styles.points}>{task.points}</Text>
         </View>
       </View>
 
-      <Text style={styles.description} numberOfLines={3}>{task.description}</Text>
+      <Text style={styles.description}>{task.description}</Text>
 
       <View style={styles.footer}>
         <View style={[styles.statusBadge, {backgroundColor: getStatusColor()}]}>
@@ -99,55 +84,53 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: 20,
-    padding: 20,
-    marginBottom: 16,
-    shadowColor: colors.shadowCard,
-    shadowOffset: {width: 0, height: 4},
-    shadowOpacity: 1,
-    shadowRadius: 12,
+    backgroundColor: colors.backgroundLight,
+    borderRadius: 12,
+    padding: 16,
+    marginVertical: 8,
+    borderLeftWidth: 4,
+    shadowColor: colors.shadow,
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
     elevation: 2,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    marginBottom: 12,
+    marginBottom: 8,
   },
   titleRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 8,
     flex: 1,
-    marginRight: 12,
-  },
-  checkContainer: {
-    marginRight: 8,
   },
   title: {
-    fontSize: 18,
-    fontWeight: '700',
+    fontSize: 16,
+    fontWeight: '600',
     color: colors.text,
     flex: 1,
-    letterSpacing: -0.3,
   },
   pointsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 12,
+    gap: 4,
+    backgroundColor: colors.backgroundDark,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
   },
   points: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: colors.textWhite,
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: colors.accent,
   },
   description: {
-    fontSize: 15,
+    fontSize: 14,
     color: colors.textLight,
-    marginBottom: 16,
-    lineHeight: 22,
+    marginBottom: 12,
   },
   footer: {
     flexDirection: 'row',
@@ -155,23 +138,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   statusBadge: {
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-    borderRadius: 16,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
   },
   statusText: {
-    fontSize: 13,
+    fontSize: 12,
     color: colors.textWhite,
     fontWeight: '600',
   },
   deadlineContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: 4,
   },
   deadline: {
-    fontSize: 13,
+    fontSize: 12,
     color: colors.textMuted,
-    fontWeight: '500',
   },
 });
+
+

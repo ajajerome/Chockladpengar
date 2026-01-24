@@ -39,7 +39,7 @@ function AddChildContent() {
       setName('')
       setPin('')
       setError('')
-      alert('Barnet har lagts till! Du kan lägga till fler eller gå till login.')
+      alert('Barnet har lagts till! Du kan lägga till fler eller fortsätta.')
     } catch (error) {
       setError('Kunde inte lägga till barnet')
     } finally {
@@ -108,11 +108,11 @@ function AddChildContent() {
             </Button>
 
             <Button
-              onClick={() => router.push('/login')}
+              onClick={() => router.push('/parent')}
               variant="outline"
               className="w-full"
             >
-              Klar, gå till login
+              Klar, fortsätt till appen
             </Button>
           </div>
         </div>

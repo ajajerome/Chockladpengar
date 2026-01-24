@@ -1,27 +1,31 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect, Suspense } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useStore } from '@/store/useStore'
 import { Button } from '@/components/Button'
 
-export default function CreateFamilyPage() {
+function JoinFamilyContent() {
   const router = useRouter()
-  const { createFamily } = useStore()
-  const [familyName, setFamilyName] = useState('')
-  const [parentName, setParentName] = useState('')
+  const searchParams = useSearchParams()
+  const familyId = searchParams.get('familyId')
+  const { addParent, families } = useStore()
+  const family = families.find(f => f.id === familyId)
+  
+  const [name, setName] = useState('')
   const [pin, setPin] = useState('')
   const [confirmPin, setConfirmPin] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  const handleCreate = () => {
-    if (!familyName.trim()) {
-      setError('Ange ett familjenamn')
-      return
+  useEffect(() => {
+    if (!familyId || !family) {
+      setError('Ogiltig inbjudningslänk')
     }
+  }, [familyId, family])
 
-    if (!parentName.trim()) {
+  const handleJoin = () => {
+    if (!name.trim()) {
       setError('Ange ditt namn')
       return
     }
@@ -38,48 +42,55 @@ export default function CreateFamilyPage() {
 
     setLoading(true)
     try {
-      const familyId = createFamily(familyName.trim(), parentName.trim(), pin)
-      // Gå direkt till add-child utan att logga ut
-      router.push(`/add-child?familyId=${familyId}`)
+      addParent(familyId!, name.trim(), pin)
+      alert('Välkommen till familjen! Du kan nu logga in. 🎉')
+      router.push('/login')
     } catch (error) {
-      setError('Kunde inte skapa familjen. Försök igen.')
+      setError('Kunde inte gå med i familjen')
+    } finally {
       setLoading(false)
     }
+  }
+
+  if (!family) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <div className="card max-w-md w-full text-center">
+          <div className="text-6xl mb-4">❌</div>
+          <h1 className="text-2xl font-bold text-primary mb-2">Ogiltig länk</h1>
+          <p className="text-secondary mb-6">
+            Denna inbjudningslänk fungerar inte. Be den som bjöd in dig att skicka en ny länk.
+          </p>
+          <Button onClick={() => router.push('/login')} variant="outline" className="w-full">
+            Gå till login
+          </Button>
+        </div>
+      </div>
+    )
   }
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="card max-w-md w-full">
         <div className="text-center mb-6">
-          <div className="text-6xl mb-4">👨‍👩‍👧‍👦</div>
-          <h1 className="text-3xl font-bold text-primary mb-2">Skapa ny familj</h1>
+          <div className="text-6xl mb-4">👋</div>
+          <h1 className="text-3xl font-bold text-primary mb-2">
+            Gå med i {family.name}
+          </h1>
           <p className="text-secondary">
-            Börja med att skapa en familj och lägg dig själv som första föräldern
+            Du har blivit inbjuden att bli förälder i denna familj!
           </p>
         </div>
 
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-primary mb-2">
-              Familjenamn
+              Ditt namn
             </label>
             <input
               type="text"
-              value={familyName}
-              onChange={(e) => setFamilyName(e.target.value)}
-              placeholder="t.ex. Familjen Andersson"
-              className="input"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-primary mb-2">
-              Ditt namn (Förälder)
-            </label>
-            <input
-              type="text"
-              value={parentName}
-              onChange={(e) => setParentName(e.target.value)}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               placeholder="t.ex. Mamma, Pappa"
               className="input"
             />
@@ -87,7 +98,7 @@ export default function CreateFamilyPage() {
 
           <div>
             <label className="block text-sm font-medium text-primary mb-2">
-              PIN-kod (4 siffror)
+              Skapa PIN-kod (4 siffror)
             </label>
             <input
               type="password"
@@ -123,13 +134,13 @@ export default function CreateFamilyPage() {
 
           <div className="space-y-2">
             <Button
-              onClick={handleCreate}
+              onClick={handleJoin}
               loading={loading}
-              disabled={loading}
+              disabled={loading || !family}
               size="large"
               className="w-full"
             >
-              Skapa familj
+              Gå med i familjen
             </Button>
 
             <Button
@@ -137,12 +148,27 @@ export default function CreateFamilyPage() {
               variant="outline"
               className="w-full"
             >
-              Tillbaka
+              Avbryt
             </Button>
           </div>
         </div>
       </div>
     </div>
+  )
+}
+
+export default function JoinFamilyPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-6xl mb-4">🍫</div>
+          <p className="text-secondary">Laddar...</p>
+        </div>
+      </div>
+    }>
+      <JoinFamilyContent />
+    </Suspense>
   )
 }
 

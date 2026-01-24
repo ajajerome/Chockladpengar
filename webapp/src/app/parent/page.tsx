@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useStore } from '@/store/useStore'
 import { TaskCard } from '@/components/TaskCard'
 import { Button } from '@/components/Button'
+import { Avatar } from '@/components/Avatar'
 
 export default function ParentHomePage() {
   const router = useRouter()
@@ -84,9 +85,7 @@ export default function ParentHomePage() {
                     className="card flex items-center justify-between"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center text-2xl">
-                        👶
-                      </div>
+                      <Avatar name={child.name} size="medium" />
                       <div>
                         <p className="font-bold text-primary">{child.name}</p>
                         <p className="text-sm text-secondary">
@@ -148,6 +147,13 @@ export default function ParentHomePage() {
               className="w-full"
             >
               + Skapa belöning
+            </Button>
+            <Button
+              onClick={() => router.push('/parent/settings')}
+              variant="outline"
+              className="w-full"
+            >
+              ⚙️ Familjeinställningar
             </Button>
           </div>
         </div>

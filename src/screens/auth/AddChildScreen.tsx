@@ -1,38 +1,43 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, TextInput, ScrollView, Alert, SafeAreaView} from 'react-native';
+import {View, Text, StyleSheet, TextInput, ScrollView, Alert} from 'react-native';
 import {useStore} from '../../store/useStore';
 import {colors} from '../../theme/colors';
 import {Button} from '../../components/Button';
-import {GradientBackground} from '../../components/GradientBackground';
 
 export const AddChildScreen = ({navigation, route}: any) => {
+  const {familyId} = route.params;
   const {addChild} = useStore();
-  const {familyId} = route.params || {};
-  const [name, setName] = useState('');
+  const [childName, setChildName] = useState('');
   const [pin, setPin] = useState('');
+  const [confirmPin, setConfirmPin] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleAdd = async () => {
-    if (!name.trim()) {
+    if (!childName.trim()) {
       Alert.alert('Fel', 'Ange barnets namn');
       return;
     }
 
-    if (pin && pin.length !== 4) {
-      Alert.alert('Fel', 'PIN-koden måste vara 4 siffror eller lämnas tom');
+    if (pin.length !== 4) {
+      Alert.alert('Fel', 'PIN-koden måste vara 4 siffror');
+      return;
+    }
+
+    if (pin !== confirmPin) {
+      Alert.alert('Fel', 'PIN-koderna matchar inte');
       return;
     }
 
     setLoading(true);
     try {
-      await addChild(familyId, name.trim(), pin || '');
-      Alert.alert('Klart!', 'Barnet har lagts till', [
+      await addChild(familyId, childName.trim(), pin);
+      setChildName('');
+      setPin('');
+      setConfirmPin('');
+      Alert.alert('Klart!', 'Barnet har lagts till.', [
         {
           text: 'Lägg till fler',
-          onPress: () => {
-            setName('');
-            setPin('');
-          },
+          onPress: () => {},
         },
         {
           text: 'Klar',
@@ -40,150 +45,102 @@ export const AddChildScreen = ({navigation, route}: any) => {
         },
       ]);
     } catch (error) {
-      Alert.alert('Fel', 'Kunde inte lägga till barnet');
+      Alert.alert('Fel', 'Kunde inte lägga till barnet. Försök igen.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <GradientBackground>
-      <SafeAreaView style={styles.container}>
-        <ScrollView 
-          style={styles.scrollView}
-          contentContainerStyle={styles.content}
-          showsVerticalScrollIndicator={false}
-        >
-          <View style={styles.header}>
-            <Text style={styles.emoji}>👶</Text>
-            <Text style={styles.title}>Lägg till barn</Text>
-            <Text style={styles.subtitle}>
-              Lägg till dina barn i familjen. De kan välja att ha en PIN-kod eller inte.
-            </Text>
-          </View>
+    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      <Text style={styles.title}>Lägg till barn</Text>
+      <Text style={styles.subtitle}>
+        Skapa ett konto för ditt barn
+      </Text>
 
-          <View style={styles.formCard}>
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Barnets namn</Text>
-              <TextInput
-                style={styles.input}
-                value={name}
-                onChangeText={setName}
-                placeholder="t.ex. Lisa, Emil"
-                placeholderTextColor={colors.textMuted}
-              />
-            </View>
+      <View style={styles.form}>
+        <Text style={styles.label}>Barnets namn</Text>
+        <TextInput
+          style={styles.input}
+          value={childName}
+          onChangeText={setChildName}
+          placeholder="t.ex. Emma, Oscar"
+        />
 
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>PIN-kod (valfritt)</Text>
-              <TextInput
-                style={styles.input}
-                value={pin}
-                onChangeText={setPin}
-                placeholder="••••"
-                placeholderTextColor={colors.textMuted}
-                keyboardType="number-pad"
-                maxLength={4}
-                secureTextEntry
-              />
-              <Text style={styles.hint}>
-                Lämna tom om barnet inte ska ha PIN-kod
-              </Text>
-            </View>
+        <Text style={styles.label}>PIN-kod (4 siffror)</Text>
+        <TextInput
+          style={styles.input}
+          value={pin}
+          onChangeText={setPin}
+          placeholder="****"
+          keyboardType="number-pad"
+          maxLength={4}
+          secureTextEntry
+        />
 
-            <View style={styles.buttonGroup}>
-              <Button
-                title="Lägg till barn"
-                onPress={handleAdd}
-                loading={loading}
-                disabled={loading}
-                size="large"
-              />
+        <Text style={styles.label}>Bekräfta PIN-kod</Text>
+        <TextInput
+          style={styles.input}
+          value={confirmPin}
+          onChangeText={setConfirmPin}
+          placeholder="****"
+          keyboardType="number-pad"
+          maxLength={4}
+          secureTextEntry
+        />
 
-              <Button
-                title="Klar, gå till login"
-                onPress={() => navigation.navigate('Login')}
-                variant="outline"
-              />
-            </View>
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </GradientBackground>
+        <Button
+          title="Lägg till barn"
+          onPress={handleAdd}
+          loading={loading}
+          disabled={loading}
+        />
+
+        <Button
+          title="Klar, gå till inloggning"
+          onPress={() => navigation.navigate('Login')}
+          variant="outline"
+        />
+      </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  scrollView: {
-    flex: 1,
+    backgroundColor: colors.background,
   },
   content: {
-    padding: 24,
-    paddingBottom: 40,
-  },
-  header: {
-    alignItems: 'center',
-    marginBottom: 32,
-    marginTop: 20,
-  },
-  emoji: {
-    fontSize: 64,
-    marginBottom: 16,
+    padding: 20,
   },
   title: {
-    fontSize: 32,
-    fontWeight: '700',
-    color: colors.text,
-    marginBottom: 12,
-    letterSpacing: -0.5,
-    textAlign: 'center',
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: colors.primary,
+    marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
     color: colors.textLight,
-    textAlign: 'center',
-    lineHeight: 24,
-    paddingHorizontal: 20,
+    marginBottom: 32,
   },
-  formCard: {
-    backgroundColor: colors.cardBackground,
-    borderRadius: 24,
-    padding: 24,
-    shadowColor: colors.shadowCard,
-    shadowOffset: {width: 0, height: 8},
-    shadowOpacity: 1,
-    shadowRadius: 16,
-    elevation: 4,
-  },
-  inputGroup: {
-    marginBottom: 20,
+  form: {
+    gap: 16,
   },
   label: {
     fontSize: 16,
     fontWeight: '600',
     color: colors.text,
-    marginBottom: 10,
+    marginBottom: -8,
   },
   input: {
-    backgroundColor: colors.background,
-    borderRadius: 16,
-    padding: 18,
+    backgroundColor: colors.backgroundLight,
+    borderRadius: 12,
+    padding: 16,
     fontSize: 16,
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: colors.border,
-    color: colors.text,
-  },
-  hint: {
-    fontSize: 13,
-    color: colors.textMuted,
-    marginTop: 6,
-    fontStyle: 'italic',
-  },
-  buttonGroup: {
-    gap: 12,
-    marginTop: 8,
   },
 });
+

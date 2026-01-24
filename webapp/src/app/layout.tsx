@@ -18,7 +18,6 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   title: 'Chokladpengar - Motivationsapp för familjer',
   description: 'En rolig och pedagogisk app som lär barn om ansvar, pengar och målsättning genom uppgifter och belöningar.',
-  manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
@@ -26,6 +25,14 @@ export const metadata: Metadata = {
   },
   formatDetection: {
     telephone: false,
+  },
+  icons: {
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+    ],
+    apple: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+    ],
   },
 }
 
@@ -44,9 +51,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="sv" className={`${inter.variable} ${poppins.variable}`}>
-      <head>
-        <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-192x192.png" />
-      </head>
       <body className="font-sans antialiased">{children}</body>
     </html>
   )

@@ -1,28 +1,30 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect, Suspense } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useStore } from '@/store/useStore'
 import { Button } from '@/components/Button'
 
-export default function CreateFamilyPage() {
+function AddParentContent() {
   const router = useRouter()
-  const { createFamily } = useStore()
-  const [familyName, setFamilyName] = useState('')
-  const [parentName, setParentName] = useState('')
+  const searchParams = useSearchParams()
+  const familyId = searchParams.get('familyId')
+  const { addParent } = useStore()
+  const [name, setName] = useState('')
   const [pin, setPin] = useState('')
   const [confirmPin, setConfirmPin] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  const handleCreate = () => {
-    if (!familyName.trim()) {
-      setError('Ange ett familjenamn')
-      return
+  useEffect(() => {
+    if (!familyId) {
+      router.push('/login')
     }
+  }, [familyId, router])
 
-    if (!parentName.trim()) {
-      setError('Ange ditt namn')
+  const handleAdd = () => {
+    if (!name.trim()) {
+      setError('Ange förälderns namn')
       return
     }
 
@@ -38,11 +40,12 @@ export default function CreateFamilyPage() {
 
     setLoading(true)
     try {
-      const familyId = createFamily(familyName.trim(), parentName.trim(), pin)
-      // Gå direkt till add-child utan att logga ut
-      router.push(`/add-child?familyId=${familyId}`)
+      addParent(familyId!, name.trim(), pin)
+      alert('Föräldern har lagts till! ✅')
+      router.push('/parent/settings')
     } catch (error) {
-      setError('Kunde inte skapa familjen. Försök igen.')
+      setError('Kunde inte lägga till föräldern')
+    } finally {
       setLoading(false)
     }
   }
@@ -51,36 +54,23 @@ export default function CreateFamilyPage() {
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="card max-w-md w-full">
         <div className="text-center mb-6">
-          <div className="text-6xl mb-4">👨‍👩‍👧‍👦</div>
-          <h1 className="text-3xl font-bold text-primary mb-2">Skapa ny familj</h1>
+          <div className="text-6xl mb-4">👨‍👩</div>
+          <h1 className="text-3xl font-bold text-primary mb-2">Lägg till förälder</h1>
           <p className="text-secondary">
-            Börja med att skapa en familj och lägg dig själv som första föräldern
+            Lägg till en annan förälder som kan hantera uppgifter och belöningar
           </p>
         </div>
 
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-primary mb-2">
-              Familjenamn
+              Namn
             </label>
             <input
               type="text"
-              value={familyName}
-              onChange={(e) => setFamilyName(e.target.value)}
-              placeholder="t.ex. Familjen Andersson"
-              className="input"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-primary mb-2">
-              Ditt namn (Förälder)
-            </label>
-            <input
-              type="text"
-              value={parentName}
-              onChange={(e) => setParentName(e.target.value)}
-              placeholder="t.ex. Mamma, Pappa"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="t.ex. Mamma, Pappa, Farmor"
               className="input"
             />
           </div>
@@ -123,26 +113,41 @@ export default function CreateFamilyPage() {
 
           <div className="space-y-2">
             <Button
-              onClick={handleCreate}
+              onClick={handleAdd}
               loading={loading}
               disabled={loading}
               size="large"
               className="w-full"
             >
-              Skapa familj
+              Lägg till förälder
             </Button>
 
             <Button
-              onClick={() => router.push('/login')}
+              onClick={() => router.back()}
               variant="outline"
               className="w-full"
             >
-              Tillbaka
+              Avbryt
             </Button>
           </div>
         </div>
       </div>
     </div>
+  )
+}
+
+export default function AddParentPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-6xl mb-4">🍫</div>
+          <p className="text-secondary">Laddar...</p>
+        </div>
+      </div>
+    }>
+      <AddParentContent />
+    </Suspense>
   )
 }
 

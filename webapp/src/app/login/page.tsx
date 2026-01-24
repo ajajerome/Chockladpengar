@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useStore } from '@/store/useStore'
 import { Button } from '@/components/Button'
+import { Avatar } from '@/components/Avatar'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -72,36 +73,34 @@ export default function LoginPage() {
           </label>
           
           {users.map((user) => (
-            <div
-              key={user.id}
-              onClick={() => {
-                setSelectedUser(user.id)
-                setError('')
-                setPin('')
-              }}
-              className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                selectedUser === user.id
-                  ? 'border-accent bg-accent/5'
-                  : 'border-gray-200 hover:border-accent/50'
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center text-2xl">
-                    {user.role === 'parent' ? '👨' : '👶'}
+              <div
+                key={user.id}
+                onClick={() => {
+                  setSelectedUser(user.id)
+                  setError('')
+                  setPin('')
+                }}
+                className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${
+                  selectedUser === user.id
+                    ? 'border-accent bg-accent/5'
+                    : 'border-gray-200 hover:border-accent/50'
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <Avatar name={user.name} size="medium" />
+                    <div>
+                      <p className="font-bold text-primary">{user.name}</p>
+                      <p className="text-sm text-secondary">
+                        {user.role === 'parent' ? 'Förälder' : 'Barn'}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-bold text-primary">{user.name}</p>
-                    <p className="text-sm text-secondary">
-                      {user.role === 'parent' ? 'Förälder' : 'Barn'}
-                    </p>
-                  </div>
+                  {selectedUser === user.id && (
+                    <span className="text-2xl text-accent">✓</span>
+                  )}
                 </div>
-                {selectedUser === user.id && (
-                  <span className="text-2xl text-accent">✓</span>
-                )}
               </div>
-            </div>
           ))}
 
           {selectedUser && users.find((u) => u.id === selectedUser)?.pin && (

@@ -1,10 +1,9 @@
 import React from 'react';
-import {View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView} from 'react-native';
+import {View, Text, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
 import {useStore} from '../../store/useStore';
 import {colors} from '../../theme/colors';
 import {TaskCard} from '../../components/TaskCard';
 import {Button} from '../../components/Button';
-import {GradientBackground} from '../../components/GradientBackground';
 import {PlusIcon, ProfileIcon, ApproveIcon, RejectIcon} from '../../components/icons';
 
 export const ParentHomeScreen = ({navigation}: any) => {
@@ -23,16 +22,11 @@ export const ParentHomeScreen = ({navigation}: any) => {
   const rejectTask = useStore(state => state.rejectTask);
 
   return (
-    <GradientBackground>
-      <SafeAreaView style={styles.container}>
-        <ScrollView 
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.scrollContent}
-        >
-          <View style={styles.header}>
-            <Text style={styles.title}>Föräldravy</Text>
-            <Text style={styles.subtitle}>Familj: {family?.name}</Text>
-          </View>
+    <ScrollView style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.title}>Föräldravy</Text>
+        <Text style={styles.subtitle}>Familj: {family?.name}</Text>
+      </View>
 
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
@@ -83,79 +77,72 @@ export const ParentHomeScreen = ({navigation}: any) => {
         )}
       </View>
 
-          <View style={styles.section}>
-            <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Hantera</Text>
-            </View>
-            <View style={styles.buttonRow}>
-              <Button
-                title="Skapa uppgift"
-                onPress={() => navigation.navigate('CreateTask')}
-                variant="primary"
-              />
-            </View>
-            <View style={styles.buttonRow}>
-              <Button
-                title="Skapa belöning"
-                onPress={() => navigation.navigate('CreateReward')}
-                variant="secondary"
-              />
-            </View>
-          </View>
-          <View style={styles.bottomSpacing} />
-        </ScrollView>
-      </SafeAreaView>
-    </GradientBackground>
+      <View style={styles.section}>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Hantera</Text>
+        </View>
+        <View style={styles.buttonRow}>
+          <Button
+            title="Skapa uppgift"
+            onPress={() => navigation.navigate('CreateTask')}
+            variant="primary"
+          />
+        </View>
+        <View style={styles.buttonRow}>
+          <Button
+            title="Skapa belöning"
+            onPress={() => navigation.navigate('CreateReward')}
+            variant="secondary"
+          />
+        </View>
+      </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  scrollContent: {
-    paddingBottom: 32,
+    backgroundColor: colors.background,
   },
   header: {
-    padding: 24,
-    paddingTop: 16,
+    padding: 20,
+    backgroundColor: colors.primary,
   },
   title: {
-    fontSize: 32,
-    fontWeight: '700',
-    color: colors.text,
-    marginBottom: 8,
-    letterSpacing: -0.5,
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: colors.textWhite,
   },
   subtitle: {
-    fontSize: 17,
-    color: colors.textMuted,
-    fontWeight: '500',
+    fontSize: 16,
+    color: colors.textWhite,
+    marginTop: 4,
+    opacity: 0.8,
   },
   section: {
-    paddingHorizontal: 24,
-    paddingTop: 16,
+    padding: 16,
   },
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 12,
   },
   sectionTitle: {
-    fontSize: 20,
-    fontWeight: '700',
+    fontSize: 18,
+    fontWeight: '600',
     color: colors.text,
   },
   childCard: {
-    backgroundColor: colors.cardBackground,
-    borderRadius: 16,
-    padding: 20,
+    backgroundColor: colors.backgroundLight,
+    borderRadius: 12,
+    padding: 16,
     marginVertical: 8,
-    shadowColor: colors.shadowCard,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 1,
-    shadowRadius: 12,
+    shadowColor: colors.shadow,
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
     elevation: 2,
   },
   childInfo: {
@@ -168,21 +155,19 @@ const styles = StyleSheet.create({
   },
   childName: {
     fontSize: 18,
-    fontWeight: '700',
+    fontWeight: '600',
     color: colors.text,
   },
   childBalance: {
-    fontSize: 15,
-    color: colors.textMuted,
-    marginTop: 6,
-    fontWeight: '500',
+    fontSize: 14,
+    color: colors.textLight,
+    marginTop: 4,
   },
   emptyText: {
     textAlign: 'center',
     color: colors.textMuted,
-    fontSize: 15,
-    padding: 24,
-    fontWeight: '500',
+    fontSize: 14,
+    padding: 20,
   },
   actionButtons: {
     flexDirection: 'row',
@@ -196,8 +181,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    padding: 14,
-    borderRadius: 12,
+    padding: 12,
+    borderRadius: 8,
   },
   approveButton: {
     backgroundColor: colors.success,
@@ -207,14 +192,11 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: colors.textWhite,
-    fontWeight: '700',
-    fontSize: 15,
+    fontWeight: '600',
+    fontSize: 14,
   },
   buttonRow: {
     marginVertical: 8,
-  },
-  bottomSpacing: {
-    height: 16,
   },
 });
 

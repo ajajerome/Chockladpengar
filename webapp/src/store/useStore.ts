@@ -153,6 +153,7 @@ export const useStore = create<AppState>()(
         set((state) => ({
           families: [...state.families, newFamily],
           users: [...state.users, newParent],
+          currentUser: newParent, // Logga in direkt!
         }));
 
         return familyId;
