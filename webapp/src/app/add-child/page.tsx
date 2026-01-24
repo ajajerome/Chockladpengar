@@ -1,11 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useStore } from '@/store/useStore'
 import { Button } from '@/components/Button'
 
-export default function AddChildPage() {
+function AddChildContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const familyId = searchParams.get('familyId')
@@ -118,6 +118,21 @@ export default function AddChildPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function AddChildPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-6xl mb-4">🍫</div>
+          <p className="text-secondary">Laddar...</p>
+        </div>
+      </div>
+    }>
+      <AddChildContent />
+    </Suspense>
   )
 }
 
