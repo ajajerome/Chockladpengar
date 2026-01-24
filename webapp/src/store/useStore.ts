@@ -12,7 +12,7 @@ import {
 } from '../types';
 import { FUNDS } from '../constants/funds';
 import { initializeApp } from 'firebase/app';
-import { getDatabase, ref, get, set as firebaseSet, onValue } from 'firebase/database';
+import { getDatabase, ref, get as firebaseGet, set as firebaseSet, onValue } from 'firebase/database';
 
 // Firebase config (from environment variables)
 const firebaseConfig = {
@@ -653,7 +653,7 @@ export const useStore = create<AppState>((set, get) => ({
 
     try {
       const dataRef = ref(db, 'appData');
-      const snapshot = await get(dataRef);
+      const snapshot = await firebaseGet(dataRef);
       if (snapshot.exists()) {
         const data = snapshot.val();
         set({
