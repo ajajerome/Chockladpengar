@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useStore } from '@/store/useStore'
 import { Button } from '@/components/Button'
@@ -8,10 +8,21 @@ import { Avatar } from '@/components/Avatar'
 
 export default function LoginPage() {
   const router = useRouter()
-  const { users, login } = useStore()
+  const { users, login, loadData, syncWithFirebase } = useStore()
   const [selectedUser, setSelectedUser] = useState<string | null>(null)
   const [pin, setPin] = useState('')
   const [error, setError] = useState('')
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const init = async () => {
+      await loadData()
+      syncWithFirebase()
+      setLoading(false)
+    }
+    init()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const handleLogin = () => {
     if (!selectedUser) {
@@ -38,6 +49,17 @@ export default function LoginPage() {
     } else {
       router.push('/child')
     }
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-6xl mb-4 animate-bounce">🍫</div>
+          <p className="text-secondary">Laddar data...</p>
+        </div>
+      </div>
+    )
   }
 
   if (users.length === 0) {
