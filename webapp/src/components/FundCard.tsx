@@ -1,68 +1,94 @@
-import { FundType, FUNDS } from '@/constants/funds';
+import React from 'react'
+import { FUNDS, FundType } from '@/constants/funds'
+import { BarChartIcon } from './icons'
 
 interface FundCardProps {
-  fundType: FundType;
-  isSelected?: boolean;
-  onClick?: () => void;
+  fundType: FundType
+  onClick: () => void
+  isSelected: boolean
 }
 
-export function FundCard({ fundType, isSelected, onClick }: FundCardProps) {
-  const fund = FUNDS[fundType];
+export const FundCard: React.FC<FundCardProps> = ({
+  fundType,
+  onClick,
+  isSelected,
+}) => {
+  const fund = FUNDS[fundType]
 
   const getRiskColor = () => {
     switch (fund.risk) {
       case 'low':
-        return 'bg-green-100 text-green-800';
+        return 'text-risk-low bg-risk-low/10'
       case 'medium':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'text-risk-medium bg-risk-medium/10'
       case 'high':
-        return 'bg-red-100 text-red-800';
+        return 'text-risk-high bg-risk-high/10'
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'text-gray-500 bg-gray-100'
     }
-  };
+  }
 
   const getRiskText = () => {
     switch (fund.risk) {
       case 'low':
-        return 'Låg risk';
+        return 'Låg risk'
       case 'medium':
-        return 'Medel risk';
+        return 'Medel risk'
       case 'high':
-        return 'Hög risk';
+        return 'Hög risk'
       default:
-        return '';
+        return ''
     }
-  };
+  }
 
   return (
     <div
-      onClick={onClick}
-      className={`card cursor-pointer transition-all mb-4 ${
-        isSelected ? 'ring-4 ring-accent shadow-xl' : 'hover:shadow-lg'
+      className={`card cursor-pointer transition-all duration-300 border-l-4 ${
+        isSelected
+          ? 'ring-4 ring-accent ring-offset-2 scale-[1.02] shadow-xl'
+          : 'hover:scale-[1.01] hover:shadow-lg'
       }`}
-      style={{ borderLeftColor: fund.color, borderLeftWidth: '4px' }}
+      style={{ borderLeftColor: fund.color }}
+      onClick={onClick}
     >
+      {/* Header with Icon */}
       <div className="flex items-start justify-between mb-3">
-        <div>
-          <h3 className="text-lg font-bold text-primary">{fund.name}</h3>
-          <p className="text-sm text-secondary">{fund.description}</p>
+        <div className="flex-1">
+          <h3 className="text-lg font-semibold font-display text-text-primary mb-1">
+            {fund.name}
+          </h3>
+          <p className="text-sm text-text-secondary">{fund.description}</p>
         </div>
-        {isSelected && <span className="text-2xl">✓</span>}
+        <div 
+          className="icon-circle flex-shrink-0 ml-3"
+          style={{ 
+            background: `linear-gradient(135deg, ${fund.color}40 0%, ${fund.color}20 100%)` 
+          }}
+        >
+          <BarChartIcon size={24} color={fund.color} />
+        </div>
       </div>
 
-      <div className="flex items-center justify-between">
-        <span className={`px-3 py-1 rounded-full text-xs font-medium ${getRiskColor()}`}>
+      {/* Stats */}
+      <div className="flex items-center justify-between text-xs mt-4 pt-4 border-t border-gray-100">
+        <span className={`badge ${getRiskColor()}`}>
           {getRiskText()}
         </span>
-        <div className="text-right">
-          <p className="text-xs text-gray-500">Avkastning/vecka</p>
-          <p className="font-bold text-primary">
-            {(fund.minReturn * 100).toFixed(1)}% - {(fund.maxReturn * 100).toFixed(1)}%
-          </p>
-        </div>
+        <span className="text-text-muted font-medium">
+          {fund.minReturn * 100}% - {fund.maxReturn * 100}% / vecka
+        </span>
       </div>
-    </div>
-  );
-}
 
+      {isSelected && (
+        <div className="mt-3 pt-3 border-t border-accent/20">
+          <div className="flex items-center gap-2 text-accent-dark text-sm font-medium">
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+            </svg>
+            <span>Vald</span>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}

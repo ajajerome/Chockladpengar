@@ -9,9 +9,12 @@ export default function Home() {
   const router = useRouter()
   const currentUser = useStore(state => state.currentUser)
   const [isClient, setIsClient] = useState(false)
+  const [showAnimations, setShowAnimations] = useState(false)
 
   useEffect(() => {
     setIsClient(true)
+    // Delay animations to avoid hydration mismatch
+    setTimeout(() => setShowAnimations(true), 100)
   }, [])
 
   useEffect(() => {
@@ -54,11 +57,11 @@ export default function Home() {
       <div className="max-w-4xl w-full">
         {/* Hero Section */}
         <div className="text-center mb-12">
-          <div className="text-8xl mb-6 animate-bounce">🍫</div>
-          <h1 className="text-5xl md:text-6xl font-display font-bold text-primary mb-4">
+          <div className={`text-8xl mb-6 ${showAnimations ? 'animate-float' : ''}`}>🍫</div>
+          <h1 className={`text-5xl md:text-6xl font-display font-bold text-primary mb-4 ${showAnimations ? 'animate-shimmer' : ''}`}>
             Chokladpengar
           </h1>
-          <p className="text-xl md:text-2xl text-secondary mb-2">
+          <p className="text-xl md:text-2xl text-secondary mb-2 font-medium">
             Motivationsapp för hela familjen
           </p>
           <p className="text-base md:text-lg text-secondary/80 max-w-2xl mx-auto">
@@ -69,8 +72,8 @@ export default function Home() {
 
         {/* Features */}
         <div className="grid md:grid-cols-3 gap-6 mb-12">
-          <div className="card text-center bg-gradient-to-br from-orange-50 to-orange-100/50 border-orange-200">
-            <div className="text-5xl mb-4">✅</div>
+          <div className="card card-gradient-orange text-center transform transition-all duration-300 hover:scale-105">
+            <div className={`text-5xl mb-4 ${showAnimations ? 'animate-float' : ''}`} style={{ animationDelay: showAnimations ? '0s' : undefined }}>✅</div>
             <h3 className="font-display font-bold text-lg text-primary mb-2">
               Uppgifter
             </h3>
@@ -79,8 +82,8 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="card text-center bg-gradient-to-br from-blue-50 to-blue-100/50 border-blue-200">
-            <div className="text-5xl mb-4">📈</div>
+          <div className="card card-gradient-blue text-center transform transition-all duration-300 hover:scale-105">
+            <div className={`text-5xl mb-4 ${showAnimations ? 'animate-float' : ''}`} style={{ animationDelay: showAnimations ? '0.2s' : undefined }}>📈</div>
             <h3 className="font-display font-bold text-lg text-primary mb-2">
               Fonder
             </h3>
@@ -89,8 +92,8 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="card text-center bg-gradient-to-br from-purple-50 to-purple-100/50 border-purple-200">
-            <div className="text-5xl mb-4">🎁</div>
+          <div className="card card-gradient-purple text-center transform transition-all duration-300 hover:scale-105">
+            <div className={`text-5xl mb-4 ${showAnimations ? 'animate-float' : ''}`} style={{ animationDelay: showAnimations ? '0.4s' : undefined }}>🎁</div>
             <h3 className="font-display font-bold text-lg text-primary mb-2">
               Belöningar
             </h3>
@@ -105,7 +108,7 @@ export default function Home() {
           <Button
             onClick={() => router.push('/create-family')}
             size="large"
-            className="w-full text-lg py-5"
+            className={`w-full text-lg py-5 ${showAnimations ? 'animate-pulse-glow' : ''}`}
           >
             🚀 Kom igång - Skapa familj
           </Button>

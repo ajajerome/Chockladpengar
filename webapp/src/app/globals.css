@@ -9,8 +9,9 @@
   }
 
   body {
-    @apply bg-background text-primary antialiased;
+    @apply text-primary antialiased;
     background: linear-gradient(to bottom, var(--gradient-start), var(--gradient-end));
+    background-attachment: fixed;
     min-height: 100vh;
     font-feature-settings: 'kern' 1, 'liga' 1;
     -webkit-font-smoothing: antialiased;
@@ -23,28 +24,165 @@
 }
 
 @layer components {
+  /* Cards */
   .card {
-    @apply bg-white rounded-2xl shadow-md p-6 border border-gray-100;
+    @apply bg-white rounded-2xl shadow-md p-6 border border-gray-100 
+           transition-all duration-300 hover:shadow-xl;
   }
 
+  .card-gradient-orange {
+    background: linear-gradient(135deg, #FFF0E0 0%, #FFE0C5 100%);
+    border-left: 4px solid #D4AF37;
+  }
+
+  .card-gradient-blue {
+    background: linear-gradient(135deg, #E0F0FF 0%, #C5E0FF 100%);
+    border-left: 4px solid #2196F3;
+  }
+
+  .card-gradient-purple {
+    background: linear-gradient(135deg, #F0E0FF 0%, #E0C5FF 100%);
+    border-left: 4px solid #9C27B0;
+  }
+
+  /* Buttons */
   .btn {
-    @apply px-6 py-3 rounded-xl font-semibold transition-all duration-200 active:scale-95 font-display;
+    @apply px-6 py-3 rounded-xl font-semibold transition-all duration-200 
+           active:scale-95 font-display shadow-md hover:shadow-lg;
   }
 
   .btn-primary {
-    @apply bg-accent hover:bg-accent-dark text-white shadow-lg;
+    @apply bg-accent hover:bg-accent-dark text-white;
   }
 
   .btn-secondary {
-    @apply bg-secondary hover:bg-secondary-dark text-white shadow-lg;
+    @apply bg-secondary hover:bg-secondary-dark text-white;
   }
 
   .btn-outline {
     @apply border-2 border-primary text-primary hover:bg-primary hover:text-white;
   }
 
+  .btn-success {
+    @apply bg-success hover:bg-green-700 text-white;
+  }
+
+  .btn-danger {
+    @apply bg-error hover:bg-red-700 text-white;
+  }
+
+  /* Inputs */
   .input {
-    @apply w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all font-sans;
+    @apply w-full px-4 py-3 border-2 border-gray-200 rounded-xl 
+           focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 
+           transition-all font-sans;
+  }
+
+  .label {
+    @apply block text-sm font-medium text-text-primary mb-2;
+  }
+
+  /* Icon Circles */
+  .icon-circle {
+    @apply w-12 h-12 rounded-full flex items-center justify-center 
+           transition-transform duration-200 hover:scale-110;
+  }
+
+  .icon-circle-orange {
+    background: linear-gradient(135deg, #FFD7A0 0%, #FFC470 100%);
+  }
+
+  .icon-circle-blue {
+    background: linear-gradient(135deg, #A0D7FF 0%, #70C4FF 100%);
+  }
+
+  .icon-circle-purple {
+    background: linear-gradient(135deg, #D7A0FF 0%, #C470FF 100%);
+  }
+
+  /* Status Badges */
+  .badge {
+    @apply px-3 py-1 rounded-full text-xs font-medium inline-block;
+  }
+
+  .badge-pending {
+    @apply bg-status-pending text-primary-dark;
+  }
+
+  .badge-completed {
+    @apply bg-status-completed text-white;
+  }
+
+  .badge-approved {
+    @apply bg-status-approved text-white;
+  }
+
+  .badge-rejected {
+    @apply bg-status-rejected text-white;
+  }
+
+  /* Action Cards */
+  .action-card {
+    @apply card cursor-pointer transition-all duration-300 
+           hover:scale-[1.02] hover:shadow-xl flex items-center gap-4 p-4;
+  }
+
+  /* Empty State */
+  .empty-state {
+    @apply text-center py-12;
+  }
+
+  .empty-emoji {
+    @apply text-6xl mb-4 inline-block;
+    animation: float 3s ease-in-out infinite;
+  }
+
+  /* Loading */
+  .spinner {
+    @apply animate-spin h-8 w-8 border-4 border-accent border-t-transparent rounded-full;
+  }
+
+  /* Balance Card */
+  .balance-card {
+    @apply card text-center;
+    background: linear-gradient(135deg, #FFF9F0 0%, #FFE4C4 100%);
+    border: 2px solid #D4AF37;
   }
 }
 
+@layer utilities {
+  /* Animations */
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
+
+  .animate-shimmer {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(212, 175, 55, 0.3) 50%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); }
+    50% { box-shadow: 0 0 0 10px rgba(212, 175, 55, 0); }
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 2s infinite;
+  }
+}

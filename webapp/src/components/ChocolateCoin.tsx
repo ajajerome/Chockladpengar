@@ -1,30 +1,39 @@
+import { ChocolateCoinIcon } from './icons'
+
 interface ChocolateCoinProps {
-  amount: number;
-  size?: 'small' | 'medium' | 'large';
-  showLabel?: boolean;
+  amount: number
+  size?: 'small' | 'medium' | 'large'
+  showLabel?: boolean
+  className?: string
 }
 
-export function ChocolateCoin({ amount, size = 'medium', showLabel = true }: ChocolateCoinProps) {
-  const sizeClasses = {
-    small: 'text-xl',
-    medium: 'text-3xl',
-    large: 'text-5xl',
-  };
+export function ChocolateCoin({ 
+  amount, 
+  size = 'medium', 
+  showLabel = true,
+  className = ''
+}: ChocolateCoinProps) {
+  const iconSizes = {
+    small: 20,
+    medium: 32,
+    large: 48,
+  }
 
   const textSizes = {
     small: 'text-base',
     medium: 'text-2xl',
     large: 'text-4xl',
-  };
+  }
 
   return (
-    <div className="flex items-center gap-2">
-      <span className={sizeClasses[size]}>🍫</span>
+    <div className={`flex items-center gap-2 ${className}`}>
+      <ChocolateCoinIcon size={iconSizes[size]} color="#D4AF37" />
       <div>
-        <p className={`font-bold text-accent ${textSizes[size]}`}>{amount}</p>
+        <p className={`font-bold font-display text-accent-dark ${textSizes[size]}`}>
+          {Math.round(amount)}
+        </p>
         {showLabel && <p className="text-xs text-secondary">chokladpengar</p>}
       </div>
     </div>
-  );
+  )
 }
-
