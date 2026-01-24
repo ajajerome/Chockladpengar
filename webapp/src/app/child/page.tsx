@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useStore } from '@/store/useStore'
 import { TaskCard } from '@/components/TaskCard'
 import { ChocolateCoin } from '@/components/ChocolateCoin'
-import { TreasureChestIcon, BarChartIcon, FactoryIcon, ArrowRightIcon } from '@/components/icons'
+import { TreasureChestIcon, BarChartIcon, FactoryIcon, ArrowRightIcon, CheckIcon } from '@/components/icons'
 
 export default function ChildHomePage() {
   const router = useRouter()
