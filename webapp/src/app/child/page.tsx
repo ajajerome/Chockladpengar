@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useStore } from '@/store/useStore'
 import { TaskCard } from '@/components/TaskCard'
@@ -16,6 +16,11 @@ export default function ChildHomePage() {
   )
   const completeTask = useStore((state) => state.completeTask)
   const logout = useStore((state) => state.logout)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
     if (!currentUser || currentUser.role !== 'child') {
@@ -39,7 +44,7 @@ export default function ChildHomePage() {
           <div className="flex items-center justify-between mb-6">
             <div>
               <h1 className="text-3xl font-bold text-primary mb-1">
-                Hej {currentUser.name}! 👋
+                Hej {currentUser.name}!
               </h1>
               <p className="text-sm text-secondary">Välkommen tillbaka!</p>
             </div>
@@ -65,7 +70,9 @@ export default function ChildHomePage() {
           <h2 className="text-2xl font-bold text-primary mb-4">Dagens uppgifter</h2>
           {myTasks.length === 0 ? (
             <div className="empty-state">
-              <div className="empty-emoji">🎉</div>
+              <div className={mounted ? "empty-emoji" : "text-6xl mb-4"}>
+                <CheckIcon size={64} color="#4CAF50" />
+              </div>
               <p className="text-lg text-text-primary font-medium">Inga uppgifter just nu!</p>
               <p className="text-sm text-secondary mt-1">Bra jobbat, du är klar för idag!</p>
             </div>

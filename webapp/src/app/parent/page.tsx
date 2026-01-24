@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useStore } from '@/store/useStore'
 import { TaskCard } from '@/components/TaskCard'
@@ -25,6 +25,11 @@ export default function ParentHomePage() {
   const rejectTask = useStore((state) => state.rejectTask)
   const getBalance = useStore((state) => state.getBalance)
   const logout = useStore((state) => state.logout)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
     if (!currentUser || currentUser.role !== 'parent') {
@@ -71,7 +76,9 @@ export default function ParentHomePage() {
 
           {children.length === 0 ? (
             <div className="empty-state">
-              <div className="empty-emoji">👶</div>
+              <div className={mounted ? "empty-emoji" : "text-6xl mb-4"}>
+                <PlusIcon size={64} color="#9E8B7B" />
+              </div>
               <p className="text-lg text-text-primary font-medium">Inga barn tillagda ännu</p>
               <p className="text-sm text-secondary mt-1">
                 Lägg till ditt första barn för att börja!
@@ -120,7 +127,9 @@ export default function ParentHomePage() {
 
           {pendingTasks.length === 0 ? (
             <div className="empty-state">
-              <div className="empty-emoji">✅</div>
+              <div className={mounted ? "empty-emoji" : "text-6xl mb-4"}>
+                <CheckIcon size={64} color="#4CAF50" />
+              </div>
               <p className="text-lg text-text-primary font-medium">Inga uppgifter att godkänna</p>
               <p className="text-sm text-secondary mt-1">
                 Bra jobbat, alla uppgifter är hanterade!
@@ -141,7 +150,7 @@ export default function ParentHomePage() {
                       size="medium"
                       className="flex-1 border-error text-error hover:bg-error hover:text-white"
                     >
-                      ✗ Neka
+                      Neka
                     </Button>
                     <Button
                       onClick={() => approveTask(task.id)}

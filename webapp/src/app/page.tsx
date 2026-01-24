@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import { useStore } from '@/store/useStore'
 import { Button } from '@/components/Button'
 import { useEffect, useState } from 'react'
+import { ChocolateCoinIcon, CheckIcon, BarChartIcon, GiftIcon } from '@/components/icons'
 
 export default function Home() {
   const router = useRouter()
@@ -57,7 +58,9 @@ export default function Home() {
       <div className="max-w-4xl w-full">
         {/* Hero Section */}
         <div className="text-center mb-12">
-          <div className={`text-8xl mb-6 ${showAnimations ? 'animate-float' : ''}`}>🍫</div>
+          <div className={`mb-6 inline-block ${showAnimations ? 'animate-float' : ''}`}>
+            <ChocolateCoinIcon size={96} color="#D4AF37" />
+          </div>
           <h1 className={`text-5xl md:text-6xl font-display font-bold text-primary mb-4 ${showAnimations ? 'animate-shimmer' : ''}`}>
             Chokladpengar
           </h1>
@@ -73,7 +76,9 @@ export default function Home() {
         {/* Features */}
         <div className="grid md:grid-cols-3 gap-6 mb-12">
           <div className="card card-gradient-orange text-center transform transition-all duration-300 hover:scale-105">
-            <div className={`text-5xl mb-4 ${showAnimations ? 'animate-float' : ''}`} style={{ animationDelay: showAnimations ? '0s' : undefined }}>✅</div>
+            <div className={`mb-4 inline-block ${showAnimations ? 'animate-float' : ''}`} style={{ animationDelay: showAnimations ? '0s' : undefined }}>
+              <CheckIcon size={48} color="#4CAF50" />
+            </div>
             <h3 className="font-display font-bold text-lg text-primary mb-2">
               Uppgifter
             </h3>
@@ -83,7 +88,9 @@ export default function Home() {
           </div>
 
           <div className="card card-gradient-blue text-center transform transition-all duration-300 hover:scale-105">
-            <div className={`text-5xl mb-4 ${showAnimations ? 'animate-float' : ''}`} style={{ animationDelay: showAnimations ? '0.2s' : undefined }}>📈</div>
+            <div className={`mb-4 inline-block ${showAnimations ? 'animate-float' : ''}`} style={{ animationDelay: showAnimations ? '0.2s' : undefined }}>
+              <BarChartIcon size={48} color="#2196F3" />
+            </div>
             <h3 className="font-display font-bold text-lg text-primary mb-2">
               Fonder
             </h3>
@@ -93,7 +100,9 @@ export default function Home() {
           </div>
 
           <div className="card card-gradient-purple text-center transform transition-all duration-300 hover:scale-105">
-            <div className={`text-5xl mb-4 ${showAnimations ? 'animate-float' : ''}`} style={{ animationDelay: showAnimations ? '0.4s' : undefined }}>🎁</div>
+            <div className={`mb-4 inline-block ${showAnimations ? 'animate-float' : ''}`} style={{ animationDelay: showAnimations ? '0.4s' : undefined }}>
+              <GiftIcon size={48} color="#9C27B0" />
+            </div>
             <h3 className="font-display font-bold text-lg text-primary mb-2">
               Belöningar
             </h3>
@@ -110,7 +119,7 @@ export default function Home() {
             size="large"
             className={`w-full text-lg py-5 ${showAnimations ? 'animate-pulse-glow' : ''}`}
           >
-            🚀 Kom igång - Skapa familj
+            Kom igång - Skapa familj
           </Button>
 
           <Button
@@ -125,8 +134,12 @@ export default function Home() {
 
         {/* Footer info */}
         <div className="mt-12 text-center">
-          <p className="text-sm text-secondary/60">
-            🔒 Säkert • 👨‍👩‍👧‍👦 För hela familjen • 📱 Fungerar på alla enheter
+          <p className="text-sm text-secondary/60 flex items-center justify-center gap-3">
+            <span>🔒 Säkert</span>
+            <span>•</span>
+            <span>För hela familjen</span>
+            <span>•</span>
+            <span>Fungerar på alla enheter</span>
           </p>
         </div>
       </div>
