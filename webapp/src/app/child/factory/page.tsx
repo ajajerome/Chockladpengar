@@ -22,7 +22,16 @@ export default function FactoryPage() {
     }
   }, [currentUser, router])
 
-  if (!currentUser || !factory) return null
+  if (!currentUser || !factory) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-6xl mb-4">🍫</div>
+          <p className="text-secondary">Laddar...</p>
+        </div>
+      </div>
+    )
+  }
 
   const handleBuildStep = () => {
     const currentStepCost = FACTORY_STEPS[factory.currentStep].cost
