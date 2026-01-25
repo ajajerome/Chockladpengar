@@ -14,6 +14,9 @@ import { FUNDS } from '../constants/funds';
 import { initializeApp } from 'firebase/app';
 import { getDatabase, ref, get as firebaseGet, set as firebaseSet, onValue } from 'firebase/database';
 
+// App version for cache busting
+const APP_VERSION = '1.0.1';
+
 // Firebase config (from environment variables)
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
