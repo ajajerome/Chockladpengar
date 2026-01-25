@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useStore } from '@/store/useStore'
 import { Button } from '@/components/Button'
+import { ChocolateCoinIcon } from '@/components/icons'
 
 function AddParentContent() {
   const router = useRouter()
@@ -54,7 +55,9 @@ function AddParentContent() {
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="card max-w-md w-full">
         <div className="text-center mb-6">
-          <div className="text-6xl mb-4">👨‍👩</div>
+          <div className="mb-4 flex justify-center">
+            <ChocolateCoinIcon size={64} color="#D4AF37" />
+          </div>
           <h1 className="text-3xl font-bold text-primary mb-2">Lägg till förälder</h1>
           <p className="text-secondary">
             Lägg till en annan förälder som kan hantera uppgifter och belöningar
@@ -141,7 +144,9 @@ export default function AddParentPage() {
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="text-6xl mb-4">🍫</div>
+          <div className="mb-4 flex justify-center">
+            <ChocolateCoinIcon size={64} color="#D4AF37" />
+          </div>
           <p className="text-secondary">Laddar...</p>
         </div>
       </div>
@@ -150,5 +155,6 @@ export default function AddParentPage() {
     </Suspense>
   )
 }
+
 
 

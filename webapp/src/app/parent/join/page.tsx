@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useStore } from '@/store/useStore'
 import { Button } from '@/components/Button'
+import { ChocolateCoinIcon } from '@/components/icons'
 
 function JoinFamilyContent() {
   const router = useRouter()
@@ -56,7 +57,11 @@ function JoinFamilyContent() {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="card max-w-md w-full text-center">
-          <div className="text-6xl mb-4">❌</div>
+          <div className="mb-4 flex justify-center">
+            <svg className="w-16 h-16 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </div>
           <h1 className="text-2xl font-bold text-primary mb-2">Ogiltig länk</h1>
           <p className="text-secondary mb-6">
             Denna inbjudningslänk fungerar inte. Be den som bjöd in dig att skicka en ny länk.
@@ -73,7 +78,9 @@ function JoinFamilyContent() {
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="card max-w-md w-full">
         <div className="text-center mb-6">
-          <div className="text-6xl mb-4">👋</div>
+          <div className="mb-4 flex justify-center">
+            <ChocolateCoinIcon size={64} color="#D4AF37" />
+          </div>
           <h1 className="text-3xl font-bold text-primary mb-2">
             Gå med i {family.name}
           </h1>
@@ -162,7 +169,9 @@ export default function JoinFamilyPage() {
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="text-6xl mb-4">🍫</div>
+          <div className="mb-4 flex justify-center">
+            <ChocolateCoinIcon size={64} color="#D4AF37" />
+          </div>
           <p className="text-secondary">Laddar...</p>
         </div>
       </div>
@@ -171,5 +180,6 @@ export default function JoinFamilyPage() {
     </Suspense>
   )
 }
+
 
 
