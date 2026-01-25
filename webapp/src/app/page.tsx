@@ -3,65 +3,33 @@
 import { useRouter } from 'next/navigation'
 import { useStore } from '@/store/useStore'
 import { Button } from '@/components/Button'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { ChocolateCoinIcon, CheckIcon, BarChartIcon, GiftIcon } from '@/components/icons'
 
 export default function Home() {
   const router = useRouter()
   const currentUser = useStore(state => state.currentUser)
-  const [isClient, setIsClient] = useState(false)
-  const [showAnimations, setShowAnimations] = useState(false)
-
-  useEffect(() => {
-    setIsClient(true)
-    // Delay animations to avoid hydration mismatch
-    setTimeout(() => setShowAnimations(true), 100)
-  }, [])
 
   useEffect(() => {
     // Om användaren redan är inloggad, skicka till rätt vy
-    if (isClient && currentUser) {
+    if (currentUser) {
       if (currentUser.role === 'parent') {
         router.push('/parent')
       } else {
         router.push('/child')
       }
     }
-  }, [currentUser, router, isClient])
-
-  // Visa loading tills vi är på klienten
-  if (!isClient) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-6xl mb-4">🍫</div>
-          <p className="text-secondary">Laddar...</p>
-        </div>
-      </div>
-    )
-  }
-
-  // Om användaren är inloggad, visa inte startsidan
-  if (currentUser) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-6xl mb-4">🍫</div>
-          <p className="text-secondary">Laddar...</p>
-        </div>
-      </div>
-    )
-  }
+  }, [currentUser, router])
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="max-w-4xl w-full">
         {/* Hero Section */}
         <div className="text-center mb-12">
-          <div className={`mb-6 inline-block ${showAnimations ? 'animate-float' : ''}`}>
+          <div className="mb-6 inline-block animate-float">
             <ChocolateCoinIcon size={96} color="#D4AF37" />
           </div>
-          <h1 className={`text-5xl md:text-6xl font-display font-bold text-primary mb-4 ${showAnimations ? 'animate-shimmer' : ''}`}>
+          <h1 className="text-5xl md:text-6xl font-display font-bold text-primary mb-4 animate-shimmer">
             Chokladpengar
           </h1>
           <p className="text-xl md:text-2xl text-secondary mb-2 font-medium">
@@ -76,7 +44,7 @@ export default function Home() {
         {/* Features */}
         <div className="grid md:grid-cols-3 gap-6 mb-12">
           <div className="card card-gradient-orange text-center transform transition-all duration-300 hover:scale-105">
-            <div className={`mb-4 inline-block ${showAnimations ? 'animate-float' : ''}`} style={{ animationDelay: showAnimations ? '0s' : undefined }}>
+            <div className="mb-4 inline-block animate-float" style={{ animationDelay: '0s' }}>
               <CheckIcon size={48} color="#4CAF50" />
             </div>
             <h3 className="font-display font-bold text-lg text-primary mb-2">
@@ -88,7 +56,7 @@ export default function Home() {
           </div>
 
           <div className="card card-gradient-blue text-center transform transition-all duration-300 hover:scale-105">
-            <div className={`mb-4 inline-block ${showAnimations ? 'animate-float' : ''}`} style={{ animationDelay: showAnimations ? '0.2s' : undefined }}>
+            <div className="mb-4 inline-block animate-float" style={{ animationDelay: '0.2s' }}>
               <BarChartIcon size={48} color="#2196F3" />
             </div>
             <h3 className="font-display font-bold text-lg text-primary mb-2">
@@ -100,7 +68,7 @@ export default function Home() {
           </div>
 
           <div className="card card-gradient-purple text-center transform transition-all duration-300 hover:scale-105">
-            <div className={`mb-4 inline-block ${showAnimations ? 'animate-float' : ''}`} style={{ animationDelay: showAnimations ? '0.4s' : undefined }}>
+            <div className="mb-4 inline-block animate-float" style={{ animationDelay: '0.4s' }}>
               <GiftIcon size={48} color="#9C27B0" />
             </div>
             <h3 className="font-display font-bold text-lg text-primary mb-2">
@@ -117,7 +85,7 @@ export default function Home() {
           <Button
             onClick={() => router.push('/create-family')}
             size="large"
-            className={`w-full text-lg py-5 ${showAnimations ? 'animate-pulse-glow' : ''}`}
+            className="w-full text-lg py-5 animate-pulse-glow"
           >
             Kom igång - Skapa familj
           </Button>

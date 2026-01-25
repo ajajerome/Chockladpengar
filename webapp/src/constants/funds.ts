@@ -27,3 +27,4 @@ export const FUNDS = {
 
 export type FundType = keyof typeof FUNDS;
 
+
