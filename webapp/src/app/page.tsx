@@ -103,7 +103,12 @@ export default function Home() {
         {/* Footer info */}
         <div className="mt-12 text-center">
           <p className="text-sm text-secondary/60 flex items-center justify-center gap-3">
-            <span>🔒 Säkert</span>
+            <span className="flex items-center gap-1">
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2C9.243 2 7 4.243 7 7v3H6a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2v-8a2 2 0 00-2-2h-1V7c0-2.757-2.243-5-5-5zm0 2c1.654 0 3 1.346 3 3v3H9V7c0-1.654 1.346-3 3-3z"/>
+              </svg>
+              Säkert
+            </span>
             <span>•</span>
             <span>För hela familjen</span>
             <span>•</span>

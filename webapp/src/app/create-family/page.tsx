@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useStore } from '@/store/useStore'
 import { Button } from '@/components/Button'
+import { ChocolateCoinIcon } from '@/components/icons'
 
 export default function CreateFamilyPage() {
   const router = useRouter()
@@ -51,7 +52,9 @@ export default function CreateFamilyPage() {
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="card max-w-md w-full">
         <div className="text-center mb-6">
-          <div className="text-6xl mb-4">👨‍👩‍👧‍👦</div>
+          <div className="mb-4 flex justify-center">
+            <ChocolateCoinIcon size={64} color="#D4AF37" />
+          </div>
           <h1 className="text-3xl font-bold text-primary mb-2">Skapa ny familj</h1>
           <p className="text-secondary">
             Börja med att skapa en familj och lägg dig själv som första föräldern

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useStore } from '@/store/useStore'
 import { Button } from '@/components/Button'
 import { Avatar } from '@/components/Avatar'
+import { ChocolateCoinIcon } from '@/components/icons'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -55,7 +56,9 @@ export default function LoginPage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="text-6xl mb-4 animate-bounce">🍫</div>
+          <div className="mb-4 animate-bounce">
+            <ChocolateCoinIcon size={64} color="#D4AF37" />
+          </div>
           <p className="text-secondary">Laddar data...</p>
         </div>
       </div>
@@ -66,7 +69,9 @@ export default function LoginPage() {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="card max-w-md w-full text-center">
-          <div className="text-6xl mb-4">🍫</div>
+          <div className="mb-4 flex justify-center">
+            <ChocolateCoinIcon size={64} color="#D4AF37" />
+          </div>
           <h1 className="text-3xl font-bold text-primary mb-2">Chokladpengar</h1>
           <p className="text-secondary mb-6">Motivationsapp för familjer</p>
           <p className="text-secondary mb-6">
@@ -84,7 +89,9 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="card max-w-md w-full">
         <div className="text-center mb-6">
-          <div className="text-6xl mb-4">🍫</div>
+          <div className="mb-4 flex justify-center">
+            <ChocolateCoinIcon size={64} color="#D4AF37" />
+          </div>
           <h1 className="text-3xl font-bold text-primary mb-2">Chokladpengar</h1>
           <p className="text-secondary">Välj vem du är</p>
         </div>
@@ -119,7 +126,11 @@ export default function LoginPage() {
                     </div>
                   </div>
                   {selectedUser === user.id && (
-                    <span className="text-2xl text-accent">✓</span>
+                    <div className="w-6 h-6 rounded-full bg-accent flex items-center justify-center">
+                      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
                   )}
                 </div>
               </div>
