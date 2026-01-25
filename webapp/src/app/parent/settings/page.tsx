@@ -18,12 +18,20 @@ export default function FamilySettingsPage() {
   const children = useStore((state) =>
     state.users.filter((u) => family?.childIds.includes(u.id))
   )
+  const [inviteLink, setInviteLink] = useState('')
 
   useEffect(() => {
     if (!currentUser || currentUser.role !== 'parent') {
       router.push('/login')
     }
   }, [currentUser, router])
+
+  useEffect(() => {
+    // Set invite link on client side only
+    if (family) {
+      setInviteLink(`${window.location.origin}/parent/join?familyId=${family.id}`)
+    }
+  }, [family])
 
   if (!currentUser || !family) {
     return (
@@ -67,15 +75,17 @@ export default function FamilySettingsPage() {
               Dela denna länk via mail, SMS eller WhatsApp:
             </p>
             <div className="bg-white p-3 rounded-xl mb-3 break-all text-sm font-mono border border-accent/20">
-              {typeof window !== 'undefined' && `${window.location.origin}/parent/join?familyId=${family.id}`}
+              {inviteLink || 'Laddar länk...'}
             </div>
             <button
               onClick={() => {
-                const link = `${window.location.origin}/parent/join?familyId=${family.id}`;
-                navigator.clipboard.writeText(link);
-                alert('Länken kopierad! Dela den med den andra föräldern. 📋');
+                if (inviteLink) {
+                  navigator.clipboard.writeText(inviteLink);
+                  alert('Länken kopierad! Dela den med den andra föräldern. 📋');
+                }
               }}
               className="w-full btn-primary text-sm"
+              disabled={!inviteLink}
             >
               📋 Kopiera länk
             </button>
