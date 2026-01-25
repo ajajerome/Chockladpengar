@@ -22,7 +22,16 @@ export default function CreateRewardPage() {
     }
   }, [currentUser, router])
 
-  if (!currentUser) return null
+  if (!currentUser) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-6xl mb-4">🍫</div>
+          <p className="text-secondary">Laddar...</p>
+        </div>
+      </div>
+    )
+  }
 
   const handleCreate = () => {
     if (!title.trim()) {
