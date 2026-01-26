@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
 import {
   User,
   Family,
@@ -131,9 +130,7 @@ const createNotification = (
   timestamp: new Date().toISOString(),
 });
 
-export const useStore = create<AppState>()(
-  persist(
-    (set, get) => ({
+export const useStore = create<AppState>((set, get) => ({
   // Initial State
   currentUser: null,
   users: [],
@@ -759,22 +756,4 @@ export const useStore = create<AppState>()(
       }
     });
   },
-}),
-    {
-      name: 'chokladpengar-storage',
-      storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({
-        users: state.users,
-        families: state.families,
-        tasks: state.tasks,
-        rewards: state.rewards,
-        investments: state.investments,
-        factories: state.factories,
-        balances: state.balances,
-        transactions: state.transactions,
-        notifications: state.notifications,
-      }),
-      skipHydration: true,
-    }
-  )
-);
+}));

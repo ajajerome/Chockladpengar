@@ -10,11 +10,12 @@ import { ClientOnly } from '@/components/ClientOnly'
 function HomeContent() {
   const router = useRouter()
   const currentUser = useStore(state => state.currentUser)
+  const loadData = useStore(state => state.loadData)
 
   useEffect(() => {
-    // Manually rehydrate the store from localStorage on mount
-    (useStore.persist as any).rehydrate()
-  }, [])
+    // Load data from localStorage on mount
+    loadData()
+  }, [loadData])
 
   useEffect(() => {
     // Om användaren redan är inloggad, skicka till rätt vy

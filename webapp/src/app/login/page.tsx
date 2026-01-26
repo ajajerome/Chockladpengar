@@ -18,8 +18,6 @@ export default function LoginPage() {
 
   useEffect(() => {
     const init = async () => {
-      // Manually rehydrate the store from localStorage
-      await (useStore.persist as any).rehydrate()
       await loadData()
       syncWithFirebase()
       setIsReady(true)
