@@ -39,9 +39,9 @@ export default function CreateFamilyPage() {
 
     setLoading(true)
     try {
-      const familyId = createFamily(familyName.trim(), parentName.trim(), pin)
-      // Gå direkt till add-child utan att logga ut
-      router.push(`/add-child?familyId=${familyId}`)
+      createFamily(familyName.trim(), parentName.trim(), pin)
+      // Användaren är nu inloggad som förälder, skicka till parent dashboard
+      router.push('/parent')
     } catch (error) {
       setError('Kunde inte skapa familjen. Försök igen.')
       setLoading(false)
