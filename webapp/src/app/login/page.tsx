@@ -9,7 +9,8 @@ import { ChocolateCoinIcon } from '@/components/icons'
 
 export default function LoginPage() {
   const router = useRouter()
-  const { users, login, loadData, syncWithFirebase } = useStore()
+  const store = useStore()
+  const { users, login, loadData, syncWithFirebase } = store
   const [selectedUser, setSelectedUser] = useState<string | null>(null)
   const [pin, setPin] = useState('')
   const [error, setError] = useState('')
@@ -17,6 +18,8 @@ export default function LoginPage() {
 
   useEffect(() => {
     const init = async () => {
+      // Manually rehydrate the store from localStorage
+      await (useStore.persist as any).rehydrate()
       await loadData()
       syncWithFirebase()
       setIsReady(true)

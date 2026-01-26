@@ -756,27 +756,13 @@ export const useStore = create<AppState>()(
           transactions: data.transactions || [],
           notifications: data.notifications || [],
         });
-        // Update localStorage on sync
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('chokladpengar_data', JSON.stringify(data));
-        }
       }
     });
   },
-    }),
+}),
     {
       name: 'chokladpengar-storage',
-      storage: createJSONStorage(() => {
-        if (typeof window !== 'undefined') {
-          return localStorage;
-        }
-        // Return a dummy storage for SSR
-        return {
-          getItem: () => null,
-          setItem: () => {},
-          removeItem: () => {},
-        };
-      }),
+      storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         users: state.users,
         families: state.families,
@@ -788,6 +774,7 @@ export const useStore = create<AppState>()(
         transactions: state.transactions,
         notifications: state.notifications,
       }),
+      skipHydration: true,
     }
   )
 );
