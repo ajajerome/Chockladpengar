@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
 import {
   User,
   Family,
@@ -11,7 +12,7 @@ import {
   Balance,
 } from '../types';
 import { FUNDS } from '../constants/funds';
-import { initializeApp } from 'firebase/app';
+import { initializeApp, getApps } from 'firebase/app';
 import { getDatabase, ref, get as firebaseGet, set as firebaseSet, onValue } from 'firebase/database';
 
 // App version for cache busting
@@ -28,9 +29,14 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-// Initialize Firebase only if all config variables are present
-const app = typeof window !== 'undefined' && firebaseConfig.apiKey ? initializeApp(firebaseConfig) : null;
-const db = app ? getDatabase(app) : null;
+// Initialize Firebase only if all config variables are present and on client side
+let app = null;
+let db = null;
+
+if (typeof window !== 'undefined' && firebaseConfig.apiKey) {
+  app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+  db = getDatabase(app);
+}
 
 interface AppState {
   // Auth
@@ -125,7 +131,9 @@ const createNotification = (
   timestamp: new Date().toISOString(),
 });
 
-export const useStore = create<AppState>((set, get) => ({
+export const useStore = create<AppState>()(
+  persist(
+    (set, get) => ({
   // Initial State
   currentUser: null,
   users: [],
@@ -755,4 +763,31 @@ export const useStore = create<AppState>((set, get) => ({
       }
     });
   },
-}));
+    }),
+    {
+      name: 'chokladpengar-storage',
+      storage: createJSONStorage(() => {
+        if (typeof window !== 'undefined') {
+          return localStorage;
+        }
+        // Return a dummy storage for SSR
+        return {
+          getItem: () => null,
+          setItem: () => {},
+          removeItem: () => {},
+        };
+      }),
+      partialize: (state) => ({
+        users: state.users,
+        families: state.families,
+        tasks: state.tasks,
+        rewards: state.rewards,
+        investments: state.investments,
+        factories: state.factories,
+        balances: state.balances,
+        transactions: state.transactions,
+        notifications: state.notifications,
+      }),
+    }
+  )
+);

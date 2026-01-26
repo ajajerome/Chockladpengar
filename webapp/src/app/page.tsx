@@ -3,23 +3,29 @@
 import { useRouter } from 'next/navigation'
 import { useStore } from '@/store/useStore'
 import { Button } from '@/components/Button'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { ChocolateCoinIcon, CheckIcon, BarChartIcon, GiftIcon } from '@/components/icons'
 
 export default function Home() {
   const router = useRouter()
+  const [isHydrated, setIsHydrated] = useState(false)
   const currentUser = useStore(state => state.currentUser)
 
   useEffect(() => {
+    // Mark as hydrated on client side
+    setIsHydrated(true)
+  }, [])
+
+  useEffect(() => {
     // Om användaren redan är inloggad, skicka till rätt vy
-    if (currentUser) {
+    if (isHydrated && currentUser) {
       if (currentUser.role === 'parent') {
         router.push('/parent')
       } else {
         router.push('/child')
       }
     }
-  }, [currentUser, router])
+  }, [isHydrated, currentUser, router])
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
