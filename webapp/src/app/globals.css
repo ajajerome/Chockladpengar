@@ -6,6 +6,7 @@
   :root {
     --gradient-start: #FFF9F0;
     --gradient-end: #F5E6D3;
+    --app-version: 1.0.2;
   }
 
   body {

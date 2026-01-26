@@ -101,3 +101,5 @@ firebase init functions
 4. Skapa function för veckovis uppdatering (onsdagar & lördagar kl 08:00)
 
 
+
+

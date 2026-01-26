@@ -234,3 +234,5 @@ Om det fungerar lokalt men inte på Vercel:
 Din Chokladpengar-app körs nu i molnet och är tillgänglig för din familj!
 
 
+
+
