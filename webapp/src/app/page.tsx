@@ -6,6 +6,8 @@ import { Button } from '@/components/Button'
 import { useEffect, useState } from 'react'
 import { ChocolateCoinIcon, CheckIcon, BarChartIcon, GiftIcon } from '@/components/icons'
 
+export const dynamic = 'force-dynamic'
+
 export default function Home() {
   const router = useRouter()
   const [mounted, setMounted] = useState(false)
