@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/Button';
 import { ErrorMessage } from '@/components/ErrorMessage';
+import { UsersIcon, ChocolateCoinIcon } from '@/components/icons';
 
 export default function CreateFamilyPage() {
   const router = useRouter();
@@ -33,7 +34,10 @@ export default function CreateFamilyPage() {
       <div className="max-w-md mx-auto pt-12">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="text-6xl mb-4">🍫👨‍👩‍👧‍👦</div>
+          <div className="mb-4 flex justify-center gap-2">
+            <ChocolateCoinIcon size={64} color="#D97706" />
+            <UsersIcon size={64} color="#D97706" />
+          </div>
           <h1 className="text-3xl font-bold text-gray-800 mb-2">Skapa familj</h1>
           <p className="text-gray-600">Börja er chokladpengar-resa!</p>
         </div>

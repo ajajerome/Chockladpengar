@@ -6,6 +6,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useStore } from '@/store/useStore';
 import { Button } from '@/components/Button';
 import { ErrorMessage } from '@/components/ErrorMessage';
+import { ChocolateCoinIcon, KeyIcon, ChildIcon, ParentIcon } from '@/components/icons';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -38,7 +39,10 @@ export default function LoginPage() {
       <div className="max-w-md mx-auto pt-12">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="text-6xl mb-4">🍫🔑</div>
+          <div className="mb-4 flex justify-center gap-2">
+            <ChocolateCoinIcon size={64} color="#D97706" />
+            <KeyIcon size={64} color="#D97706" />
+          </div>
           <h1 className="text-3xl font-bold text-gray-800 mb-2">Logga in eller gå med</h1>
           <p className="text-gray-600">Ange familjekod och ditt namn – har du redan ett konto loggar du in, annars går du med i familjen</p>
         </div>
@@ -94,7 +98,9 @@ export default function LoginPage() {
                       : 'border-gray-200 bg-white hover:border-gray-300'
                   }`}
                 >
-                  <div className="text-3xl mb-1">👧</div>
+                  <div className="flex justify-center mb-2">
+                    <ChildIcon size={40} color={userRole === 'child' ? '#D97706' : '#9CA3AF'} />
+                  </div>
                   <div className="font-medium text-sm">Barn</div>
                 </button>
                 
@@ -107,7 +113,9 @@ export default function LoginPage() {
                       : 'border-gray-200 bg-white hover:border-gray-300'
                   }`}
                 >
-                  <div className="text-3xl mb-1">👨</div>
+                  <div className="flex justify-center mb-2">
+                    <ParentIcon size={40} color={userRole === 'parent' ? '#D97706' : '#9CA3AF'} />
+                  </div>
                   <div className="font-medium text-sm">Förälder</div>
                 </button>
               </div>

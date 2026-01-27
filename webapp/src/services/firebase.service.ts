@@ -71,7 +71,13 @@ export class FirebaseService {
     
     if (snapshot.exists()) {
       const families = snapshot.val();
-      const familyId = Object.keys(families)[0];
+      const familyIds = Object.keys(families);
+      
+      if (familyIds.length === 0) {
+        return null;
+      }
+      
+      const familyId = familyIds[0];
       return { ...families[familyId], id: familyId };
     }
     return null;

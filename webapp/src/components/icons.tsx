@@ -259,6 +259,118 @@ export const ArrowRightIcon: React.FC<IconProps> = ({
   </svg>
 )
 
+export const KeyIcon: React.FC<IconProps> = ({
+  size = 24,
+  color = 'currentColor',
+  className = '',
+}) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+  >
+    <circle cx="7" cy="7" r="4" stroke={color} strokeWidth="2" fill="none" />
+    <path d="M10 10L19 19M19 19H16M19 19V16" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+)
+
+export const EnvelopeIcon: React.FC<IconProps> = ({
+  size = 24,
+  color = 'currentColor',
+  className = '',
+}) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+  >
+    <rect x="3" y="5" width="18" height="14" rx="2" stroke={color} strokeWidth="2" fill="none" />
+    <path d="M3 7L12 13L21 7" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+)
+
+export const UsersIcon: React.FC<IconProps> = ({
+  size = 24,
+  color = 'currentColor',
+  className = '',
+}) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+  >
+    <circle cx="9" cy="7" r="4" stroke={color} strokeWidth="2" fill="none" />
+    <path d="M3 21C3 17.134 6.134 14 10 14H12C14 14 16 15 17 16" stroke={color} strokeWidth="2" strokeLinecap="round" />
+    <circle cx="17" cy="9" r="3" stroke={color} strokeWidth="2" fill="none" />
+    <path d="M17 15C19.5 15 21 16.5 21 19" stroke={color} strokeWidth="2" strokeLinecap="round" />
+  </svg>
+)
+
+export const ChildIcon: React.FC<IconProps> = ({
+  size = 24,
+  color = 'currentColor',
+  className = '',
+}) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+  >
+    <circle cx="12" cy="7" r="4" stroke={color} strokeWidth="2" fill="none" />
+    <path d="M6 21C6 17.134 8.686 14 12 14C15.314 14 18 17.134 18 21" stroke={color} strokeWidth="2" strokeLinecap="round" />
+    <circle cx="12" cy="7" r="2" fill={color} opacity="0.3" />
+  </svg>
+)
+
+export const ParentIcon: React.FC<IconProps> = ({
+  size = 24,
+  color = 'currentColor',
+  className = '',
+}) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+  >
+    <circle cx="12" cy="6" r="4" stroke={color} strokeWidth="2" fill="none" />
+    <path d="M6 20C6 16.134 8.686 13 12 13C15.314 13 18 16.134 18 20" stroke={color} strokeWidth="2" strokeLinecap="round" />
+    <path d="M8 8L6 10M16 8L18 10" stroke={color} strokeWidth="2" strokeLinecap="round" />
+  </svg>
+)
+
+export const CheckCircleIcon: React.FC<IconProps> = ({
+  size = 24,
+  color = 'currentColor',
+  className = '',
+}) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+  >
+    <circle cx="12" cy="12" r="10" stroke={color} strokeWidth="2" fill="none" />
+    <path d="M8 12L11 15L16 9" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+)
+
 
 
 

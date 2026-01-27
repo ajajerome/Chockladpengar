@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useStore } from '@/store/useStore';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { Button } from '@/components/Button';
+import { ChocolateCoinIcon, GiftIcon, BarChartIcon, FactoryIcon, KeyIcon, EnvelopeIcon, UsersIcon, CheckCircleIcon, ArrowRightIcon } from '@/components/icons';
 
 export default function HomePage() {
   const router = useRouter();
@@ -39,86 +40,111 @@ export default function HomePage() {
         <div className="max-w-md mx-auto text-center">
           {/* Logo */}
           <div className="mb-8">
-            <div className="text-8xl mb-4 animate-bounce">🍫</div>
-            <h1 className="text-5xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent mb-2">
+            <div className="mb-6 flex justify-center animate-bounce-soft">
+              <div className="relative">
+                <ChocolateCoinIcon size={112} color="#f59e0b" />
+                <div className="absolute inset-0 animate-pulse-glow rounded-full"></div>
+              </div>
+            </div>
+            <h1 className="text-6xl font-bold gradient-text mb-3 tracking-tight">
               Chokladpengar
             </h1>
-            <p className="text-gray-600">Lär barn ekonomi på ett roligt sätt!</p>
+            <p className="text-lg text-chocolate-milk font-medium">Lär barn ekonomi på ett roligt sätt!</p>
           </div>
           
           {/* Features */}
-          <div className="bg-white rounded-2xl shadow-xl p-6 mb-8">
-            <div className="space-y-4 text-left">
-              <div className="flex items-start gap-3">
-                <span className="text-3xl">✅</span>
+          <div className="card-glass p-8 mb-8">
+            <div className="space-y-5 text-left">
+              <div className="flex items-start gap-4">
+                <div className="icon-circle-gold shrink-0">
+                  <CheckCircleIcon size={28} color="#ffffff" />
+                </div>
                 <div>
-                  <h3 className="font-bold text-gray-800">Gör uppgifter</h3>
-                  <p className="text-sm text-gray-600">Tjäna chokladpengar genom att hjälpa till hemma</p>
+                  <h3 className="font-bold text-chocolate-dark text-lg mb-1">Gör uppgifter</h3>
+                  <p className="text-sm text-chocolate-milk">Tjäna chokladpengar genom att hjälpa till hemma</p>
                 </div>
               </div>
               
-              <div className="flex items-start gap-3">
-                <span className="text-3xl">🎁</span>
+              <div className="flex items-start gap-4">
+                <div className="icon-circle-purple shrink-0">
+                  <GiftIcon size={28} color="#ffffff" />
+                </div>
                 <div>
-                  <h3 className="font-bold text-gray-800">Köp belöningar</h3>
-                  <p className="text-sm text-gray-600">Spara och köp saker du önskar dig</p>
+                  <h3 className="font-bold text-chocolate-dark text-lg mb-1">Köp belöningar</h3>
+                  <p className="text-sm text-chocolate-milk">Spara och köp saker du önskar dig</p>
                 </div>
               </div>
               
-              <div className="flex items-start gap-3">
-                <span className="text-3xl">📈</span>
+              <div className="flex items-start gap-4">
+                <div className="icon-circle-blue shrink-0">
+                  <BarChartIcon size={28} color="#ffffff" />
+                </div>
                 <div>
-                  <h3 className="font-bold text-gray-800">Investera</h3>
-                  <p className="text-sm text-gray-600">Lär dig om sparande och investering</p>
+                  <h3 className="font-bold text-chocolate-dark text-lg mb-1">Investera</h3>
+                  <p className="text-sm text-chocolate-milk">Lär dig om sparande och investering</p>
                 </div>
               </div>
               
-              <div className="flex items-start gap-3">
-                <span className="text-3xl">🏭</span>
+              <div className="flex items-start gap-4">
+                <div className="icon-circle-orange shrink-0">
+                  <FactoryIcon size={28} color="#ffffff" />
+                </div>
                 <div>
-                  <h3 className="font-bold text-gray-800">Chokladfabrik</h3>
-                  <p className="text-sm text-gray-600">Bygg passiv inkomst genom fabriker</p>
+                  <h3 className="font-bold text-chocolate-dark text-lg mb-1">Chokladfabrik</h3>
+                  <p className="text-sm text-chocolate-milk">Bygg passiv inkomst genom fabriker</p>
                 </div>
               </div>
             </div>
           </div>
           
-          {/* Tre tydliga val */}
-          <div className="space-y-3">
+          {/* Tre tydliga val - mjuka och lekfulla */}
+          <div className="space-y-4">
             <button
               onClick={() => router.push('/login')}
-              className="w-full p-4 rounded-xl border-2 border-amber-200 bg-amber-50 hover:bg-amber-100 hover:border-amber-300 text-left transition-all flex items-start gap-3"
+              className="card-interactive w-full p-5 text-left flex items-start gap-4 group"
             >
-              <span className="text-3xl">🔑</span>
-              <div className="flex-1 min-w-0">
-                <h3 className="font-bold text-gray-800">1. Logga in</h3>
-                <p className="text-sm text-gray-600">Har redan ett konto? Ange familjekod och ditt namn.</p>
+              <div className="icon-container bg-gradient-to-br from-blue-100 to-sky-100 group-hover:from-blue-200 group-hover:to-sky-200">
+                <KeyIcon size={32} color="#0284c7" />
               </div>
-              <span className="text-amber-600 font-medium shrink-0">→</span>
+              <div className="flex-1 min-w-0">
+                <h3 className="font-bold text-chocolate-dark text-lg mb-1">1. Logga in</h3>
+                <p className="text-sm text-chocolate-milk leading-relaxed">Har redan ett konto? Ange familjekod och ditt namn.</p>
+              </div>
+              <div className="shrink-0 flex items-center opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all">
+                <ArrowRightIcon size={24} color="#f59e0b" />
+              </div>
             </button>
 
             <button
               onClick={() => router.push('/login')}
-              className="w-full p-4 rounded-xl border-2 border-amber-200 bg-amber-50 hover:bg-amber-100 hover:border-amber-300 text-left transition-all flex items-start gap-3"
+              className="card-interactive w-full p-5 text-left flex items-start gap-4 group"
             >
-              <span className="text-3xl">📩</span>
-              <div className="flex-1 min-w-0">
-                <h3 className="font-bold text-gray-800">2. Jag har fått en familjekod</h3>
-                <p className="text-sm text-gray-600">Gå med i familjen. Ange koden du fått och ditt namn.</p>
+              <div className="icon-container bg-gradient-to-br from-purple-100 to-pink-100 group-hover:from-purple-200 group-hover:to-pink-200">
+                <EnvelopeIcon size={32} color="#a855f7" />
               </div>
-              <span className="text-amber-600 font-medium shrink-0">→</span>
+              <div className="flex-1 min-w-0">
+                <h3 className="font-bold text-chocolate-dark text-lg mb-1">2. Jag har fått en familjekod</h3>
+                <p className="text-sm text-chocolate-milk leading-relaxed">Gå med i familjen. Ange koden du fått och ditt namn.</p>
+              </div>
+              <div className="shrink-0 flex items-center opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all">
+                <ArrowRightIcon size={24} color="#f59e0b" />
+              </div>
             </button>
 
             <button
               onClick={() => router.push('/create-family')}
-              className="w-full p-4 rounded-xl border-2 border-amber-500 bg-amber-100 hover:bg-amber-200 border-amber-400 text-left transition-all flex items-start gap-3"
+              className="card-interactive w-full p-5 text-left flex items-start gap-4 group border-2 border-amber-400 bg-gradient-to-br from-amber-50 to-orange-50"
             >
-              <span className="text-3xl">👨‍👩‍👧‍👦</span>
-              <div className="flex-1 min-w-0">
-                <h3 className="font-bold text-gray-800">3. Skapa familj</h3>
-                <p className="text-sm text-gray-600">Börja från början. Skapa en ny familj och få en kod.</p>
+              <div className="icon-container bg-gradient-to-br from-amber-200 to-orange-200 group-hover:from-amber-300 group-hover:to-orange-300">
+                <UsersIcon size={32} color="#d97706" />
               </div>
-              <span className="text-amber-600 font-medium shrink-0">→</span>
+              <div className="flex-1 min-w-0">
+                <h3 className="font-bold text-chocolate-dark text-lg mb-1">3. Skapa familj</h3>
+                <p className="text-sm text-chocolate-milk leading-relaxed">Börja från början. Skapa en ny familj och få en kod.</p>
+              </div>
+              <div className="shrink-0 flex items-center opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all">
+                <ArrowRightIcon size={24} color="#f59e0b" />
+              </div>
             </button>
           </div>
           

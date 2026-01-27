@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/Button';
 import { ErrorMessage } from '@/components/ErrorMessage';
+import { ChildIcon } from '@/components/icons';
 
 export default function AddChildPage() {
   const router = useRouter();
@@ -28,7 +29,9 @@ export default function AddChildPage() {
       <div className="max-w-md mx-auto pt-12">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="text-6xl mb-4">👧👦</div>
+          <div className="mb-4 flex justify-center">
+            <ChildIcon size={64} color="#D97706" />
+          </div>
           <h1 className="text-3xl font-bold text-gray-800 mb-2">Lägg till barn</h1>
           <p className="text-gray-600">Skapa ett konto för ditt barn</p>
         </div>
