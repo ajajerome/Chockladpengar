@@ -30,6 +30,9 @@ interface StoreState extends AppState {
   // Actions - Family
   setFamily: (family: Family) => void;
   setFamilyMembers: (members: User[]) => void;
+  addParent: (familyId: string, name: string, pin: string) => Promise<void>;
+  families: Family[];
+  loadFamilyForJoin: (familyId: string) => Promise<void>;
   
   // Actions - Tasks
   setTasks: (tasks: Task[]) => void;
@@ -63,6 +66,7 @@ export const useStore = create<StoreState>((set, get) => ({
   isAuthenticated: false,
   family: null,
   familyMembers: [],
+  families: [],
   tasks: [],
   rewards: [],
   purchasedRewards: [],
@@ -163,6 +167,39 @@ export const useStore = create<StoreState>((set, get) => ({
   
   setFamilyMembers: (members: User[]) => {
     set({ familyMembers: members });
+  },
+  
+  addParent: async (familyId: string, name: string, _pin: string) => {
+    const { mode } = get();
+    if (mode === 'firebase') {
+      const parent = await FirebaseService.createParent({ name, familyId });
+      const members = [...get().familyMembers, parent];
+      set({ familyMembers: members });
+    } else {
+      const parent: Parent = {
+        id: `parent_${Date.now()}`,
+        name,
+        role: 'parent',
+        familyId,
+        children: [],
+        createdAt: new Date().toISOString(),
+      };
+      const members = [...get().familyMembers, parent];
+      set({ familyMembers: members });
+    }
+  },
+  
+  loadFamilyForJoin: async (familyId: string) => {
+    if (isFirebaseConfigured()) {
+      try {
+        const family = await FirebaseService.getFamily(familyId);
+        set({ families: family ? [family] : [] });
+      } catch {
+        set({ families: [] });
+      }
+    } else {
+      set({ families: [] });
+    }
   },
   
   // ============= TASKS =============

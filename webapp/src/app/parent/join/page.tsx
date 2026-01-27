@@ -10,7 +10,7 @@ function JoinFamilyContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const familyId = searchParams.get('familyId')
-  const { addParent, families } = useStore()
+  const { addParent, families, loadFamilyForJoin } = useStore()
   const family = families.find(f => f.id === familyId)
   
   const [name, setName] = useState('')
@@ -18,6 +18,12 @@ function JoinFamilyContent() {
   const [confirmPin, setConfirmPin] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+
+  useEffect(() => {
+    if (familyId) {
+      loadFamilyForJoin(familyId)
+    }
+  }, [familyId, loadFamilyForJoin])
 
   useEffect(() => {
     if (!familyId || !family) {
@@ -66,7 +72,7 @@ function JoinFamilyContent() {
           <p className="text-secondary mb-6">
             Denna inbjudningslänk fungerar inte. Be den som bjöd in dig att skicka en ny länk.
           </p>
-          <Button onClick={() => router.push('/login')} variant="outline" className="w-full">
+          <Button onClick={() => router.push('/login')} variant="ghost" fullWidth>
             Gå till login
           </Button>
         </div>
@@ -144,16 +150,16 @@ function JoinFamilyContent() {
               onClick={handleJoin}
               loading={loading}
               disabled={loading || !family}
-              size="large"
-              className="w-full"
+              size="lg"
+              fullWidth
             >
               Gå med i familjen
             </Button>
 
             <Button
               onClick={() => router.push('/login')}
-              variant="outline"
-              className="w-full"
+              variant="ghost"
+              fullWidth
             >
               Avbryt
             </Button>

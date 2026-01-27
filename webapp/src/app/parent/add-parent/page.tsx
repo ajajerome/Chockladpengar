@@ -119,16 +119,16 @@ function AddParentContent() {
               onClick={handleAdd}
               loading={loading}
               disabled={loading}
-              size="large"
-              className="w-full"
+              size="lg"
+              fullWidth
             >
               Lägg till förälder
             </Button>
 
             <Button
               onClick={() => router.back()}
-              variant="outline"
-              className="w-full"
+              variant="ghost"
+              fullWidth
             >
               Avbryt
             </Button>

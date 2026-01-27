@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react';
 import { useStore } from '@/store/useStore';
 import { FirebaseService } from '@/services/firebase.service';
-import type { Reward } from '@/types';
+import type { Reward, Child } from '@/types';
 
 export function useRewards() {
   const { mode, currentUser, family, rewards } = useStore();
@@ -17,7 +17,7 @@ export function useRewards() {
   const affordableRewards = useMemo(() => {
     if (!currentUser || currentUser.role !== 'child') return [];
     
-    return availableRewards.filter(r => r.cost <= currentUser.balance);
+    return availableRewards.filter(r => r.cost <= (currentUser as Child).balance);
   }, [availableRewards, currentUser]);
   
   const createReward = async (

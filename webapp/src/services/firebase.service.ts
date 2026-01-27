@@ -83,7 +83,8 @@ export class FirebaseService {
   }
   
   static listenToFamily(familyId: string, callback: (family: Family | null) => void) {
-    const familyRef = ref(database, `families/${familyId}`);
+    const db = getDatabase();
+    const familyRef = ref(db, `families/${familyId}`);
     onValue(familyRef, (snapshot) => {
       callback(snapshot.exists() ? snapshot.val() : null);
     });
@@ -95,7 +96,7 @@ export class FirebaseService {
   // ============= USERS =============
   
   static async createUser(userData: Omit<User, 'id' | 'createdAt'>): Promise<User> {
-    const usersRef = ref(database, 'users');
+    const usersRef = ref(getDatabase(), 'users');
     const newUserRef = push(usersRef);
     
     const user: User = {
@@ -111,7 +112,7 @@ export class FirebaseService {
   static async createChild(
     childData: Omit<Child, 'id' | 'createdAt' | 'role' | 'balance'>
   ): Promise<Child> {
-    const usersRef = ref(database, 'users');
+    const usersRef = ref(getDatabase(), 'users');
     const newUserRef = push(usersRef);
     
     const child: Child = {
@@ -133,7 +134,7 @@ export class FirebaseService {
   static async createParent(
     parentData: Omit<Parent, 'id' | 'createdAt' | 'role' | 'children'>
   ): Promise<Parent> {
-    const usersRef = ref(database, 'users');
+    const usersRef = ref(getDatabase(), 'users');
     const newUserRef = push(usersRef);
     
     const parent: Parent = {
@@ -152,20 +153,20 @@ export class FirebaseService {
     const parent = await this.getUser(parentId) as Parent;
     if (parent && parent.role === 'parent') {
       const children = parent.children || [];
-      await update(ref(database, `users/${parentId}`), {
+      await update(ref(getDatabase(), `users/${parentId}`), {
         children: [...children, childId],
       });
     }
   }
   
   static async getUser(userId: string): Promise<User | null> {
-    const userRef = ref(database, `users/${userId}`);
+    const userRef = ref(getDatabase(), `users/${userId}`);
     const snapshot = await get(userRef);
     return snapshot.exists() ? snapshot.val() : null;
   }
   
   static async getFamilyMembers(familyId: string): Promise<User[]> {
-    const usersRef = ref(database, 'users');
+    const usersRef = ref(getDatabase(), 'users');
     const usersQuery = query(usersRef, orderByChild('familyId'), equalTo(familyId));
     const snapshot = await get(usersQuery);
     
@@ -180,14 +181,14 @@ export class FirebaseService {
     const user = await this.getUser(userId);
     if (user && user.role === 'child') {
       const child = user as Child;
-      await update(ref(database, `users/${userId}`), {
+      await update(ref(getDatabase(), `users/${userId}`), {
         balance: (child.balance || 0) + amount,
       });
     }
   }
   
   static listenToUser(userId: string, callback: (user: User | null) => void) {
-    const userRef = ref(database, `users/${userId}`);
+    const userRef = ref(getDatabase(), `users/${userId}`);
     onValue(userRef, (snapshot) => {
       callback(snapshot.exists() ? snapshot.val() : null);
     });
@@ -196,7 +197,7 @@ export class FirebaseService {
   }
   
   static listenToFamilyMembers(familyId: string, callback: (users: User[]) => void) {
-    const usersRef = ref(database, 'users');
+    const usersRef = ref(getDatabase(), 'users');
     const usersQuery = query(usersRef, orderByChild('familyId'), equalTo(familyId));
     
     onValue(usersQuery, (snapshot) => {
@@ -214,7 +215,7 @@ export class FirebaseService {
   // ============= TASKS =============
   
   static async createTask(taskData: Omit<Task, 'id' | 'createdAt' | 'status'>): Promise<Task> {
-    const tasksRef = ref(database, 'tasks');
+    const tasksRef = ref(getDatabase(), 'tasks');
     const newTaskRef = push(tasksRef);
     
     const task: Task = {
@@ -229,15 +230,15 @@ export class FirebaseService {
   }
   
   static async updateTask(taskId: string, updates: Partial<Task>) {
-    await update(ref(database, `tasks/${taskId}`), updates);
+    await update(ref(getDatabase(), `tasks/${taskId}`), updates);
   }
   
   static async deleteTask(taskId: string) {
-    await remove(ref(database, `tasks/${taskId}`));
+    await remove(ref(getDatabase(), `tasks/${taskId}`));
   }
   
   static async getFamilyTasks(familyId: string): Promise<Task[]> {
-    const tasksRef = ref(database, 'tasks');
+    const tasksRef = ref(getDatabase(), 'tasks');
     const tasksQuery = query(tasksRef, orderByChild('familyId'), equalTo(familyId));
     const snapshot = await get(tasksQuery);
     
@@ -291,13 +292,13 @@ export class FirebaseService {
   }
   
   static async getTask(taskId: string): Promise<Task | null> {
-    const taskRef = ref(database, `tasks/${taskId}`);
+    const taskRef = ref(getDatabase(), `tasks/${taskId}`);
     const snapshot = await get(taskRef);
     return snapshot.exists() ? snapshot.val() : null;
   }
   
   static listenToFamilyTasks(familyId: string, callback: (tasks: Task[]) => void) {
-    const tasksRef = ref(database, 'tasks');
+    const tasksRef = ref(getDatabase(), 'tasks');
     const tasksQuery = query(tasksRef, orderByChild('familyId'), equalTo(familyId));
     
     onValue(tasksQuery, (snapshot) => {
@@ -315,7 +316,7 @@ export class FirebaseService {
   // ============= REWARDS =============
   
   static async createReward(rewardData: Omit<Reward, 'id' | 'createdAt' | 'status'>): Promise<Reward> {
-    const rewardsRef = ref(database, 'rewards');
+    const rewardsRef = ref(getDatabase(), 'rewards');
     const newRewardRef = push(rewardsRef);
     
     const reward: Reward = {
@@ -330,7 +331,7 @@ export class FirebaseService {
   }
   
   static async getFamilyRewards(familyId: string): Promise<Reward[]> {
-    const rewardsRef = ref(database, 'rewards');
+    const rewardsRef = ref(getDatabase(), 'rewards');
     const rewardsQuery = query(rewardsRef, orderByChild('familyId'), equalTo(familyId));
     const snapshot = await get(rewardsQuery);
     
@@ -357,7 +358,7 @@ export class FirebaseService {
     await this.updateUserBalance(childId, -reward.cost);
     
     // Create purchased reward
-    const purchasedRewardsRef = ref(database, 'purchasedRewards');
+    const purchasedRewardsRef = ref(getDatabase(), 'purchasedRewards');
     const newPurchaseRef = push(purchasedRewardsRef);
     
     const purchase: PurchasedReward = {
@@ -381,13 +382,13 @@ export class FirebaseService {
   }
   
   static async getReward(rewardId: string): Promise<Reward | null> {
-    const rewardRef = ref(database, `rewards/${rewardId}`);
+    const rewardRef = ref(getDatabase(), `rewards/${rewardId}`);
     const snapshot = await get(rewardRef);
     return snapshot.exists() ? snapshot.val() : null;
   }
   
   static listenToFamilyRewards(familyId: string, callback: (rewards: Reward[]) => void) {
-    const rewardsRef = ref(database, 'rewards');
+    const rewardsRef = ref(getDatabase(), 'rewards');
     const rewardsQuery = query(rewardsRef, orderByChild('familyId'), equalTo(familyId));
     
     onValue(rewardsQuery, (snapshot) => {
@@ -407,7 +408,7 @@ export class FirebaseService {
   static async createTransaction(
     transactionData: Omit<Transaction, 'id' | 'timestamp'>
   ): Promise<Transaction> {
-    const transactionsRef = ref(database, 'transactions');
+    const transactionsRef = ref(getDatabase(), 'transactions');
     const newTransactionRef = push(transactionsRef);
     
     const transaction: Transaction = {
@@ -421,7 +422,7 @@ export class FirebaseService {
   }
   
   static async getUserTransactions(userId: string): Promise<Transaction[]> {
-    const transactionsRef = ref(database, 'transactions');
+    const transactionsRef = ref(getDatabase(), 'transactions');
     const transactionsQuery = query(transactionsRef, orderByChild('userId'), equalTo(userId));
     const snapshot = await get(transactionsQuery);
     
@@ -435,7 +436,7 @@ export class FirebaseService {
   }
   
   static listenToUserTransactions(userId: string, callback: (transactions: Transaction[]) => void) {
-    const transactionsRef = ref(database, 'transactions');
+    const transactionsRef = ref(getDatabase(), 'transactions');
     const transactionsQuery = query(transactionsRef, orderByChild('userId'), equalTo(userId));
     
     onValue(transactionsQuery, (snapshot) => {

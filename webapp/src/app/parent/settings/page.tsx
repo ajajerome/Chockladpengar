@@ -9,14 +9,12 @@ import { Avatar } from '@/components/Avatar'
 export default function FamilySettingsPage() {
   const router = useRouter()
   const currentUser = useStore((state) => state.currentUser)
-  const family = useStore((state) =>
-    state.families.find((f) => f.id === currentUser?.familyId)
-  )
+  const family = useStore((state) => state.family)
   const parents = useStore((state) =>
-    state.users.filter((u) => family?.parentIds.includes(u.id))
+    state.familyMembers.filter((u) => u.role === 'parent')
   )
   const children = useStore((state) =>
-    state.users.filter((u) => family?.childIds.includes(u.id))
+    state.familyMembers.filter((u) => u.role === 'child')
   )
   const [inviteLink, setInviteLink] = useState('')
 
@@ -49,9 +47,11 @@ export default function FamilySettingsPage() {
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="mb-6">
-          <Button onClick={() => router.back()} variant="outline" className="mb-4">
-            ← Tillbaka
-          </Button>
+          <div className="mb-4">
+            <Button onClick={() => router.back()} variant="ghost" type="button">
+              ← Tillbaka
+            </Button>
+          </div>
 
           <div className="text-center mb-6">
             <div className="text-6xl mb-4">⚙️</div>
