@@ -25,9 +25,10 @@ export default function FamilySettingsPage() {
   }, [currentUser, router])
 
   useEffect(() => {
-    // Set invite link on client side only
+    // Always use production URL for invite links to avoid preview deployment issues
     if (family) {
-      setInviteLink(`${window.location.origin}/parent/join?familyId=${family.id}`)
+      const productionUrl = 'https://chockladpengar.vercel.app';
+      setInviteLink(`${productionUrl}/parent/join?familyId=${family.id}`)
     }
   }, [family])
 
