@@ -1,0 +1,21 @@
+{
+  "rules": {
+    ".read": true,
+    ".write": true,
+    "families": {
+      ".indexOn": ["code"]
+    },
+    "users": {
+      ".indexOn": ["familyId"]
+    },
+    "tasks": {
+      ".indexOn": ["familyId"]
+    },
+    "rewards": {
+      ".indexOn": ["familyId"]
+    },
+    "transactions": {
+      ".indexOn": ["userId"]
+    }
+  }
+}
