@@ -1,93 +1,173 @@
+// Core Types
+export type UserRole = 'parent' | 'child';
+
 export interface User {
   id: string;
   name: string;
-  role: 'parent' | 'child';
+  role: UserRole;
   familyId: string;
-  pin?: string;
-  avatar?: string;
+  createdAt: string;
 }
 
 export interface Family {
   id: string;
   name: string;
-  parentIds: string[];
-  childIds: string[];
+  code: string;
   createdAt: string;
+  ownerId: string; // parent who created the family
 }
+
+export interface Child extends User {
+  role: 'child';
+  balance: number;
+  parentId: string;
+}
+
+export interface Parent extends User {
+  role: 'parent';
+  children: string[]; // array of child IDs
+}
+
+// Tasks
+export type TaskStatus = 'pending' | 'in_review' | 'approved' | 'rejected';
+export type TaskFrequency = 'once' | 'daily' | 'weekly';
 
 export interface Task {
   id: string;
   title: string;
   description: string;
-  points: number;
-  status: 'pending' | 'completed' | 'approved' | 'rejected';
-  createdBy: string;
-  assignedTo: string;
-  familyId: string;
-  deadline?: string;
-  recurring?: 'daily' | 'weekly' | 'monthly';
+  reward: number;
+  frequency: TaskFrequency;
+  assignedTo: string; // child ID
+  createdBy: string; // parent ID
+  status: TaskStatus;
   createdAt: string;
   completedAt?: string;
+  reviewedAt?: string;
+  familyId: string;
 }
+
+// Rewards
+export type RewardStatus = 'available' | 'purchased' | 'delivered';
 
 export interface Reward {
   id: string;
   title: string;
   description: string;
   cost: number;
-  category: string;
+  icon: string;
+  createdBy: string; // parent ID
   familyId: string;
-  createdBy: string;
-  imageUrl?: string;
+  status: RewardStatus;
+  createdAt: string;
 }
 
+export interface PurchasedReward {
+  id: string;
+  rewardId: string;
+  childId: string;
+  purchasedAt: string;
+  status: RewardStatus;
+}
+
+// Investments
 export interface Investment {
   id: string;
-  userId: string;
-  fundType: 'milk' | 'nougat' | 'gold';
+  childId: string;
+  fundId: string;
   amount: number;
-  startDate: string;
-  currentValue: number;
-  totalReturn: number;
+  purchasePrice: number;
+  purchasedAt: string;
 }
 
-export interface Factory {
+export interface Fund {
   id: string;
-  userId: string;
-  currentStep: number;
-  totalSteps: number;
-  isComplete: boolean;
-  weeklyIncome: number;
-  totalInvested: number;
+  name: string;
+  description: string;
+  riskLevel: 'low' | 'medium' | 'high';
+  currentPrice: number;
+  priceHistory: PricePoint[];
+  icon: string;
 }
+
+export interface PricePoint {
+  timestamp: string;
+  price: number;
+}
+
+// Factory
+export interface FactoryItem {
+  id: string;
+  name: string;
+  description: string;
+  cost: number;
+  productionRate: number; // coins per hour
+  icon: string;
+  level: number;
+}
+
+export interface OwnedFactory {
+  id: string;
+  childId: string;
+  factoryItemId: string;
+  purchasedAt: string;
+  level: number;
+}
+
+// Transactions
+export type TransactionType = 'task_reward' | 'purchase' | 'investment' | 'factory' | 'dividend';
 
 export interface Transaction {
   id: string;
   userId: string;
-  type: 'earn' | 'spend' | 'invest' | 'withdraw' | 'passive';
+  type: TransactionType;
   amount: number;
   description: string;
   timestamp: string;
-  relatedId?: string;
+  relatedId?: string; // ID of related task, reward, etc.
 }
 
-export interface Notification {
-  id: string;
-  userId: string;
-  title: string;
-  message: string;
-  type: 'task' | 'reward' | 'investment' | 'factory' | 'general';
-  isRead: boolean;
-  timestamp: string;
+// Firebase Database Structure
+export interface FirebaseDatabase {
+  families: Record<string, Family>;
+  users: Record<string, User | Parent | Child>;
+  tasks: Record<string, Task>;
+  rewards: Record<string, Reward>;
+  purchasedRewards: Record<string, PurchasedReward>;
+  investments: Record<string, Investment>;
+  factories: Record<string, OwnedFactory>;
+  transactions: Record<string, Transaction>;
+  funds: Record<string, Fund>;
 }
 
-export interface Balance {
-  userId: string;
-  amount: number;
+// App State
+export interface AppState {
+  // Current user
+  currentUser: User | null;
+  isAuthenticated: boolean;
+  
+  // Family data
+  family: Family | null;
+  familyMembers: User[];
+  
+  // Tasks
+  tasks: Task[];
+  
+  // Rewards
+  rewards: Reward[];
+  purchasedRewards: PurchasedReward[];
+  
+  // Investments
+  investments: Investment[];
+  funds: Fund[];
+  
+  // Factory
+  ownedFactories: OwnedFactory[];
+  
+  // Transactions
+  transactions: Transaction[];
+  
+  // UI State
+  isLoading: boolean;
+  error: string | null;
 }
-
-
-
-
-
-

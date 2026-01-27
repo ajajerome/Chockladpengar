@@ -1,191 +1,164 @@
-# Chokladpengar - PWA
+# Chokladpengar - Webbapp
 
-En modern, progressiv webbapp för familjer att hantera uppgifter, belöningar och lära barn om pengar genom ett roligt choklad-tema.
+En rolig och pedagogisk app för att lära barn om ekonomi genom uppgifter, belöningar och investeringar.
 
 ## 🚀 Snabbstart
 
-### 1. Installera beroenden
+### Lokal utveckling
 
 ```bash
-cd webapp
+# Installera dependencies
 npm install
-```
 
-### 2. Konfigurera Firebase (Valfritt för lokal testning)
-
-För att testa lokalt **utan** Firebase:
-- Appen använder localStorage automatiskt
-- Fungerar offline
-- Data sparas lokalt i webbläsaren
-
-För att aktivera **multi-device sync** med Firebase:
-1. Följ instruktionerna i `FIREBASE_SETUP.md`
-2. Skapa `.env.local` från `.env.example`
-3. Lägg in dina Firebase credentials
-
-### 3. Kör utvecklingsserver
-
-```bash
+# Starta utvecklingsserver
 npm run dev
 ```
 
 Öppna [http://localhost:3000](http://localhost:3000) i din webbläsare.
 
-### 4. Testa på mobil
+## 🔥 Firebase Setup (Valfritt)
 
-**På samma nätverk:**
-1. Kör `npm run dev`
-2. Hitta din dators IP (t.ex. 192.168.1.100)
-3. Öppna `http://192.168.1.100:3000` på mobilen
-4. På iOS Safari: Tryck "Dela" → "Lägg till på hemskärmen"
-5. På Android Chrome: Tryck menyn → "Installera app"
+Appen fungerar i två lägen:
 
-## 📱 Installera som app
+1. **Local Mode** (Standard) - Data sparas i localStorage
+2. **Firebase Mode** - Data synkas i realtid mellan enheter
 
-### iOS (Safari)
-1. Öppna appen i Safari
-2. Tryck på "Dela"-knappen (fyrkant med pil uppåt)
-3. Scrolla ner och tryck "Lägg till på hemskärmen"
-4. Tryck "Lägg till"
+### För att aktivera Firebase Mode:
 
-### Android (Chrome)
-1. Öppna appen i Chrome
-2. Tryck på menyn (tre prickar)
-3. Tryck "Installera app" eller "Lägg till på hemskärmen"
-4. Tryck "Installera"
+1. Skapa ett Firebase-projekt på [console.firebase.google.com](https://console.firebase.google.com)
 
-## 🎯 Funktioner
+2. Aktivera **Realtime Database**:
+   - Gå till Build > Realtime Database
+   - Skapa databas (börja i test mode)
 
-- ✅ **Uppgifter** - Föräldrar skapar, barn slutför, föräldrar godkänner
-- ✅ **Belöningar** - Barn kan köpa belöningar med chokladpengar
-- ✅ **Chokladfonder** - Investera och se avkastning (uppdateras ons & lör)
-- ✅ **Chokladfabriken** - Bygg fabrik för passiv inkomst
-- ✅ **Multi-familj** - Flera familjer kan använda samma installation
-- ✅ **Offline-first** - Fungerar utan internet (localStorage)
-- ✅ **Firebase sync** - (Valfritt) Synka mellan enheter
+3. Hämta Firebase config:
+   - Gå till Project Settings > General
+   - Scrolla ner till "Your apps"
+   - Välj Web app (eller skapa en ny)
+   - Kopiera Firebase SDK config
 
-## 🏗️ Byggprocess
-
-### Bygg för produktion
-
+4. Skapa `.env.local`:
 ```bash
-npm run build
-npm start
+cp .env.template .env.local
 ```
 
-### Deploy till Vercel
+5. Fyll i dina Firebase-värden i `.env.local`
 
-```bash
-# Installera Vercel CLI
-npm i -g vercel
+6. Starta om utvecklingsservern
 
-# Deploy
-vercel
-```
+## 📱 Funktioner
 
-Följ instruktionerna. Första gången får du länka till ditt Vercel-konto.
+### För Föräldrar:
+- ✅ Skapa uppgifter för barn
+- 🎁 Skapa belöningar
+- 👨‍👩‍👧‍👦 Hantera flera barn
+- ✓ Godkänn/avvisa avslutade uppgifter
+- 📊 Översikt över familjens aktivitet
 
-**Lägg till environment variables i Vercel:**
-1. Gå till Vercel Dashboard → ditt projekt
-2. Settings → Environment Variables
-3. Lägg till alla `NEXT_PUBLIC_FIREBASE_*` variabler från `.env.local`
+### För Barn:
+- 🍫 Tjäna chokladpengar genom uppgifter
+- 🎁 Köpa belöningar
+- 📈 Investera (kommer snart)
+- 🏭 Chokladfabrik med passiv inkomst (kommer snart)
+
+## 🏗️ Teknisk Stack
+
+- **Next.js 15** - React framework
+- **TypeScript** - Type safety
+- **Tailwind CSS** - Styling
+- **Zustand** - State management
+- **Firebase** - Real-time database (optional)
 
 ## 📁 Projektstruktur
 
 ```
 webapp/
 ├── src/
-│   ├── app/                    # Next.js App Router pages
-│   │   ├── page.tsx           # Home/redirect
-│   │   ├── login/             # Login screen
-│   │   ├── create-family/     # Create family
-│   │   ├── add-child/         # Add child
-│   │   ├── child/             # Child screens
-│   │   │   ├── page.tsx       # Child home
-│   │   │   ├── rewards/       # Reward shop
-│   │   │   ├── investments/   # Investment funds
-│   │   │   └── factory/       # Factory building
-│   │   └── parent/            # Parent screens
-│   │       ├── page.tsx       # Parent home
-│   │       ├── create-task/   # Create task
-│   │       └── create-reward/ # Create reward
-│   ├── components/            # Reusable components
-│   │   ├── Button.tsx
-│   │   ├── TaskCard.tsx
-│   │   ├── RewardCard.tsx
-│   │   ├── FundCard.tsx
-│   │   └── ChocolateCoin.tsx
-│   ├── store/                 # Zustand state management
-│   │   └── useStore.ts
-│   ├── types/                 # TypeScript types
-│   ├── constants/             # Constants (funds, factory)
-│   └── lib/                   # Firebase config
-├── public/
-│   ├── manifest.json          # PWA manifest
-│   └── icons/                 # App icons
-├── .env.example               # Environment variables template
-├── FIREBASE_SETUP.md          # Firebase setup guide
-└── README.md                  # This file
+│   ├── app/                 # Next.js pages (App Router)
+│   │   ├── page.tsx        # Startsida
+│   │   ├── login/          # Inloggning
+│   │   ├── create-family/  # Skapa familj
+│   │   ├── parent/         # Förälder screens
+│   │   └── child/          # Barn screens
+│   ├── components/         # Återanvändbara komponenter
+│   ├── hooks/              # Custom React hooks
+│   ├── services/           # Firebase & localStorage services
+│   ├── store/              # Zustand state management
+│   ├── types/              # TypeScript types
+│   └── lib/                # Firebase config
+├── public/                 # Statiska filer
+└── .env.template          # Environment variables template
 ```
 
-## 🔧 Teknologi
+## 🚀 Deployment
 
-- **Next.js 15** - React framework med App Router
-- **TypeScript** - Type safety
-- **Tailwind CSS** - Utility-first CSS
-- **Zustand** - State management
-- **Firebase** - Realtime Database (optional)
-- **PWA** - Progressive Web App (installable)
+### Vercel (Rekommenderat)
 
-## 🎨 Design
+1. Pusha kod till GitHub
 
-- **Choklad-tema** - Varma bruna, beige, karamell och guldtoner
-- **Gradient bakgrund** - Mjuk gradient från ljus till mörkare beige
-- **Moderna kort** - Rundade hörn, skuggor, hover-effekter
-- **Responsiv** - Fungerar på alla skärmstorlekar
+2. Gå till [vercel.com](https://vercel.com)
 
-## 💰 Monetisering (Framtida)
+3. Importera ditt repo
 
-Appen är förberedd för Stripe-integration:
-- Freemium-modell: Gratis för 1 barn, premium för fler
-- Premium: 49 kr/månad eller 490 kr/år
-- Ingen App Store-provision (30% sparas!)
+4. Konfigurera:
+   - **Root Directory:** `webapp`
+   - **Build Command:** `npm run build`
+   - **Install Command:** `npm install`
 
-## 📊 Automatisk fondupdatering
+5. Lägg till Environment Variables (om du använder Firebase):
+   - Gå till Settings > Environment Variables
+   - Lägg till alla variabler från `.env.local`
 
-Fonder uppdateras automatiskt varje **onsdag** och **lördag** kl 08:00 via Firebase Cloud Functions.
+6. Deploy!
 
-För att aktivera:
-1. Följ `FIREBASE_SETUP.md`
-2. Deploy Cloud Function
-3. Barnen får push-notis när fonderna uppdaterats
+### Annan hosting
 
-## 🐛 Felsökning
+```bash
+# Bygg production
+npm run build
 
-### Appen laddar inte
-- Kontrollera att `npm run dev` körs
-- Rensa webbläsarcache (Ctrl+Shift+R / Cmd+Shift+R)
+# Starta production server
+npm start
+```
 
-### Firebase fungerar inte
-- Kontrollera att `.env.local` finns och har rätt värden
-- Kolla att Realtime Database är aktiverad i Firebase Console
-- Verifiera att security rules är korrekt konfigurerade
+## 🔧 Utveckling
 
-### PWA installeras inte
-- PWA kräver HTTPS (fungerar på localhost utan)
-- På produktion: Se till att manifest.json finns
-- På iOS: Endast Safari stöder "Lägg till på hemskärmen"
+### Köra i Local Mode (utan Firebase)
 
-## 📝 Licens
+Appen fungerar direkt utan Firebase. All data sparas i localStorage.
 
-Privat projekt - Alla rättigheter förbehållna.
+### Testa på mobil (samma nätverk)
 
-## 🤝 Kontakt
+1. Hitta din dators IP-adress:
+```bash
+# Windows
+ipconfig
 
-För frågor eller support, kontakta projektägaren.
+# Mac/Linux
+ifconfig
+```
 
+2. Öppna på mobilen:
+```
+http://[DIN_IP]:3000
+```
 
+### Lägg till på hemskärmen
 
+På iOS/Android:
+1. Öppna appen i webbläsaren
+2. Tryck på "Dela" / "Meny"
+3. Välj "Lägg till på hemskärmen"
+4. Nu kan du öppna appen som en native app!
 
+## 🤝 Bidra
 
+Pull requests är välkomna! För större ändringar, öppna en issue först.
 
+## 📄 Licens
+
+MIT
+
+## 🍫 Tack!
+
+Byggt med ❤️ för att göra ekonomisk utbildning rolig för barn!

@@ -1,210 +1,143 @@
-'use client'
+'use client';
 
-import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { useStore } from '@/store/useStore'
-import { TaskCard } from '@/components/TaskCard'
-import { Button } from '@/components/Button'
-import { Avatar } from '@/components/Avatar'
-import { ChocolateCoinIcon, PlusIcon, SettingsIcon, CheckIcon, ArrowRightIcon, GiftIcon } from '@/components/icons'
+import React from 'react';
+import { useRouter } from 'next/navigation';
+import { useStore } from '@/store/useStore';
+import { useTasks } from '@/hooks/useTasks';
+import { Button } from '@/components/Button';
+import { TaskCard } from '@/components/TaskCard';
+import { LoadingSpinner } from '@/components/LoadingSpinner';
+import type { Child } from '@/types';
 
 export default function ParentHomePage() {
-  const router = useRouter()
-  const currentUser = useStore((state) => state.currentUser)
-  const family = useStore((state) =>
-    state.families.find((f) => f.id === currentUser?.familyId)
-  )
-  const children = useStore((state) =>
-    state.users.filter((u) => family?.childIds.includes(u.id))
-  )
-  const tasks = useStore((state) =>
-    state.tasks.filter((t) => t.familyId === currentUser?.familyId)
-  )
-  const pendingTasks = tasks.filter((t) => t.status === 'completed')
-  const approveTask = useStore((state) => state.approveTask)
-  const rejectTask = useStore((state) => state.rejectTask)
-  const getBalance = useStore((state) => state.getBalance)
-  const logout = useStore((state) => state.logout)
-
-  useEffect(() => {
-    if (!currentUser || currentUser.role !== 'parent') {
-      router.push('/login')
-    }
-  }, [currentUser, router])
-
-  if (!currentUser) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-6xl mb-4">🍫</div>
-          <p className="text-secondary">Laddar...</p>
-        </div>
-      </div>
-    )
+  const router = useRouter();
+  const { currentUser, family, familyMembers, logout } = useStore();
+  const { reviewTasks, approveTask, rejectTask } = useTasks();
+  
+  if (!currentUser || currentUser.role !== 'parent') {
+    router.push('/');
+    return null;
   }
-
+  
+  const children = familyMembers.filter(m => m.role === 'child') as Child[];
+  
   return (
-    <div className="min-h-screen p-4 pb-24">
-      <div className="max-w-2xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 pb-20">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-amber-600 to-orange-600 text-white p-6 shadow-lg">
+        <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-3xl font-bold text-primary mb-1">Föräldravy</h1>
-              <p className="text-secondary font-medium">Familj: {family?.name}</p>
+              <h1 className="text-2xl font-bold">Hej {currentUser.name}!</h1>
+              <p className="text-amber-100">{family?.name || 'Familjen'}</p>
             </div>
             <button
-              onClick={() => {
-                logout()
-                router.push('/login')
-              }}
-              className="px-4 py-2 text-sm text-secondary hover:text-primary hover:bg-white rounded-lg transition-all"
+              onClick={logout}
+              className="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
             >
               Logga ut
             </button>
           </div>
-        </div>
-
-        {/* Children */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-2xl font-bold text-primary">Barn</h2>
-            <button
-              onClick={() => router.push(`/add-child?familyId=${family?.id}`)}
-              className="flex items-center gap-2 px-4 py-2 text-accent hover:text-accent-dark font-semibold rounded-lg hover:bg-accent/10 transition-all"
-            >
-              <PlusIcon size={20} />
-              <span>Lägg till</span>
-            </button>
-          </div>
-
-          {children.length === 0 ? (
-            <div className="empty-state">
-              <div className="text-6xl mb-4 flex items-center justify-center">
-                <PlusIcon size={64} color="#9E8B7B" />
-              </div>
-              <p className="text-lg text-text-primary font-medium">Inga barn tillagda ännu</p>
-              <p className="text-sm text-secondary mt-1">
-                Lägg till ditt första barn för att börja!
-              </p>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {children.map((child) => {
-                const balance = getBalance(child.id)
-                return (
-                  <div
-                    key={child.id}
-                    className="card hover:shadow-xl hover:scale-[1.01] transition-all cursor-pointer flex items-center justify-between"
-                    onClick={() => router.push(`/parent/child/${child.id}`)}
-                  >
-                    <div className="flex items-center gap-4">
-                      <Avatar name={child.name} size="large" />
-                      <div>
-                        <p className="font-bold text-primary font-display text-lg">{child.name}</p>
-                        <div className="flex items-center gap-1.5 mt-1">
-                          <ChocolateCoinIcon size={16} color="#D4AF37" />
-                          <span className="text-sm text-secondary font-medium">
-                            {balance} chokladpengar
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                    <ArrowRightIcon size={24} color="#9E8B7B" />
-                  </div>
-                )
-              })}
+          
+          {family && (
+            <div className="bg-white/10 rounded-xl p-4 backdrop-blur">
+              <p className="text-sm text-amber-100 mb-1">Familje kod</p>
+              <p className="text-3xl font-bold tracking-wider">{family.code}</p>
+              <p className="text-xs text-amber-100 mt-1">Dela koden med familjemedlemmar</p>
             </div>
           )}
         </div>
-
-        {/* Pending Tasks */}
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold text-primary mb-4">
-            Uppgifter att godkänna
-            {pendingTasks.length > 0 && (
-              <span className="ml-3 px-3 py-1 text-sm bg-info text-white rounded-full">
-                {pendingTasks.length}
-              </span>
-            )}
-          </h2>
-
-          {pendingTasks.length === 0 ? (
-            <div className="empty-state">
-              <div className="text-6xl mb-4 flex items-center justify-center">
-                <CheckIcon size={64} color="#4CAF50" />
-              </div>
-              <p className="text-lg text-text-primary font-medium">Inga uppgifter att godkänna</p>
-              <p className="text-sm text-secondary mt-1">
-                Bra jobbat, alla uppgifter är hanterade!
-              </p>
+      </div>
+      
+      <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
+        {/* Children Overview */}
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold text-gray-800">Barn ({children.length})</h2>
+            <Button onClick={() => router.push('/add-child')} size="sm">
+              + Lägg till barn
+            </Button>
+          </div>
+          
+          {children.length === 0 ? (
+            <div className="bg-white rounded-2xl shadow p-6 text-center">
+              <div className="text-5xl mb-3">👧👦</div>
+              <p className="text-gray-600 mb-4">Inga barn tillagda än</p>
+              <Button onClick={() => router.push('/add-child')} variant="primary">
+                Lägg till ditt första barn
+              </Button>
             </div>
           ) : (
-            <div className="space-y-4">
-              {pendingTasks.map((task) => (
-                <div key={task.id} className="space-y-3">
-                  <TaskCard
-                    task={task}
-                    showStatus
-                  />
-                  <div className="flex gap-3 px-4">
-                    <Button
-                      onClick={() => rejectTask(task.id)}
-                      variant="outline"
-                      size="medium"
-                      className="flex-1 border-error text-error hover:bg-error hover:text-white"
-                    >
-                      Neka
-                    </Button>
-                    <Button
-                      onClick={() => approveTask(task.id)}
-                      className="flex-1 bg-success hover:bg-green-700 text-white"
-                      size="medium"
-                    >
-                      <CheckIcon size={20} color="white" className="inline mr-1" />
-                      Godkänn
-                    </Button>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {children.map((child) => (
+                <div key={child.id} className="bg-white rounded-2xl shadow p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="text-4xl">👧</div>
+                    <div className="flex-1">
+                      <h3 className="font-bold text-lg">{child.name}</h3>
+                      <div className="flex items-center gap-1 text-amber-600 font-bold">
+                        <span>🍫</span>
+                        <span>{child.balance || 0}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
           )}
         </div>
-
-        {/* Management */}
+        
+        {/* Tasks to Review */}
         <div>
-          <h2 className="text-2xl font-bold text-primary mb-4">Hantera</h2>
-          <div className="space-y-3">
-            <Button
+          <h2 className="text-xl font-bold text-gray-800 mb-4">
+            Uppgifter att granska ({reviewTasks.length})
+          </h2>
+          
+          {reviewTasks.length === 0 ? (
+            <div className="bg-white rounded-2xl shadow p-6 text-center">
+              <div className="text-5xl mb-3">✅</div>
+              <p className="text-gray-600">Inga uppgifter att granska just nu</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {reviewTasks.map((task) => (
+                <TaskCard
+                  key={task.id}
+                  task={task}
+                  userRole="parent"
+                  onApprove={() => approveTask(task.id)}
+                  onReject={() => rejectTask(task.id)}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+        
+        {/* Quick Actions */}
+        <div>
+          <h2 className="text-xl font-bold text-gray-800 mb-4">Snabbåtgärder</h2>
+          
+          <div className="grid grid-cols-2 gap-4">
+            <button
               onClick={() => router.push('/parent/create-task')}
-              variant="primary"
-              className="w-full flex items-center justify-center gap-2"
-              size="large"
+              className="bg-white rounded-2xl shadow p-6 hover:shadow-lg transition-shadow text-center"
             >
-              <PlusIcon size={20} />
-              <span>Skapa uppgift</span>
-            </Button>
-            <Button
+              <div className="text-5xl mb-2">✅</div>
+              <h3 className="font-bold text-gray-800">Skapa uppgift</h3>
+              <p className="text-sm text-gray-600 mt-1">Lägg till ny uppgift</p>
+            </button>
+            
+            <button
               onClick={() => router.push('/parent/create-reward')}
-              variant="secondary"
-              className="w-full flex items-center justify-center gap-2"
-              size="large"
+              className="bg-white rounded-2xl shadow p-6 hover:shadow-lg transition-shadow text-center"
             >
-              <GiftIcon size={20} />
-              <span>Skapa belöning</span>
-            </Button>
-            <Button
-              onClick={() => router.push('/parent/settings')}
-              variant="outline"
-              className="w-full flex items-center justify-center gap-2"
-              size="large"
-            >
-              <SettingsIcon size={20} />
-              <span>Familjeinställningar</span>
-            </Button>
+              <div className="text-5xl mb-2">🎁</div>
+              <h3 className="font-bold text-gray-800">Skapa belöning</h3>
+              <p className="text-sm text-gray-600 mt-1">Lägg till ny belöning</p>
+            </button>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

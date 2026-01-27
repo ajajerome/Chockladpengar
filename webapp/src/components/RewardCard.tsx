@@ -1,58 +1,50 @@
-import React from 'react'
-import { Reward } from '@/types'
-import { GiftIcon, ChocolateCoinIcon } from './icons'
+import React from 'react';
+import type { Reward } from '@/types';
+import { ChocolateCoin } from './ChocolateCoin';
+import { Button } from './Button';
 
 interface RewardCardProps {
-  reward: Reward
-  onClick?: () => void
-  canAfford?: boolean
+  reward: Reward;
+  onPurchase?: () => void;
+  canAfford?: boolean;
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-export const RewardCard: React.FC<RewardCardProps> = ({
+export function RewardCard({
   reward,
-  onClick,
+  onPurchase,
   canAfford = true,
-}) => {
+  disabled = false,
+  loading = false,
+}: RewardCardProps) {
   return (
-    <div
-      className={`card ${
-        canAfford
-          ? 'cursor-pointer hover:scale-[1.02] hover:shadow-xl border-l-4 border-l-accent'
-          : 'opacity-60 cursor-not-allowed border-l-4 border-l-gray-300'
-      }`}
-      onClick={canAfford ? onClick : undefined}
-    >
-      <div className="flex items-start gap-4">
-        {/* Icon */}
-        <div className={`icon-circle flex-shrink-0 ${canAfford ? 'icon-circle-orange' : 'bg-gray-200'}`}>
-          <GiftIcon size={28} color={canAfford ? '#D4AF37' : '#9CA3AF'} />
-        </div>
-
-        {/* Content */}
-        <div className="flex-1 min-w-0">
-          <h3 className={`text-lg font-semibold font-display mb-1 ${
-            canAfford ? 'text-text-primary' : 'text-text-muted'
-          }`}>
-            {reward.title}
-          </h3>
-          <p className="text-sm text-text-secondary mb-2 line-clamp-2">
-            {reward.description}
-          </p>
-          <span className="inline-block px-2 py-1 text-xs font-medium rounded-full bg-secondary/10 text-secondary">
-            {reward.category}
-          </span>
-        </div>
-
-        {/* Price */}
-        <div className={`flex items-center gap-1.5 flex-shrink-0 px-3 py-2 rounded-full ${
-          canAfford ? 'bg-accent-light/20' : 'bg-gray-100'
-        }`}>
-          <ChocolateCoinIcon size={20} color={canAfford ? '#D4AF37' : '#9CA3AF'} />
-          <span className={`font-bold ${canAfford ? 'text-accent-dark' : 'text-text-muted'}`}>
-            {reward.cost}
-          </span>
+    <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl border-2 border-purple-200 p-4 shadow-md hover:shadow-lg transition-shadow">
+      <div className="flex items-start gap-3 mb-3">
+        <div className="text-5xl">{reward.icon}</div>
+        <div className="flex-1">
+          <h3 className="font-bold text-lg text-gray-800">{reward.title}</h3>
+          {reward.description && (
+            <p className="text-sm text-gray-600 mt-1">{reward.description}</p>
+          )}
         </div>
       </div>
+      
+      <div className="flex items-center justify-between mt-4 pt-3 border-t border-purple-200">
+        <ChocolateCoin amount={reward.cost} size="md" />
+        
+        {onPurchase && (
+          <Button
+            onClick={onPurchase}
+            variant={canAfford ? 'primary' : 'secondary'}
+            size="sm"
+            disabled={!canAfford || disabled}
+            loading={loading}
+          >
+            {canAfford ? 'Köp 🎁' : 'Inte råd'}
+          </Button>
+        )}
+      </div>
     </div>
-  )
+  );
 }

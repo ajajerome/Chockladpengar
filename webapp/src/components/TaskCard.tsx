@@ -1,107 +1,98 @@
-import React from 'react'
-import { Task } from '@/types'
-import { ChocolateCoinIcon, CheckIcon, ClockIcon } from './icons'
+import React from 'react';
+import type { Task } from '@/types';
+import { ChocolateCoin } from './ChocolateCoin';
+import { Button } from './Button';
 
 interface TaskCardProps {
-  task: Task
-  onClick?: () => void
-  showActions?: boolean
-  showStatus?: boolean
+  task: Task;
+  onSubmit?: () => void;
+  onApprove?: () => void;
+  onReject?: () => void;
+  onDelete?: () => void;
+  showActions?: boolean;
+  userRole?: 'parent' | 'child';
 }
 
-export const TaskCard: React.FC<TaskCardProps> = ({
+export function TaskCard({
   task,
-  onClick,
-  showActions = false,
-  showStatus = true,
-}) => {
-  const getStatusBadgeClass = () => {
-    switch (task.status) {
-      case 'pending':
-        return 'badge-pending'
-      case 'completed':
-        return 'badge-completed'
-      case 'approved':
-        return 'badge-approved'
-      case 'rejected':
-        return 'badge-rejected'
-      default:
-        return ''
-    }
-  }
-
-  const getStatusText = () => {
-    switch (task.status) {
-      case 'pending':
-        return 'Att göra'
-      case 'completed':
-        return 'Inväntar godkännande'
-      case 'approved':
-        return 'Godkänd'
-      case 'rejected':
-        return 'Ej godkänd'
-      default:
-        return 'Okänd status'
-    }
-  }
-
-  const getCardBorderClass = () => {
-    switch (task.status) {
-      case 'pending':
-        return 'border-l-status-pending'
-      case 'completed':
-        return 'border-l-status-completed'
-      case 'approved':
-        return 'border-l-status-approved'
-      case 'rejected':
-        return 'border-l-status-rejected'
-      default:
-        return 'border-l-gray-300'
-    }
-  }
-
+  onSubmit,
+  onApprove,
+  onReject,
+  onDelete,
+  showActions = true,
+  userRole,
+}: TaskCardProps) {
+  const statusColors = {
+    pending: 'bg-yellow-50 border-yellow-200',
+    in_review: 'bg-blue-50 border-blue-200',
+    approved: 'bg-green-50 border-green-200',
+    rejected: 'bg-red-50 border-red-200',
+  };
+  
+  const statusTexts = {
+    pending: 'Väntar',
+    in_review: 'Under granskning',
+    approved: 'Godkänd ✓',
+    rejected: 'Avvisad',
+  };
+  
+  const frequencyIcons = {
+    once: '1️⃣',
+    daily: '📅',
+    weekly: '📆',
+  };
+  
   return (
-    <div
-      className={`card border-l-4 ${getCardBorderClass()} ${
-        onClick ? 'cursor-pointer hover:scale-[1.01] hover:shadow-xl' : ''
-      }`}
-      onClick={onClick}
-    >
-      <div className="flex justify-between items-start mb-3">
-        <div className="flex items-start gap-2 flex-1">
-          {task.status === 'approved' && (
-            <div className="mt-0.5">
-              <CheckIcon size={20} color="#4CAF50" />
-            </div>
+    <div className={`rounded-2xl border-2 p-4 shadow-md ${statusColors[task.status]}`}>
+      <div className="flex items-start justify-between mb-3">
+        <div className="flex-1">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-2xl">{frequencyIcons[task.frequency]}</span>
+            <h3 className="font-bold text-lg text-gray-800">{task.title}</h3>
+          </div>
+          {task.description && (
+            <p className="text-sm text-gray-600 ml-10">{task.description}</p>
           )}
-          <h3 className="text-lg font-semibold text-text-primary font-display">
-            {task.title}
-          </h3>
         </div>
-        <div className="flex items-center gap-1.5 bg-accent-light/20 px-3 py-1.5 rounded-full">
-          <ChocolateCoinIcon size={18} color="#D4AF37" />
-          <span className="font-bold text-accent-dark">{task.points}</span>
+        
+        <div className="flex flex-col items-end gap-1">
+          <ChocolateCoin amount={task.reward} size="sm" />
+          <span className="text-xs font-medium text-gray-500">
+            {statusTexts[task.status]}
+          </span>
         </div>
       </div>
-
-      <p className="text-text-secondary text-sm mb-4 leading-relaxed">
-        {task.description}
-      </p>
-
-      {showStatus && (
-        <div className="flex justify-between items-center">
-          <span className={`badge ${getStatusBadgeClass()}`}>
-            {getStatusText()}
-          </span>
-
-          {task.deadline && (
-            <div className="flex items-center gap-1.5 text-xs text-text-muted">
-              <ClockIcon size={14} color="currentColor" />
-              <span>{new Date(task.deadline).toLocaleDateString('sv-SE')}</span>
-            </div>
+      
+      {showActions && (
+        <div className="flex gap-2 mt-3 border-t pt-3">
+          {userRole === 'child' && task.status === 'pending' && onSubmit && (
+            <Button onClick={onSubmit} variant="success" size="sm" fullWidth>
+              Markera som klar ✓
+            </Button>
+          )}
+          
+          {userRole === 'parent' && task.status === 'in_review' && (
+            <>
+              {onApprove && (
+                <Button onClick={onApprove} variant="success" size="sm" fullWidth>
+                  Godkänn
+                </Button>
+              )}
+              {onReject && (
+                <Button onClick={onReject} variant="danger" size="sm" fullWidth>
+                  Neka
+                </Button>
+              )}
+            </>
+          )}
+          
+          {userRole === 'parent' && task.status === 'pending' && onDelete && (
+            <Button onClick={onDelete} variant="ghost" size="sm">
+              Ta bort
+            </Button>
           )}
         </div>
       )}
     </div>
-  )
+  );
 }

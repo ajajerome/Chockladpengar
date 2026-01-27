@@ -1,5 +1,6 @@
-import { initializeApp, getApps } from 'firebase/app';
-import { getDatabase } from 'firebase/database';
+import { initializeApp, getApps, FirebaseApp } from 'firebase/app';
+import { getDatabase, Database } from 'firebase/database';
+import { getAuth, Auth } from 'firebase/auth';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -11,14 +12,32 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-// Initialize Firebase
-const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
-const database = getDatabase(app);
+// Initialize Firebase lazily
+let app: FirebaseApp | undefined;
+let database: Database | undefined;
+let auth: Auth | undefined;
 
-export { app, database };
+function initializeFirebase() {
+  if (typeof window === 'undefined') return;
+  
+  if (!app) {
+    app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+    database = getDatabase(app);
+    auth = getAuth(app);
+  }
+}
 
+// Initialize on import if in browser
+if (typeof window !== 'undefined') {
+  initializeFirebase();
+}
 
+export { app, database, auth };
 
-
-
-
+// Helper to check if Firebase is configured
+export const isFirebaseConfigured = () => {
+  return !!(
+    process.env.NEXT_PUBLIC_FIREBASE_API_KEY &&
+    process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL
+  );
+};

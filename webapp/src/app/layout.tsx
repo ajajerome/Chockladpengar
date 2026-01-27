@@ -1,44 +1,35 @@
-import type { Metadata, Viewport } from 'next'
-import './globals.css'
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import './globals.css';
+import { Providers } from './providers';
+
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Chokladpengar - Motivationsapp för familjer',
-  description: 'En rolig och pedagogisk app som lär barn om ansvar, pengar och målsättning genom uppgifter och belöningar.',
+  title: 'Chokladpengar - Lär barn ekonomi',
+  description: 'En rolig app för att lära barn ekonomi genom uppgifter, belöningar och investeringar',
+  manifest: '/manifest.json',
+  themeColor: '#d97706',
+  viewport: 'width=device-width, initial-scale=1, maximum-scale=1',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
     title: 'Chokladpengar',
   },
-  formatDetection: {
-    telephone: false,
-  },
-  icons: {
-    icon: [
-      { url: '/favicon.svg', type: 'image/svg+xml' },
-    ],
-    apple: [
-      { url: '/favicon.svg', type: 'image/svg+xml' },
-    ],
-  },
-}
-
-export const viewport: Viewport = {
-  width: 'device-width',
-  initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
-  themeColor: '#D4AF37',
-}
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="sv">
-      <body>{children}</body>
+      <body className={inter.className}>
+        <Providers>
+          {children}
+        </Providers>
+      </body>
     </html>
-  )
+  );
 }
-

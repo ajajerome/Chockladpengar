@@ -1,172 +1,199 @@
-# Deployment Guide - Vercel
+# Deployment Guide - Chokladpengar
 
-## Förutsättningar
+Denna guide hjälper dig att deploya Chokladpengar till Vercel.
 
-- Vercel-konto (gratis på [vercel.com](https://vercel.com))
-- Git repository (GitHub, GitLab, eller Bitbucket)
+## 🚀 Snabb deployment med Vercel
 
-## Metod 1: Deploy via Git (Rekommenderas)
+### Steg 1: Förberedelser
 
-### Steg 1: Pusha till Git
-
+1. Pusha din kod till GitHub (om inte redan gjort)
 ```bash
-cd webapp
 git add .
-git commit -m "Initial webapp deployment"
-git push origin main
+git commit -m "Ready for deployment"
+git push
 ```
 
-### Steg 2: Anslut till Vercel
+2. Om du vill använda Firebase, se till att du har:
+   - Skapat ett Firebase-projekt
+   - Aktiverat Realtime Database
+   - Kopierat Firebase config-värden
 
-1. Gå till [vercel.com](https://vercel.com)
-2. Klicka "New Project"
-3. Importera ditt Git repository
-4. Välj `webapp` som root directory
-5. Vercel detecterar automatiskt Next.js
+### Steg 2: Deploya till Vercel
 
-### Steg 3: Konfigurera Environment Variables
+#### Via Vercel Dashboard (Rekommenderat)
 
-I Vercel Dashboard:
-1. Gå till **Settings** → **Environment Variables**
-2. Lägg till följande variabler (från din `.env.local`):
+1. Gå till [vercel.com](https://vercel.com) och logga in
 
-```
-NEXT_PUBLIC_FIREBASE_API_KEY=your_value
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_value
-NEXT_PUBLIC_FIREBASE_DATABASE_URL=your_value
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_value
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_value
-NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_value
-NEXT_PUBLIC_FIREBASE_APP_ID=your_value
-```
+2. Klicka på "Add New Project"
 
-3. Klicka **Save**
+3. Importera ditt GitHub repo
 
-### Steg 4: Deploy
+4. **VIKTIGT** - Konfigurera project settings:
+   ```
+   Framework Preset: Next.js
+   Root Directory: webapp
+   Build Command: npm run build
+   Install Command: npm install
+   Output Directory: .next
+   ```
 
-Klicka "Deploy" - Vercel bygger och deplojar appen automatiskt!
+5. Om du använder Firebase, lägg till Environment Variables:
+   - Klicka på "Environment Variables"
+   - Lägg till följande variabler:
+     ```
+     NEXT_PUBLIC_FIREBASE_API_KEY
+     NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+     NEXT_PUBLIC_FIREBASE_DATABASE_URL
+     NEXT_PUBLIC_FIREBASE_PROJECT_ID
+     NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+     NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
+     NEXT_PUBLIC_FIREBASE_APP_ID
+     ```
+   - Kopiera värdena från din `.env.local`
 
-Din app blir tillgänglig på: `https://your-project.vercel.app`
+6. Klicka på "Deploy"
 
-## Metod 2: Deploy via CLI
+7. Vänta medan Vercel bygger och deployer (tar ~2 min)
 
-### Steg 1: Installera Vercel CLI
+8. 🎉 Klart! Du får en URL typ: `https://chokladpengar-xxx.vercel.app`
+
+#### Via Vercel CLI
 
 ```bash
-npm i -g vercel
-```
+# Installera Vercel CLI (första gången)
+npm install -g vercel
 
-### Steg 2: Logga in
-
-```bash
-vercel login
-```
-
-### Steg 3: Deploy
-
-```bash
+# Gå till webapp-mappen
 cd webapp
+
+# Deploy
 vercel
-```
 
-Följ instruktionerna i terminalen.
+# Följ prompten:
+# - Set up and deploy? Y
+# - Which scope? [välj ditt konto]
+# - Link to existing project? N
+# - Project name? chokladpengar (eller vad du vill)
+# - Directory? ./
+# - Override settings? N
 
-För produktion:
-```bash
+# För production deployment:
 vercel --prod
 ```
 
-### Steg 4: Lägg till Environment Variables
+## 🔥 Firebase Setup för Production
+
+1. **Database Rules** - Uppdatera Firebase Realtime Database Rules:
+
+```json
+{
+  "rules": {
+    "families": {
+      ".read": "auth != null",
+      ".write": "auth != null",
+      "$familyId": {
+        ".validate": "newData.hasChildren(['id', 'name', 'code', 'ownerId', 'createdAt'])"
+      }
+    },
+    "users": {
+      ".read": "auth != null",
+      ".write": "auth != null",
+      "$userId": {
+        ".validate": "newData.hasChildren(['id', 'name', 'role', 'familyId', 'createdAt'])"
+      }
+    },
+    "tasks": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "rewards": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "transactions": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    }
+  }
+}
+```
+
+**OBS:** För enkel användning utan authentication, använd:
+```json
+{
+  "rules": {
+    ".read": true,
+    ".write": true
+  }
+}
+```
+⚠️ Detta är INTE säkert för production! Använd bara för testing.
+
+2. **Authentication** (Framtida förbättring):
+   - Aktivera Email/Password authentication i Firebase
+   - Eller använd Anonymous authentication för enkel start
+
+## 🔄 Uppdatera deployment
+
+### Automatisk deployment
+
+Varje gång du pushar till GitHub main-branchen kommer Vercel automatiskt att:
+1. Upptäcka ändringarna
+2. Bygga om appen
+3. Deploya den nya versionen
 
 ```bash
-vercel env add NEXT_PUBLIC_FIREBASE_API_KEY
-vercel env add NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
-vercel env add NEXT_PUBLIC_FIREBASE_DATABASE_URL
-vercel env add NEXT_PUBLIC_FIREBASE_PROJECT_ID
-vercel env add NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
-vercel env add NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
-vercel env add NEXT_PUBLIC_FIREBASE_APP_ID
+git add .
+git commit -m "Update features"
+git push
 ```
 
-Eller i bulk via Vercel Dashboard (enklare).
+### Manuell deployment
 
-## Automatiska Deployments
-
-När du använder Git-integrationen:
-- **Varje push till `main`** → Deployas automatiskt till produktion
-- **Pull requests** → Preview deployments skapas automatiskt
-
-## Custom Domain
-
-### Lägg till egen domän
-
-1. Gå till Vercel Dashboard → **Settings** → **Domains**
-2. Lägg till din domän (t.ex. `chokladpengar.se`)
-3. Uppdatera DNS-records hos din domänleverantör:
-
-```
-Type: A
-Name: @
-Value: 76.76.21.21
-
-Type: CNAME
-Name: www
-Value: cname.vercel-dns.com
+```bash
+cd webapp
+vercel --prod
 ```
 
-4. Vänta på DNS-propagering (kan ta upp till 48h)
+## 🌍 Custom Domain (Valfritt)
 
-## PWA på Custom Domain
+1. Gå till ditt projekt på Vercel Dashboard
 
-När du använder egen domän:
-1. HTTPS aktiveras automatiskt (Let's Encrypt)
-2. PWA fungerar direkt (kräver HTTPS)
-3. Användare kan installera appen på hemskärmen
+2. Settings > Domains
 
-## Monitoring
+3. Lägg till din egen domän (t.ex. `chokladpengar.se`)
 
-### Analytics
+4. Följ Vercels instruktioner för att uppdatera DNS-records
 
-Vercel erbjuder gratis analytics:
-1. Gå till **Analytics** i Vercel Dashboard
-2. Se sidvisningar, laddningstider, etc.
+## 📱 PWA (Progressive Web App)
 
-### Logs
+Din app är redan PWA-redo! Användare kan:
 
-Se deployment logs:
-1. Gå till **Deployments**
-2. Klicka på en deployment
-3. Se "Build Logs" och "Function Logs"
+1. Öppna appen i webbläsaren
+2. Välja "Lägg till på hemskärmen"
+3. Använda den som en native app
 
-## Kostnad
+Ikonen och namn kommer från `public/manifest.json`.
 
-### Vercel Gratis Plan (Hobby)
+## 🐛 Troubleshooting
 
-✅ **Perfekt för Chokladpengar!**
+### "White screen" eller "500 error"
 
-Inkluderar:
-- Unlimited deployments
-- 100 GB bandwidth/månad
-- Automatic HTTPS
-- Preview deployments
-- Web Analytics
+1. Kontrollera att `vercel.json` har rätt `rootDirectory: "webapp"`
 
-**Gränser:**
-- Max 100 GB bandwidth (mer än tillräckligt för 1000+ användare)
-- Max 100 GB-hours compute time
-- Max 6000 mins build time/månad
+2. Kolla build logs i Vercel Dashboard
 
-### När behöver du uppgradera?
+3. Verifiera att alla environment variables är korrekt satta
 
-Endast om du får:
-- 10,000+ användare/månad
-- Eller vill ha Teams-funktioner
+### Firebase inte synkar
 
-**Kostnad då:** $20/månad (Pro plan)
+1. Kontrollera att alla Firebase env variables är satta i Vercel
 
-## Troubleshooting
+2. Verifiera Database Rules i Firebase Console
 
-### Build Failed
+3. Öppna browser console och kolla efter errors
+
+### Build errors
 
 ```bash
 # Testa build lokalt först
@@ -175,66 +202,50 @@ npm run build
 ```
 
 Om det fungerar lokalt men inte på Vercel:
-- Kontrollera Node version (se `package.json` → `engines`)
-- Se till att alla dependencies finns i `package.json`
+1. Dubbelkolla `next.config.ts`
+2. Verifiera att alla dependencies är i `package.json`
+3. Kontrollera Node version (Vercel använder senaste LTS)
 
-### Environment Variables fungerar inte
+## 📊 Monitorering
 
-- Se till att variablerna börjar med `NEXT_PUBLIC_`
-- Kontrollera stavning
-- Efter att ha lagt till env vars, gör en ny deployment:
-  ```bash
-  vercel --prod
-  ```
+### Vercel Analytics
 
-### PWA installeras inte
+Aktivera i Vercel Dashboard > Analytics för att se:
+- Sidvisningar
+- Prestanda
+- Web Vitals
 
-- HTTPS krävs (Vercel har detta automatiskt)
-- Kontrollera att `/manifest.json` är tillgänglig
-- Testa i Chrome DevTools → Application → Manifest
+### Firebase Console
 
-## Best Practices
+Övervaka i Firebase Console:
+- Database användning
+- Real-time connections
+- Storage
 
-1. **Git workflow:**
-   - Utveckla på `develop` branch
-   - Merga till `main` för produktion
-   - Preview deployments för varje PR
+## 💰 Kostnad
 
-2. **Environment Variables:**
-   - Använd olika Firebase-projekt för dev/prod
-   - Ha separata env vars för preview vs production
+- **Vercel Free Tier:**
+  - 100 GB bandwidth
+  - Unlimited requests
+  - Perfekt för små projekt
 
-3. **Performance:**
-   - Vercel CDN cachar automatiskt
-   - Images optimeras automatiskt med Next.js
+- **Firebase Free Tier (Spark Plan):**
+  - 1 GB storage
+  - 10 GB/månad nedladdning
+  - Tillräckligt för många familjer
 
-4. **Security:**
-   - Lägg ALDRIG till `.env.local` i Git
-   - Använd Vercel's environment variables
+## 🎉 Klart!
 
-## Post-Deployment Checklist
+Din app är nu live! Dela länken med din familj:
+```
+https://din-app.vercel.app
+```
 
-✅ Testa appen på olika enheter
-✅ Verifiera att Firebase-anslutning fungerar
-✅ Installera PWA på mobil och testa
-✅ Kontrollera att notifikationer fungerar
-✅ Testa create/login flow
-✅ Verifiera att fonder uppdateras (Firebase Functions)
-
-## Support
-
-- [Vercel Documentation](https://vercel.com/docs)
-- [Next.js Documentation](https://nextjs.org/docs)
-- [Vercel Support](https://vercel.com/support)
+Användare kan:
+1. Gå till länken
+2. Skapa familj eller logga in
+3. Lägga till på hemskärmen för bästa upplevelse!
 
 ---
 
-**Du är redo! 🚀**
-
-Din Chokladpengar-app körs nu i molnet och är tillgänglig för din familj!
-
-
-
-
-
-
+**Lycka till! 🍫**

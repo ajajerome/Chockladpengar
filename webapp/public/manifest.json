@@ -1,0 +1,19 @@
+{
+  "name": "Chokladpengar",
+  "short_name": "Chokladpengar",
+  "description": "Lär barn ekonomi genom uppgifter, belöningar och investeringar",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fef3c7",
+  "theme_color": "#d97706",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
+

@@ -1,157 +1,128 @@
-'use client'
+'use client';
 
-import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { useStore } from '@/store/useStore'
-import { TaskCard } from '@/components/TaskCard'
-import { ChocolateCoin } from '@/components/ChocolateCoin'
-import { TreasureChestIcon, BarChartIcon, FactoryIcon, ArrowRightIcon, CheckIcon } from '@/components/icons'
+import React from 'react';
+import { useRouter } from 'next/navigation';
+import { useStore } from '@/store/useStore';
+import { useTasks } from '@/hooks/useTasks';
+import { Button } from '@/components/Button';
+import { TaskCard } from '@/components/TaskCard';
+import { BalanceDisplay } from '@/components/BalanceDisplay';
+import type { Child } from '@/types';
 
 export default function ChildHomePage() {
-  const router = useRouter()
-  const currentUser = useStore((state) => state.currentUser)
-  const tasks = useStore((state) => state.tasks)
-  const balance = useStore((state) =>
-    currentUser ? state.getBalance(currentUser.id) : 0
-  )
-  const completeTask = useStore((state) => state.completeTask)
-  const logout = useStore((state) => state.logout)
-
-  useEffect(() => {
-    if (!currentUser || currentUser.role !== 'child') {
-      router.push('/login')
-    }
-  }, [currentUser, router])
-
-  if (!currentUser) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-6xl mb-4">🍫</div>
-          <p className="text-secondary">Laddar...</p>
-        </div>
-      </div>
-    )
+  const router = useRouter();
+  const { currentUser, logout } = useStore();
+  const { pendingTasks, submitForReview } = useTasks();
+  
+  if (!currentUser || currentUser.role !== 'child') {
+    router.push('/');
+    return null;
   }
-
-  const myTasks = tasks.filter(
-    (task) =>
-      task.assignedTo === currentUser.id &&
-      (task.status === 'pending' || task.status === 'rejected')
-  )
-
+  
+  const child = currentUser as Child;
+  
   return (
-    <div className="min-h-screen p-4 pb-24">
-      <div className="max-w-2xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-6">
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 pb-20">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-amber-600 to-orange-600 text-white p-6 shadow-lg">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-3xl font-bold text-primary mb-1">
-                Hej {currentUser.name}!
-              </h1>
-              <p className="text-sm text-secondary">Välkommen tillbaka!</p>
+              <h1 className="text-2xl font-bold">Hej {currentUser.name}!</h1>
+              <p className="text-amber-100">Dina chokladpengar</p>
             </div>
             <button
-              onClick={() => {
-                logout()
-                router.push('/login')
-              }}
-              className="px-4 py-2 text-sm text-secondary hover:text-primary hover:bg-white rounded-lg transition-all"
+              onClick={logout}
+              className="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
             >
               Logga ut
             </button>
           </div>
           
-          <div className="balance-card">
-            <p className="text-sm text-secondary mb-3 font-medium">Dina Chokladpengar</p>
-            <ChocolateCoin amount={balance} size="large" showLabel={false} />
-          </div>
+          <BalanceDisplay balance={child.balance} label="Mitt saldo" />
         </div>
-
-        {/* Tasks */}
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold text-primary mb-4">Dagens uppgifter</h2>
-          {myTasks.length === 0 ? (
-            <div className="empty-state">
-              <div className="text-6xl mb-4 flex items-center justify-center">
-                <CheckIcon size={64} color="#4CAF50" />
-              </div>
-              <p className="text-lg text-text-primary font-medium">Inga uppgifter just nu!</p>
-              <p className="text-sm text-secondary mt-1">Bra jobbat, du är klar för idag!</p>
+      </div>
+      
+      <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
+        {/* Quick Actions */}
+        <div className="grid grid-cols-2 gap-4">
+          <button
+            onClick={() => router.push('/child/rewards')}
+            className="bg-gradient-to-br from-purple-500 to-pink-500 text-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all text-center"
+          >
+            <div className="text-5xl mb-2">🎁</div>
+            <h3 className="font-bold text-lg">Belöningar</h3>
+            <p className="text-sm text-purple-100 mt-1">Köp belöningar</p>
+          </button>
+          
+          <button
+            onClick={() => router.push('/child/investments')}
+            className="bg-gradient-to-br from-green-500 to-emerald-500 text-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all text-center"
+          >
+            <div className="text-5xl mb-2">📈</div>
+            <h3 className="font-bold text-lg">Investeringar</h3>
+            <p className="text-sm text-green-100 mt-1">Väx dina pengar</p>
+          </button>
+          
+          <button
+            onClick={() => router.push('/child/factory')}
+            className="bg-gradient-to-br from-orange-500 to-red-500 text-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all text-center"
+          >
+            <div className="text-5xl mb-2">🏭</div>
+            <h3 className="font-bold text-lg">Fabrik</h3>
+            <p className="text-sm text-orange-100 mt-1">Passiv inkomst</p>
+          </button>
+          
+          <button
+            onClick={() => alert('Kommande funktion!')}
+            className="bg-gradient-to-br from-blue-500 to-indigo-500 text-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all text-center"
+          >
+            <div className="text-5xl mb-2">📊</div>
+            <h3 className="font-bold text-lg">Statistik</h3>
+            <p className="text-sm text-blue-100 mt-1">Se din framgång</p>
+          </button>
+        </div>
+        
+        {/* Pending Tasks */}
+        <div>
+          <h2 className="text-xl font-bold text-gray-800 mb-4">
+            Mina uppgifter ({pendingTasks.length})
+          </h2>
+          
+          {pendingTasks.length === 0 ? (
+            <div className="bg-white rounded-2xl shadow p-6 text-center">
+              <div className="text-5xl mb-3">🎉</div>
+              <p className="text-gray-600">Inga uppgifter just nu!</p>
+              <p className="text-sm text-gray-500 mt-1">Fråga dina föräldrar om fler uppgifter</p>
             </div>
           ) : (
             <div className="space-y-3">
-              {myTasks.map((task) => (
+              {pendingTasks.map((task) => (
                 <TaskCard
                   key={task.id}
                   task={task}
-                  onClick={() => {
-                    if (task.status === 'pending') {
-                      completeTask(task.id)
+                  userRole="child"
+                  onSubmit={() => {
+                    if (confirm(`Är du klar med "${task.title}"?`)) {
+                      submitForReview(task.id);
                     }
                   }}
-                  showStatus
                 />
               ))}
             </div>
           )}
         </div>
-
-        {/* Quick Actions */}
-        <div>
-          <h2 className="text-2xl font-bold text-primary mb-4">Vad vill du göra?</h2>
-          <div className="space-y-3">
-            <button
-              onClick={() => router.push('/child/rewards')}
-              className="action-card card-gradient-orange w-full"
-            >
-              <div className="icon-circle icon-circle-orange">
-                <TreasureChestIcon size={28} color="#D4AF37" />
-              </div>
-              <div className="flex-1 text-left">
-                <h3 className="font-bold text-primary font-display text-lg">Chokladkassan</h3>
-                <p className="text-sm text-secondary">
-                  Köp belöningar med dina chokladpengar
-                </p>
-              </div>
-              <ArrowRightIcon size={24} color="#9E8B7B" />
-            </button>
-
-            <button
-              onClick={() => router.push('/child/investments')}
-              className="action-card card-gradient-blue w-full"
-            >
-              <div className="icon-circle icon-circle-blue">
-                <BarChartIcon size={28} color="#2196F3" />
-              </div>
-              <div className="flex-1 text-left">
-                <h3 className="font-bold text-primary font-display text-lg">Chokladfonder</h3>
-                <p className="text-sm text-secondary">
-                  Investera och öka dina chokladpengar
-                </p>
-              </div>
-              <ArrowRightIcon size={24} color="#9E8B7B" />
-            </button>
-
-            <button
-              onClick={() => router.push('/child/factory')}
-              className="action-card card-gradient-purple w-full"
-            >
-              <div className="icon-circle icon-circle-purple">
-                <FactoryIcon size={28} color="#9C27B0" />
-              </div>
-              <div className="flex-1 text-left">
-                <h3 className="font-bold text-primary font-display text-lg">Chokladfabriken</h3>
-                <p className="text-sm text-secondary">
-                  Bygg din fabrik och få passiv inkomst
-                </p>
-              </div>
-              <ArrowRightIcon size={24} color="#9E8B7B" />
-            </button>
-          </div>
+        
+        {/* Motivational Message */}
+        <div className="bg-gradient-to-r from-amber-100 to-orange-100 rounded-2xl border-2 border-amber-200 p-6 text-center">
+          <div className="text-4xl mb-2">💪</div>
+          <p className="text-gray-800 font-medium">
+            {child.balance >= 100 
+              ? 'Wow! Du har mycket chokladpengar! 🎉'
+              : 'Gör uppgifter för att tjäna mer chokladpengar! 🍫'}
+          </p>
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -1,107 +1,104 @@
-'use client'
+'use client';
 
-import { useRouter } from 'next/navigation'
-import { Button } from '@/components/Button'
-import { ChocolateCoinIcon, CheckIcon, BarChartIcon, GiftIcon } from '@/components/icons'
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useStore } from '@/store/useStore';
+import { LoadingSpinner } from '@/components/LoadingSpinner';
+import { Button } from '@/components/Button';
 
-export default function Home() {
-  const router = useRouter()
-
+export default function HomePage() {
+  const router = useRouter();
+  const [mounted, setMounted] = useState(false);
+  const { isAuthenticated, currentUser, isLoading } = useStore();
+  
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  
+  useEffect(() => {
+    if (mounted && isAuthenticated && currentUser) {
+      if (currentUser.role === 'parent') {
+        router.push('/parent');
+      } else {
+        router.push('/child');
+      }
+    }
+  }, [mounted, isAuthenticated, currentUser, router]);
+  
+  if (!mounted || isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50">
+        <LoadingSpinner message="Laddar Chokladpengar..." />
+      </div>
+    );
+  }
+  
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="max-w-4xl w-full">
-        {/* Hero Section */}
-        <div className="text-center mb-12">
-          <div className="mb-6 inline-block">
-            <ChocolateCoinIcon size={96} color="#D4AF37" />
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50">
+      <div className="container mx-auto px-4 py-12">
+        <div className="max-w-md mx-auto text-center">
+          {/* Logo */}
+          <div className="mb-8">
+            <div className="text-8xl mb-4 animate-bounce">🍫</div>
+            <h1 className="text-5xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent mb-2">
+              Chokladpengar
+            </h1>
+            <p className="text-gray-600">Lär barn ekonomi på ett roligt sätt!</p>
           </div>
-          <h1 className="text-5xl md:text-6xl font-display font-bold text-primary mb-4">
-            Chokladpengar
-          </h1>
-          <p className="text-xl md:text-2xl text-secondary mb-2 font-medium">
-            Motivationsapp för hela familjen
-          </p>
-          <p className="text-base md:text-lg text-secondary/80 max-w-2xl mx-auto">
-            Lär barn om ansvar, pengar och målsättning genom roliga uppgifter, 
-            belöningar och investeringar
-          </p>
-        </div>
-
-        {/* Features */}
-        <div className="grid md:grid-cols-3 gap-6 mb-12">
-          <div className="card card-gradient-orange text-center transform transition-all duration-300 hover:scale-105">
-            <div className="mb-4 inline-block">
-              <CheckIcon size={48} color="#4CAF50" />
+          
+          {/* Features */}
+          <div className="bg-white rounded-2xl shadow-xl p-6 mb-8">
+            <div className="space-y-4 text-left">
+              <div className="flex items-start gap-3">
+                <span className="text-3xl">✅</span>
+                <div>
+                  <h3 className="font-bold text-gray-800">Gör uppgifter</h3>
+                  <p className="text-sm text-gray-600">Tjäna chokladpengar genom att hjälpa till hemma</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start gap-3">
+                <span className="text-3xl">🎁</span>
+                <div>
+                  <h3 className="font-bold text-gray-800">Köp belöningar</h3>
+                  <p className="text-sm text-gray-600">Spara och köp saker du önskar dig</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start gap-3">
+                <span className="text-3xl">📈</span>
+                <div>
+                  <h3 className="font-bold text-gray-800">Investera</h3>
+                  <p className="text-sm text-gray-600">Lär dig om sparande och investering</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start gap-3">
+                <span className="text-3xl">🏭</span>
+                <div>
+                  <h3 className="font-bold text-gray-800">Chokladfabrik</h3>
+                  <p className="text-sm text-gray-600">Bygg passiv inkomst genom fabriker</p>
+                </div>
+              </div>
             </div>
-            <h3 className="font-display font-bold text-lg text-primary mb-2">
-              Uppgifter
-            </h3>
-            <p className="text-sm text-secondary">
-              Barn slutför uppgifter och tjänar chokladpengar
-            </p>
           </div>
-
-          <div className="card card-gradient-blue text-center transform transition-all duration-300 hover:scale-105">
-            <div className="mb-4 inline-block">
-              <BarChartIcon size={48} color="#2196F3" />
-            </div>
-            <h3 className="font-display font-bold text-lg text-primary mb-2">
-              Fonder
-            </h3>
-            <p className="text-sm text-secondary">
-              Investera och lär dig om sparande och avkastning
-            </p>
+          
+          {/* CTA Buttons */}
+          <div className="space-y-3">
+            <Button onClick={() => router.push('/create-family')} variant="primary" size="lg" fullWidth>
+              Skapa familj
+            </Button>
+            
+            <Button onClick={() => router.push('/login')} variant="secondary" size="lg" fullWidth>
+              Logga in
+            </Button>
           </div>
-
-          <div className="card card-gradient-purple text-center transform transition-all duration-300 hover:scale-105">
-            <div className="mb-4 inline-block">
-              <GiftIcon size={48} color="#9C27B0" />
-            </div>
-            <h3 className="font-display font-bold text-lg text-primary mb-2">
-              Belöningar
-            </h3>
-            <p className="text-sm text-secondary">
-              Köp belöningar med dina intjänade chokladpengar
-            </p>
-          </div>
-        </div>
-
-        {/* CTA Buttons */}
-        <div className="max-w-md mx-auto space-y-4">
-          <Button
-            onClick={() => router.push('/create-family')}
-            size="large"
-            className="w-full text-lg py-5"
-          >
-            Kom igång - Skapa familj
-          </Button>
-
-          <Button
-            onClick={() => router.push('/login')}
-            variant="outline"
-            size="large"
-            className="w-full text-lg py-5"
-          >
-            Logga in
-          </Button>
-        </div>
-
-        {/* Footer info */}
-        <div className="mt-12 text-center">
-          <p className="text-sm text-secondary/60 flex items-center justify-center gap-3">
-            <span className="flex items-center gap-1">
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2C9.243 2 7 4.243 7 7v3H6a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2v-8a2 2 0 00-2-2h-1V7c0-2.757-2.243-5-5-5zm0 2c1.654 0 3 1.346 3 3v3H9V7c0-1.654 1.346-3 3-3z"/>
-              </svg>
-              Säkert
-            </span>
-            <span>•</span>
-            <span>För hela familjen</span>
-            <span>•</span>
-            <span>Fungerar på alla enheter</span>
+          
+          <p className="mt-6 text-xs text-gray-500">
+            Ett roligt sätt att lära barn om pengar, sparande och ansvar 🍫
           </p>
         </div>
       </div>
     </div>
-  )
+  );
 }
