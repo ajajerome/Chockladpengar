@@ -46,10 +46,10 @@ export default function HomePage() {
                 <div className="absolute inset-0 animate-pulse-glow rounded-full"></div>
               </div>
             </div>
-            <h1 className="text-6xl font-bold gradient-text mb-3 tracking-tight">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold gradient-text mb-3 tracking-tight">
               Chokladpengar
             </h1>
-            <p className="text-lg text-chocolate-milk font-medium">Lär barn ekonomi på ett roligt sätt!</p>
+            <p className="text-base sm:text-lg text-chocolate-milk font-medium px-2">Lär barn ekonomi på ett roligt sätt!</p>
           </div>
           
           {/* Features */}
@@ -107,8 +107,8 @@ export default function HomePage() {
                 <KeyIcon size={32} color="#0284c7" />
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="font-bold text-chocolate-dark text-lg mb-1">1. Logga in</h3>
-                <p className="text-sm text-chocolate-milk leading-relaxed">Har redan ett konto? Ange familjekod och ditt namn.</p>
+                <h3 className="font-bold text-chocolate-dark text-base sm:text-lg mb-1 break-words">1. Logga in</h3>
+                <p className="text-sm text-chocolate-milk leading-relaxed">Har redan konto? Ange din familjekod och namn.</p>
               </div>
               <div className="shrink-0 flex items-center opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all">
                 <ArrowRightIcon size={24} color="#f59e0b" />
@@ -123,8 +123,8 @@ export default function HomePage() {
                 <EnvelopeIcon size={32} color="#a855f7" />
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="font-bold text-chocolate-dark text-lg mb-1">2. Jag har fått en familjekod</h3>
-                <p className="text-sm text-chocolate-milk leading-relaxed">Gå med i familjen. Ange koden du fått och ditt namn.</p>
+                <h3 className="font-bold text-chocolate-dark text-base sm:text-lg mb-1 break-words">2. Har familjekod?</h3>
+                <p className="text-sm text-chocolate-milk leading-relaxed">Gå med i familjen med din kod och ditt namn.</p>
               </div>
               <div className="shrink-0 flex items-center opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all">
                 <ArrowRightIcon size={24} color="#f59e0b" />
@@ -139,8 +139,8 @@ export default function HomePage() {
                 <UsersIcon size={32} color="#d97706" />
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="font-bold text-chocolate-dark text-lg mb-1">3. Skapa familj</h3>
-                <p className="text-sm text-chocolate-milk leading-relaxed">Börja från början. Skapa en ny familj och få en kod.</p>
+                <h3 className="font-bold text-chocolate-dark text-base sm:text-lg mb-1 break-words">3. Skapa familj</h3>
+                <p className="text-sm text-chocolate-milk leading-relaxed">Starta nytt! Skapa familj och få din kod.</p>
               </div>
               <div className="shrink-0 flex items-center opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all">
                 <ArrowRightIcon size={24} color="#f59e0b" />
