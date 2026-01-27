@@ -55,7 +55,7 @@ export default function AddChildPage() {
             
             <div className="bg-amber-50 rounded-xl p-4 border-2 border-amber-200">
               <p className="text-sm text-amber-800">
-                <strong>💡 Tips:</strong> Barnet kan sedan logga in med familje koden och sitt namn!
+                <strong>💡 Så loggar barnet in:</strong> Öppna appen på barnets telefon/tablet → Logga in → ange familjekoden, barnets namn och välj &quot;Barn&quot; → Gå med. Då kommer barnet in på sitt konto.
               </p>
             </div>
             

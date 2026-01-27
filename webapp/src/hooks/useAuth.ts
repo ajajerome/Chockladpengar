@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useStore } from '@/store/useStore';
 import { FirebaseService } from '@/services/firebase.service';
+import { isFirebaseConfigured } from '@/lib/firebase';
 import type { User, Family, Child, Parent } from '@/types';
 
 export function useAuth() {
@@ -26,7 +27,8 @@ export function useAuth() {
     try {
       const code = generateFamilyCode();
       
-      if (mode === 'firebase') {
+      // Använd Firebase när det är konfigurerat – även vid första besök (t.ex. Vercel) så att familjekoden fungerar på andra enheter
+      if (isFirebaseConfigured()) {
         // Create family in Firebase
         const newFamily = await FirebaseService.createFamily({
           name: familyName,
@@ -46,10 +48,11 @@ export function useAuth() {
         // Set in store
         useStore.getState().setFamily({ ...newFamily, ownerId: parent.id });
         useStore.getState().login(parent);
+        await useStore.getState().switchMode('firebase');
         
         return { family: newFamily, user: parent };
       } else {
-        // Local mode
+        // Local mode (Firebase inte konfigurerat)
         const newFamily: Family = {
           id: `family_${Date.now()}`,
           name: familyName,
@@ -89,8 +92,8 @@ export function useAuth() {
     setError(null);
     
     try {
-      if (mode === 'firebase') {
-        // Find family by code
+      // Använd Firebase när det är konfigurerat – även om enheten har "local" sparad (t.ex. mobil öppnad första gången)
+      if (isFirebaseConfigured()) {
         const foundFamily = await FirebaseService.getFamilyByCode(code);
         
         if (!foundFamily) {
@@ -105,22 +108,31 @@ export function useAuth() {
             familyId: foundFamily.id,
           });
         } else {
-          // For child, we need to know the parent
-          // In a real app, you might select from existing parents
-          // For now, we'll use the family owner
-          user = await FirebaseService.createChild({
-            name: userName,
-            familyId: foundFamily.id,
-            parentId: foundFamily.ownerId,
-          });
+          // Barn: kolla om förälder redan lagt till detta barn – då loggar vi in på det kontot
+          const members = await FirebaseService.getFamilyMembers(foundFamily.id);
+          const nameNorm = userName.trim().toLowerCase();
+          const existingChild = members.find(
+            (m): m is Child => m.role === 'child' && m.name.trim().toLowerCase() === nameNorm
+          );
+          if (existingChild) {
+            user = existingChild;
+          } else {
+            user = await FirebaseService.createChild({
+              name: userName.trim(),
+              familyId: foundFamily.id,
+              parentId: foundFamily.ownerId,
+            });
+          }
         }
         
         useStore.getState().setFamily(foundFamily);
         useStore.getState().login(user);
+        // Sätt firebase-mode så att resten av sessionen använder Firebase (viktigt på mobil när man precis gått med)
+        await useStore.getState().switchMode('firebase');
         
         return { family: foundFamily, user };
       } else {
-        throw new Error('Local mode does not support joining existing families');
+        throw new Error('Gå med med kod kräver att appen är kopplad till molnet. Skapa familj först på denna enhet för offline-läge.');
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to join family';

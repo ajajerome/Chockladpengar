@@ -20,14 +20,6 @@ export default function LoginPage() {
   const handleCodeSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // For local mode, just show existing users
-    const mode = useStore.getState().mode;
-    
-    if (mode === 'local') {
-      alert('Local mode: Använd "Skapa familj" för att börja i offline-läge');
-      return;
-    }
-    
     try {
       await joinFamily(familyCode, userName, userRole);
       
@@ -47,8 +39,8 @@ export default function LoginPage() {
         {/* Header */}
         <div className="text-center mb-8">
           <div className="text-6xl mb-4">🍫🔑</div>
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Logga in</h1>
-          <p className="text-gray-600">Gå med i din familj</p>
+          <h1 className="text-3xl font-bold text-gray-800 mb-2">Logga in eller gå med</h1>
+          <p className="text-gray-600">Ange familjekod och ditt namn – har du redan ett konto loggar du in, annars går du med i familjen</p>
         </div>
         
         {/* Form */}
@@ -70,7 +62,7 @@ export default function LoginPage() {
                 maxLength={6}
                 className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-amber-500 focus:outline-none transition-colors uppercase text-center text-2xl font-bold tracking-wider"
               />
-              <p className="text-xs text-gray-500 mt-1">Fråga dina föräldrar efter familje koden</p>
+              <p className="text-xs text-gray-500 mt-1">Fråga föräldern efter koden. Har föräldern lagt till dig som barn: skriv ditt namn som föräldern la in.</p>
             </div>
             
             <div>
@@ -123,7 +115,7 @@ export default function LoginPage() {
             
             <div className="space-y-2 pt-2">
               <Button type="submit" variant="primary" size="lg" fullWidth loading={isLoading}>
-                Gå med
+                Logga in / Gå med
               </Button>
               
               <Button onClick={() => router.push('/')} variant="ghost" size="md" fullWidth disabled={isLoading}>
@@ -135,7 +127,7 @@ export default function LoginPage() {
         
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600">
-            Har ingen familje kod?{' '}
+            Har ingen familjekod?{' '}
             <button
               onClick={() => router.push('/create-family')}
               className="text-amber-600 font-medium hover:text-amber-700 underline"

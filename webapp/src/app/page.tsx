@@ -83,15 +83,43 @@ export default function HomePage() {
             </div>
           </div>
           
-          {/* CTA Buttons */}
+          {/* Tre tydliga val */}
           <div className="space-y-3">
-            <Button onClick={() => router.push('/create-family')} variant="primary" size="lg" fullWidth>
-              Skapa familj
-            </Button>
-            
-            <Button onClick={() => router.push('/login')} variant="secondary" size="lg" fullWidth>
-              Logga in
-            </Button>
+            <button
+              onClick={() => router.push('/login')}
+              className="w-full p-4 rounded-xl border-2 border-amber-200 bg-amber-50 hover:bg-amber-100 hover:border-amber-300 text-left transition-all flex items-start gap-3"
+            >
+              <span className="text-3xl">🔑</span>
+              <div className="flex-1 min-w-0">
+                <h3 className="font-bold text-gray-800">1. Logga in</h3>
+                <p className="text-sm text-gray-600">Har redan ett konto? Ange familjekod och ditt namn.</p>
+              </div>
+              <span className="text-amber-600 font-medium shrink-0">→</span>
+            </button>
+
+            <button
+              onClick={() => router.push('/login')}
+              className="w-full p-4 rounded-xl border-2 border-amber-200 bg-amber-50 hover:bg-amber-100 hover:border-amber-300 text-left transition-all flex items-start gap-3"
+            >
+              <span className="text-3xl">📩</span>
+              <div className="flex-1 min-w-0">
+                <h3 className="font-bold text-gray-800">2. Jag har fått en familjekod</h3>
+                <p className="text-sm text-gray-600">Gå med i familjen. Ange koden du fått och ditt namn.</p>
+              </div>
+              <span className="text-amber-600 font-medium shrink-0">→</span>
+            </button>
+
+            <button
+              onClick={() => router.push('/create-family')}
+              className="w-full p-4 rounded-xl border-2 border-amber-500 bg-amber-100 hover:bg-amber-200 border-amber-400 text-left transition-all flex items-start gap-3"
+            >
+              <span className="text-3xl">👨‍👩‍👧‍👦</span>
+              <div className="flex-1 min-w-0">
+                <h3 className="font-bold text-gray-800">3. Skapa familj</h3>
+                <p className="text-sm text-gray-600">Börja från början. Skapa en ny familj och få en kod.</p>
+              </div>
+              <span className="text-amber-600 font-medium shrink-0">→</span>
+            </button>
           </div>
           
           <p className="mt-6 text-xs text-gray-500">
