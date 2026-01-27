@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rensa Cache - Chokladpengar</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #FFF9F0 0%, #FFE4D6 50%, #FFD4B8 100%);
+            min-height: 100vh;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+        h1 { color: #d97706; margin-top: 0; }
+        .btn {
+            background: linear-gradient(to right, #f59e0b, #ea580c);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin: 10px 0;
+        }
+        .btn:active { transform: scale(0.98); }
+        .status {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            display: none;
+        }
+        .status.success {
+            background: #d1fae5;
+            color: #065f46;
+            display: block;
+        }
+        .status.info {
+            background: #dbeafe;
+            color: #1e40af;
+            display: block;
+        }
+        ol { text-align: left; line-height: 1.8; }
+        code {
+            background: #f3f4f6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>🔧 Rensa Cache</h1>
+        <p>Om du får "deployment not found" fel, använd dessa verktyg för att rensa cachad data:</p>
+        
+        <button class="btn" onclick="clearAll()">
+            🗑️ Rensa All Cache Nu
+        </button>
+        
+        <div id="status" class="status"></div>
+        
+        <h3>Manuella steg för mobil:</h3>
+        
+        <h4>iPhone/Safari:</h4>
+        <ol>
+            <li>Gå till <strong>Inställningar → Safari</strong></li>
+            <li>Tryck <strong>"Rensa historik och webbplatsdata"</strong></li>
+            <li><strong>Starta om telefonen</strong></li>
+            <li>Öppna <code>https://chockladpengar.vercel.app/</code></li>
+        </ol>
+        
+        <h4>Android/Chrome:</h4>
+        <ol>
+            <li>Gå till <strong>Inställningar → Appar → Chrome</strong></li>
+            <li>Tryck <strong>Lagring → Rensa lagring</strong> (inte bara cache)</li>
+            <li><strong>Starta om telefonen</strong></li>
+            <li>Öppna <code>https://chockladpengar.vercel.app/</code></li>
+        </ol>
+        
+        <h4>Om du har PWA på hemskärmen:</h4>
+        <ol>
+            <li><strong>Ta bort ikonen</strong> från hemskärmen</li>
+            <li>Följ stegen ovan för att rensa cache</li>
+            <li>Öppna appen i webbläsaren</li>
+            <li>Lägg till på hemskärmen igen</li>
+        </ol>
+        
+        <button class="btn" onclick="goToApp()">
+            ✅ Cache Rensad? Gå till Appen
+        </button>
+    </div>
+    
+    <script>
+        async function clearAll() {
+            const status = document.getElementById('status');
+            status.className = 'status info';
+            status.textContent = '🔄 Rensar cache...';
+            
+            try {
+                // Clear all caches
+                if ('caches' in window) {
+                    const cacheNames = await caches.keys();
+                    await Promise.all(
+                        cacheNames.map(cacheName => caches.delete(cacheName))
+                    );
+                }
+                
+                // Clear localStorage
+                localStorage.clear();
+                
+                // Clear sessionStorage
+                sessionStorage.clear();
+                
+                // Unregister service workers
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    await Promise.all(
+                        registrations.map(registration => registration.unregister())
+                    );
+                }
+                
+                status.className = 'status success';
+                status.innerHTML = '✅ Cache rensad!<br>Klicka på knappen nedan för att gå till appen.';
+                
+            } catch (error) {
+                status.className = 'status info';
+                status.innerHTML = '⚠️ Delvis rensad. Följ manuella steg ovan för fullständig rensning.';
+            }
+        }
+        
+        function goToApp() {
+            // Force reload without cache
+            window.location.href = '/?v=' + Date.now();
+        }
+    </script>
+</body>
+</html>
