@@ -7,10 +7,12 @@
     --gradient-start: #FFF9F0;
     --gradient-end: #F5E6D3;
     --app-version: 1.0.2;
+    --color-primary: #1f2937;
+    --color-primary-dark: #111827;
   }
 
   body {
-    @apply text-primary antialiased;
+    color: var(--color-primary);
     background: linear-gradient(to bottom, var(--gradient-start), var(--gradient-end));
     background-attachment: fixed;
     min-height: 100vh;
@@ -61,7 +63,12 @@
   }
 
   .btn-outline {
-    @apply border-2 border-primary text-primary hover:bg-primary hover:text-white;
+    @apply border-2 hover:text-white;
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+  .btn-outline:hover {
+    background-color: var(--color-primary);
   }
 
   .btn-success {
@@ -80,7 +87,8 @@
   }
 
   .label {
-    @apply block text-sm font-medium text-primary mb-2;
+    @apply block text-sm font-medium mb-2;
+    color: var(--color-primary);
   }
 
   /* Icon Circles */
@@ -107,7 +115,8 @@
   }
 
   .badge-pending {
-    @apply bg-status-pending text-primary-dark;
+    @apply bg-status-pending;
+    color: var(--color-primary-dark);
   }
 
   .badge-completed {
