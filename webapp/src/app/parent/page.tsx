@@ -9,6 +9,9 @@ import { TaskCard } from '@/components/TaskCard';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import type { Child } from '@/types';
 
+// Force dynamic rendering (no static generation)
+export const dynamic = 'force-dynamic';
+
 export default function ParentHomePage() {
   const router = useRouter();
   const { currentUser, family, familyMembers, logout } = useStore();

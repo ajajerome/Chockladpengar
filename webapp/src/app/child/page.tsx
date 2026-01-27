@@ -9,6 +9,9 @@ import { TaskCard } from '@/components/TaskCard';
 import { BalanceDisplay } from '@/components/BalanceDisplay';
 import type { Child } from '@/types';
 
+// Force dynamic rendering (no static generation)
+export const dynamic = 'force-dynamic';
+
 export default function ChildHomePage() {
   const router = useRouter();
   const { currentUser, logout } = useStore();

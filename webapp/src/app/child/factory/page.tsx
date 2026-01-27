@@ -6,6 +6,9 @@ import { useStore } from '@/store/useStore';
 import { BalanceDisplay } from '@/components/BalanceDisplay';
 import type { Child } from '@/types';
 
+// Force dynamic rendering (no static generation)
+export const dynamic = 'force-dynamic';
+
 interface FactoryItem {
   id: string;
   name: string;

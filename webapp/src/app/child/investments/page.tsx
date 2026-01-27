@@ -7,6 +7,9 @@ import { BalanceDisplay } from '@/components/BalanceDisplay';
 import { FundCard } from '@/components/FundCard';
 import type { Child, Fund } from '@/types';
 
+// Force dynamic rendering (no static generation)
+export const dynamic = 'force-dynamic';
+
 // Demo funds
 const DEMO_FUNDS: Fund[] = [
   {

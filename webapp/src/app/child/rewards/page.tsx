@@ -9,6 +9,9 @@ import { RewardCard } from '@/components/RewardCard';
 import { BalanceDisplay } from '@/components/BalanceDisplay';
 import type { Child } from '@/types';
 
+// Force dynamic rendering (no static generation)
+export const dynamic = 'force-dynamic';
+
 export default function RewardsPage() {
   const router = useRouter();
   const { currentUser } = useStore();
