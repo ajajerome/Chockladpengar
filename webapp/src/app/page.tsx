@@ -35,21 +35,21 @@ export default function HomePage() {
   }
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50">
+    <div className="min-h-screen bg-gradient-to-br from-cream via-nougat-light to-white-chocolate">
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-md mx-auto text-center">
           {/* Logo */}
           <div className="mb-8">
-            <div className="mb-6 flex justify-center animate-bounce-soft">
+            <div className="mb-6 flex justify-center animate-float">
               <div className="relative">
-                <ChocolateCoinIcon size={112} color="#f59e0b" />
+                <ChocolateCoinIcon size={112} color="#D4AF37" />
                 <div className="absolute inset-0 animate-pulse-glow rounded-full"></div>
               </div>
             </div>
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold gradient-text mb-3 tracking-tight">
               Chokladpengar
             </h1>
-            <p className="text-base sm:text-lg text-chocolate-milk font-medium px-2">Lär barn ekonomi på ett roligt sätt!</p>
+            <p className="text-base sm:text-lg text-chocolate-milk font-medium px-2">Lär barn ekonomi på ett roligt sätt</p>
           </div>
           
           {/* Features */}
@@ -70,8 +70,8 @@ export default function HomePage() {
                   <GiftIcon size={28} color="#ffffff" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-chocolate-dark text-lg mb-1">Köp belöningar</h3>
-                  <p className="text-sm text-chocolate-milk">Spara och köp saker du önskar dig</p>
+                  <h3 className="font-bold text-chocolate-dark text-lg mb-1">Butiken</h3>
+                  <p className="text-sm text-chocolate-milk">Handla belöningar med dina chokladpengar</p>
                 </div>
               </div>
               
@@ -148,8 +148,8 @@ export default function HomePage() {
             </button>
           </div>
           
-          <p className="mt-6 text-xs text-gray-500">
-            Ett roligt sätt att lära barn om pengar, sparande och ansvar 🍫
+          <p className="mt-6 text-xs text-chocolate-milk">
+            Ett roligt sätt att lära barn om pengar, sparande och ansvar
           </p>
         </div>
       </div>

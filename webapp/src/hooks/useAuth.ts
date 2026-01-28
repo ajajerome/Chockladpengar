@@ -20,7 +20,7 @@ export function useAuth() {
     return code;
   };
   
-  const createFamily = async (familyName: string, parentName: string) => {
+  const createFamily = async (familyName: string, parentName: string, pin: string) => {
     setIsLoading(true);
     setError(null);
     
@@ -34,12 +34,18 @@ export function useAuth() {
           name: familyName,
           code,
           ownerId: '', // Will be updated after parent creation
+          settings: {
+            chokladpengValue: 1,
+            allowCustomFactories: false,
+            customFactories: [],
+          },
         });
         
         // Create parent
         const parent = await FirebaseService.createParent({
           name: parentName,
           familyId: newFamily.id,
+          pin,
         });
         
         // Update family with owner
@@ -59,6 +65,11 @@ export function useAuth() {
           code,
           ownerId: '',
           createdAt: new Date().toISOString(),
+          settings: {
+            chokladpengValue: 1,
+            allowCustomFactories: false,
+            customFactories: [],
+          },
         };
         
         const parent: Parent = {
@@ -67,6 +78,7 @@ export function useAuth() {
           role: 'parent',
           familyId: newFamily.id,
           children: [],
+          pin,
           createdAt: new Date().toISOString(),
         };
         
@@ -87,12 +99,11 @@ export function useAuth() {
     }
   };
   
-  const joinFamily = async (code: string, userName: string, role: 'parent' | 'child') => {
+  const joinFamilyAsChild = async (code: string, childName: string) => {
     setIsLoading(true);
     setError(null);
     
     try {
-      // Använd Firebase när det är konfigurerat – även om enheten har "local" sparad (t.ex. mobil öppnad första gången)
       if (isFirebaseConfigured()) {
         const foundFamily = await FirebaseService.getFamilyByCode(code);
         
@@ -100,39 +111,66 @@ export function useAuth() {
           throw new Error('Familj hittades inte. Kontrollera koden.');
         }
         
-        let user: User;
+        // Barn: kolla om förälder redan lagt till detta barn – då loggar vi in på det kontot
+        const members = await FirebaseService.getFamilyMembers(foundFamily.id);
+        const nameNorm = childName.trim().toLowerCase();
+        const existingChild = members.find(
+          (m): m is Child => m.role === 'child' && m.name.trim().toLowerCase() === nameNorm
+        );
         
-        if (role === 'parent') {
-          user = await FirebaseService.createParent({
-            name: userName,
-            familyId: foundFamily.id,
-          });
+        let user: Child;
+        if (existingChild) {
+          user = existingChild;
         } else {
-          // Barn: kolla om förälder redan lagt till detta barn – då loggar vi in på det kontot
-          const members = await FirebaseService.getFamilyMembers(foundFamily.id);
-          const nameNorm = userName.trim().toLowerCase();
-          const existingChild = members.find(
-            (m): m is Child => m.role === 'child' && m.name.trim().toLowerCase() === nameNorm
-          );
-          if (existingChild) {
-            user = existingChild;
-          } else {
-            user = await FirebaseService.createChild({
-              name: userName.trim(),
-              familyId: foundFamily.id,
-              parentId: foundFamily.ownerId,
-            });
-          }
+          user = await FirebaseService.createChild({
+            name: childName.trim(),
+            familyId: foundFamily.id,
+            parentId: foundFamily.ownerId,
+          });
         }
         
         useStore.getState().setFamily(foundFamily);
         useStore.getState().login(user);
-        // Sätt firebase-mode så att resten av sessionen använder Firebase (viktigt på mobil när man precis gått med)
         await useStore.getState().switchMode('firebase');
         
         return { family: foundFamily, user };
       } else {
-        throw new Error('Gå med med kod kräver att appen är kopplad till molnet. Skapa familj först på denna enhet för offline-läge.');
+        throw new Error('Gå med med kod kräver att appen är kopplad till molnet.');
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to join family';
+      setError(message);
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  const joinFamilyAsParent = async (code: string, parentName: string, pin: string) => {
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      if (isFirebaseConfigured()) {
+        const foundFamily = await FirebaseService.getFamilyByCode(code);
+        
+        if (!foundFamily) {
+          throw new Error('Familj hittades inte. Kontrollera koden.');
+        }
+        
+        const user = await FirebaseService.createParent({
+          name: parentName,
+          familyId: foundFamily.id,
+          pin,
+        });
+        
+        useStore.getState().setFamily(foundFamily);
+        useStore.getState().login(user);
+        await useStore.getState().switchMode('firebase');
+        
+        return { family: foundFamily, user };
+      } else {
+        throw new Error('Gå med med kod kräver att appen är kopplad till molnet.');
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to join family';
@@ -217,7 +255,8 @@ export function useAuth() {
     isLoading,
     error,
     createFamily,
-    joinFamily,
+    joinFamilyAsChild,
+    joinFamilyAsParent,
     addChild,
     logout,
   };

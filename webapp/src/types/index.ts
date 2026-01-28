@@ -15,6 +15,13 @@ export interface Family {
   code: string;
   createdAt: string;
   ownerId: string; // parent who created the family
+  settings: FamilySettings;
+}
+
+export interface FamilySettings {
+  chokladpengValue: number; // Värde i verkliga pengar (SEK), t.ex. 1 = 1kr
+  allowCustomFactories: boolean;
+  customFactories: FactoryItem[];
 }
 
 export interface Child extends User {
@@ -26,6 +33,7 @@ export interface Child extends User {
 export interface Parent extends User {
   role: 'parent';
   children: string[]; // array of child IDs
+  pin: string; // 4-digit PIN for parent authentication
 }
 
 // Tasks
@@ -75,7 +83,7 @@ export interface Investment {
   id: string;
   childId: string;
   fundId: string;
-  amount: number;
+  shares: number; // antal andelar
   purchasePrice: number;
   purchasedAt: string;
 }
@@ -88,11 +96,13 @@ export interface Fund {
   currentPrice: number;
   priceHistory: PricePoint[];
   icon: string;
+  color: string;
 }
 
 export interface PricePoint {
   timestamp: string;
   price: number;
+  change: number; // procentuell förändring
 }
 
 // Factory
@@ -102,6 +112,7 @@ export interface FactoryItem {
   description: string;
   cost: number;
   productionRate: number; // coins per hour
+  maintenanceCost: number; // weekly maintenance
   icon: string;
   level: number;
 }
@@ -112,6 +123,20 @@ export interface OwnedFactory {
   factoryItemId: string;
   purchasedAt: string;
   level: number;
+  lastMaintenance: string;
+  needsMaintenance: boolean;
+  isProducing: boolean;
+}
+
+export interface FactoryEvent {
+  id: string;
+  factoryId: string;
+  type: 'maintenance' | 'breakdown' | 'upgrade' | 'bonus';
+  title: string;
+  description: string;
+  cost?: number;
+  createdAt: string;
+  resolved: boolean;
 }
 
 // Transactions

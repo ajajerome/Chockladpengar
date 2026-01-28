@@ -70,5 +70,15 @@ export function useFirebaseSync() {
     });
     return unsubscribe;
   }, [mode, currentUser?.id]);
+
+  // Listen to purchased rewards (for parents to see what children bought)
+  useEffect(() => {
+    if (typeof window === 'undefined' || mode !== 'firebase' || !family) return;
+
+    const unsubscribe = FirebaseService.listenToFamilyPurchasedRewards(family.id, (purchases) => {
+      useStore.getState().setPurchasedRewards(purchases);
+    });
+    return unsubscribe;
+  }, [mode, family?.id]);
 }
 

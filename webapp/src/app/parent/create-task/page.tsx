@@ -6,11 +6,12 @@ import { useStore } from '@/store/useStore';
 import { useTasks } from '@/hooks/useTasks';
 import { Button } from '@/components/Button';
 import { ErrorMessage } from '@/components/ErrorMessage';
+import { ChildIcon, ChocolateCoinIcon, ClockIcon } from '@/components/icons';
 import type { Child, TaskFrequency } from '@/types';
 
 export default function CreateTaskPage() {
   const router = useRouter();
-  const { familyMembers } = useStore();
+  const { familyMembers, family } = useStore();
   const { createTask, isLoading, error } = useTasks();
   
   const [title, setTitle] = useState('');
@@ -20,6 +21,7 @@ export default function CreateTaskPage() {
   const [frequency, setFrequency] = useState<TaskFrequency>('once');
   
   const children = familyMembers.filter(m => m.role === 'child') as Child[];
+  const chokladpengValue = family?.settings?.chokladpengValue || 1;
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,12 +41,14 @@ export default function CreateTaskPage() {
   
   if (children.length === 0) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 p-4">
+      <div className="min-h-screen bg-gradient-to-br from-cream via-nougat-light to-white-chocolate p-4">
         <div className="max-w-md mx-auto pt-12">
-          <div className="bg-white rounded-2xl shadow-xl p-6 text-center">
-            <div className="text-6xl mb-4">👧👦</div>
-            <h2 className="text-xl font-bold text-gray-800 mb-2">Inga barn</h2>
-            <p className="text-gray-600 mb-4">Du måste lägga till barn innan du kan skapa uppgifter</p>
+          <div className="card-glass text-center">
+            <div className="w-20 h-20 mx-auto mb-4 rounded-3xl bg-gradient-to-br from-nougat-gold to-caramel flex items-center justify-center">
+              <ChildIcon size={48} color="white" />
+            </div>
+            <h2 className="text-xl font-bold text-chocolate-dark mb-2">Inga barn</h2>
+            <p className="text-chocolate-milk mb-4">Du måste lägga till barn innan du kan skapa uppgifter</p>
             <Button onClick={() => router.push('/add-child')} variant="primary" fullWidth>
               Lägg till barn
             </Button>
@@ -55,26 +59,26 @@ export default function CreateTaskPage() {
   }
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-cream via-nougat-light to-white-chocolate p-4">
       <div className="max-w-md mx-auto pt-8">
         {/* Header */}
         <div className="mb-6">
           <button
             onClick={() => router.back()}
-            className="text-gray-600 hover:text-gray-800 mb-4"
+            className="text-chocolate-milk hover:text-chocolate-dark mb-4 font-medium"
           >
             ← Tillbaka
           </button>
-          <h1 className="text-3xl font-bold text-gray-800">Skapa uppgift</h1>
+          <h1 className="text-3xl font-bold text-chocolate-dark">Skapa uppgift</h1>
         </div>
         
         {/* Form */}
-        <div className="bg-white rounded-2xl shadow-xl p-6">
+        <div className="card-glass">
           {error && <ErrorMessage message={error} />}
           
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="title" className="block text-sm font-medium text-chocolate-dark mb-1">
                 Uppgiftens namn
               </label>
               <input
@@ -82,14 +86,14 @@ export default function CreateTaskPage() {
                 id="title"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="t.ex. Diska"
+                placeholder="Diska"
                 required
-                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-amber-500 focus:outline-none transition-colors"
+                className="input-chocolate"
               />
             </div>
             
             <div>
-              <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="description" className="block text-sm font-medium text-chocolate-dark mb-1">
                 Beskrivning (valfritt)
               </label>
               <textarea
@@ -98,16 +102,18 @@ export default function CreateTaskPage() {
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Beskriv vad som ska göras..."
                 rows={3}
-                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-amber-500 focus:outline-none transition-colors resize-none"
+                className="input-chocolate resize-none"
               />
             </div>
             
             <div>
-              <label htmlFor="reward" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="reward" className="block text-sm font-medium text-chocolate-dark mb-1">
                 Belöning (chokladpengar)
               </label>
               <div className="relative">
-                <span className="absolute left-4 top-3 text-2xl">🍫</span>
+                <div className="absolute left-4 top-3">
+                  <ChocolateCoinIcon size={24} color="#D4AF37" />
+                </div>
                 <input
                   type="number"
                   id="reward"
@@ -115,13 +121,16 @@ export default function CreateTaskPage() {
                   onChange={(e) => setReward(Number(e.target.value))}
                   min={1}
                   required
-                  className="w-full pl-14 pr-4 py-3 rounded-xl border-2 border-gray-200 focus:border-amber-500 focus:outline-none transition-colors"
+                  className="input-chocolate pl-14"
                 />
               </div>
+              <p className="text-xs text-nougat-gold font-medium mt-1">
+                ≈ {(reward * chokladpengValue).toFixed(2)} kr
+              </p>
             </div>
             
             <div>
-              <label htmlFor="assignedTo" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="assignedTo" className="block text-sm font-medium text-chocolate-dark mb-1">
                 Tilldela till
               </label>
               <select
@@ -129,7 +138,7 @@ export default function CreateTaskPage() {
                 value={assignedTo}
                 onChange={(e) => setAssignedTo(e.target.value)}
                 required
-                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-amber-500 focus:outline-none transition-colors"
+                className="input-chocolate"
               >
                 <option value="">Välj barn...</option>
                 {children.map((child) => (
@@ -141,47 +150,53 @@ export default function CreateTaskPage() {
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-chocolate-dark mb-2">
                 Frekvens
               </label>
               <div className="grid grid-cols-3 gap-2">
                 <button
                   type="button"
                   onClick={() => setFrequency('once')}
-                  className={`p-3 rounded-xl border-2 transition-all ${
+                  className={`p-3 rounded-2xl border-2 transition-all ${
                     frequency === 'once'
-                      ? 'border-amber-500 bg-amber-50'
-                      : 'border-gray-200 hover:border-gray-300'
+                      ? 'border-nougat-gold bg-nougat-light/50'
+                      : 'border-chocolate-light/30 hover:border-chocolate-light/50'
                   }`}
                 >
-                  <div className="text-2xl mb-1">1️⃣</div>
-                  <div className="text-xs font-medium">En gång</div>
+                  <div className="flex justify-center mb-1">
+                    <ClockIcon size={24} color={frequency === 'once' ? '#D4AF37' : '#8B6F47'} />
+                  </div>
+                  <div className="text-xs font-medium text-chocolate-dark">En gång</div>
                 </button>
                 
                 <button
                   type="button"
                   onClick={() => setFrequency('daily')}
-                  className={`p-3 rounded-xl border-2 transition-all ${
+                  className={`p-3 rounded-2xl border-2 transition-all ${
                     frequency === 'daily'
-                      ? 'border-amber-500 bg-amber-50'
-                      : 'border-gray-200 hover:border-gray-300'
+                      ? 'border-nougat-gold bg-nougat-light/50'
+                      : 'border-chocolate-light/30 hover:border-chocolate-light/50'
                   }`}
                 >
-                  <div className="text-2xl mb-1">📅</div>
-                  <div className="text-xs font-medium">Dagligen</div>
+                  <div className="flex justify-center mb-1">
+                    <ClockIcon size={24} color={frequency === 'daily' ? '#D4AF37' : '#8B6F47'} />
+                  </div>
+                  <div className="text-xs font-medium text-chocolate-dark">Dagligen</div>
                 </button>
                 
                 <button
                   type="button"
                   onClick={() => setFrequency('weekly')}
-                  className={`p-3 rounded-xl border-2 transition-all ${
+                  className={`p-3 rounded-2xl border-2 transition-all ${
                     frequency === 'weekly'
-                      ? 'border-amber-500 bg-amber-50'
-                      : 'border-gray-200 hover:border-gray-300'
+                      ? 'border-nougat-gold bg-nougat-light/50'
+                      : 'border-chocolate-light/30 hover:border-chocolate-light/50'
                   }`}
                 >
-                  <div className="text-2xl mb-1">📆</div>
-                  <div className="text-xs font-medium">Veckovis</div>
+                  <div className="flex justify-center mb-1">
+                    <ClockIcon size={24} color={frequency === 'weekly' ? '#D4AF37' : '#8B6F47'} />
+                  </div>
+                  <div className="text-xs font-medium text-chocolate-dark">Veckovis</div>
                 </button>
               </div>
             </div>

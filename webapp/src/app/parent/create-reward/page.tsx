@@ -2,20 +2,25 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useStore } from '@/store/useStore';
 import { useRewards } from '@/hooks/useRewards';
 import { Button } from '@/components/Button';
 import { ErrorMessage } from '@/components/ErrorMessage';
+import { ChocolateCoinIcon } from '@/components/icons';
 
 const ICON_OPTIONS = ['🎁', '🎮', '📱', '🍕', '🍦', '🎬', '🎵', '⚽', '🎨', '📚', '🧸', '🎪'];
 
 export default function CreateRewardPage() {
   const router = useRouter();
+  const { family } = useStore();
   const { createReward, isLoading, error } = useRewards();
   
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [cost, setCost] = useState<number>(50);
   const [icon, setIcon] = useState('🎁');
+  
+  const chokladpengValue = family?.settings?.chokladpengValue || 1;
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,26 +34,27 @@ export default function CreateRewardPage() {
   };
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-cream via-nougat-light to-white-chocolate p-4">
       <div className="max-w-md mx-auto pt-8">
         {/* Header */}
         <div className="mb-6">
           <button
             onClick={() => router.back()}
-            className="text-gray-600 hover:text-gray-800 mb-4"
+            className="text-chocolate-milk hover:text-chocolate-dark mb-4 font-medium"
           >
             ← Tillbaka
           </button>
-          <h1 className="text-3xl font-bold text-gray-800">Skapa belöning</h1>
+          <h1 className="text-3xl font-bold text-chocolate-dark">Lägg till i butiken</h1>
+          <p className="text-chocolate-milk mt-1">Skapa en ny belöning som barn kan köpa</p>
         </div>
         
         {/* Form */}
-        <div className="bg-white rounded-2xl shadow-xl p-6">
+        <div className="card-glass">
           {error && <ErrorMessage message={error} />}
           
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="title" className="block text-sm font-medium text-chocolate-dark mb-1">
                 Belöningens namn
               </label>
               <input
@@ -56,14 +62,14 @@ export default function CreateRewardPage() {
                 id="title"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="t.ex. Extra TV-tid"
+                placeholder="Extra TV-tid"
                 required
-                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-amber-500 focus:outline-none transition-colors"
+                className="input-chocolate"
               />
             </div>
             
             <div>
-              <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="description" className="block text-sm font-medium text-chocolate-dark mb-1">
                 Beskrivning (valfritt)
               </label>
               <textarea
@@ -72,16 +78,18 @@ export default function CreateRewardPage() {
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Beskriv belöningen..."
                 rows={3}
-                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-amber-500 focus:outline-none transition-colors resize-none"
+                className="input-chocolate resize-none"
               />
             </div>
             
             <div>
-              <label htmlFor="cost" className="block text-sm font-medium text-gray-700 mb-1">
-                Kostnad (chokladpengar)
+              <label htmlFor="cost" className="block text-sm font-medium text-chocolate-dark mb-1">
+                Pris (chokladpengar)
               </label>
               <div className="relative">
-                <span className="absolute left-4 top-3 text-2xl">🍫</span>
+                <div className="absolute left-4 top-3">
+                  <ChocolateCoinIcon size={24} color="#D4AF37" />
+                </div>
                 <input
                   type="number"
                   id="cost"
@@ -89,13 +97,16 @@ export default function CreateRewardPage() {
                   onChange={(e) => setCost(Number(e.target.value))}
                   min={1}
                   required
-                  className="w-full pl-14 pr-4 py-3 rounded-xl border-2 border-gray-200 focus:border-amber-500 focus:outline-none transition-colors"
+                  className="input-chocolate pl-14"
                 />
               </div>
+              <p className="text-xs text-nougat-gold font-medium mt-1">
+                ≈ {(cost * chokladpengValue).toFixed(2)} kr
+              </p>
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-chocolate-dark mb-2">
                 Välj ikon
               </label>
               <div className="grid grid-cols-6 gap-2">
@@ -104,10 +115,10 @@ export default function CreateRewardPage() {
                     key={emoji}
                     type="button"
                     onClick={() => setIcon(emoji)}
-                    className={`p-3 rounded-xl border-2 text-3xl transition-all ${
+                    className={`p-3 rounded-2xl border-2 text-3xl transition-all ${
                       icon === emoji
-                        ? 'border-amber-500 bg-amber-50 scale-110'
-                        : 'border-gray-200 hover:border-gray-300'
+                        ? 'border-nougat-gold bg-nougat-light/50 scale-110'
+                        : 'border-chocolate-light/30 hover:border-chocolate-light/50'
                     }`}
                   >
                     {emoji}
@@ -117,14 +128,14 @@ export default function CreateRewardPage() {
             </div>
             
             {/* Preview */}
-            <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl border-2 border-purple-200 p-4">
-              <p className="text-xs font-medium text-purple-800 mb-2">Förhandsvisning</p>
+            <div className="bg-gradient-to-br from-nougat-light/50 to-cream rounded-2xl border-2 border-nougat-gold/30 p-4">
+              <p className="text-xs font-medium text-chocolate-medium mb-2">Förhandsvisning</p>
               <div className="flex items-center gap-3">
                 <div className="text-4xl">{icon}</div>
                 <div className="flex-1">
-                  <h3 className="font-bold text-gray-800">{title || 'Belöningens namn'}</h3>
-                  <div className="flex items-center gap-1 text-amber-600 font-bold text-sm">
-                    <span>🍫</span>
+                  <h3 className="font-bold text-chocolate-dark">{title || 'Belöningens namn'}</h3>
+                  <div className="flex items-center gap-2 text-nougat-gold font-bold text-sm">
+                    <ChocolateCoinIcon size={16} color="#D4AF37" />
                     <span>{cost}</span>
                   </div>
                 </div>
@@ -133,7 +144,7 @@ export default function CreateRewardPage() {
             
             <div className="space-y-2 pt-2">
               <Button type="submit" variant="primary" size="lg" fullWidth loading={isLoading}>
-                Skapa belöning
+                Lägg till belöning
               </Button>
               
               <Button onClick={() => router.back()} variant="ghost" size="md" fullWidth disabled={isLoading}>

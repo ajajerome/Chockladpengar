@@ -3,127 +3,82 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
-import { useStore } from '@/store/useStore';
 import { Button } from '@/components/Button';
 import { ErrorMessage } from '@/components/ErrorMessage';
-import { ChocolateCoinIcon, KeyIcon, ChildIcon, ParentIcon } from '@/components/icons';
+import { ChocolateCoinIcon, KeyIcon, ChildIcon } from '@/components/icons';
 
 export default function LoginPage() {
   const router = useRouter();
-  const { joinFamily, isLoading, error } = useAuth();
-  const familyMembers = useStore((state) => state.familyMembers);
+  const { joinFamilyAsChild, isLoading, error } = useAuth();
   
-  const [step, setStep] = useState<'code' | 'select-user'>('code');
   const [familyCode, setFamilyCode] = useState('');
-  const [userName, setUserName] = useState('');
-  const [userRole, setUserRole] = useState<'parent' | 'child'>('child');
+  const [childName, setChildName] = useState('');
   
-  const handleCodeSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     try {
-      await joinFamily(familyCode, userName, userRole);
-      
-      if (userRole === 'parent') {
-        router.push('/parent');
-      } else {
-        router.push('/child');
-      }
+      await joinFamilyAsChild(familyCode, childName);
+      router.push('/child');
     } catch (err) {
       console.error('Failed to join family:', err);
     }
   };
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-cream via-nougat-light to-white-chocolate p-4">
       <div className="max-w-md mx-auto pt-12">
-        {/* Header */}
         <div className="text-center mb-8">
-          <div className="mb-4 flex justify-center gap-2">
-            <ChocolateCoinIcon size={64} color="#D97706" />
-            <KeyIcon size={64} color="#D97706" />
+          <div className="mb-4 flex justify-center">
+            <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-nougat-gold to-caramel flex items-center justify-center shadow-lg">
+              <ChildIcon size={48} color="white" />
+            </div>
           </div>
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Logga in eller gå med</h1>
-          <p className="text-gray-600">Ange familjekod och ditt namn – har du redan ett konto loggar du in, annars går du med i familjen</p>
+          <h1 className="text-3xl font-bold text-chocolate-dark mb-2">Barn: Logga in</h1>
+          <p className="text-chocolate-milk">Ange din familjekod och ditt namn</p>
         </div>
         
-        {/* Form */}
-        <div className="bg-white rounded-2xl shadow-xl p-6">
+        <div className="card-glass">
           {error && <ErrorMessage message={error} />}
           
-          <form onSubmit={handleCodeSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="familyCode" className="block text-sm font-medium text-gray-700 mb-1">
-                Familje kod
+              <label htmlFor="familyCode" className="block text-sm font-medium text-chocolate-dark mb-1">
+                Familjekod
               </label>
               <input
                 type="text"
                 id="familyCode"
                 value={familyCode}
                 onChange={(e) => setFamilyCode(e.target.value.toUpperCase())}
-                placeholder="t.ex. ABC123"
+                placeholder="ABC123"
                 required
                 maxLength={6}
-                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-amber-500 focus:outline-none transition-colors uppercase text-center text-2xl font-bold tracking-wider"
+                className="input-chocolate uppercase text-center text-2xl font-bold tracking-wider"
               />
-              <p className="text-xs text-gray-500 mt-1">Fråga föräldern efter koden. Har föräldern lagt till dig som barn: skriv ditt namn som föräldern la in.</p>
             </div>
             
             <div>
-              <label htmlFor="userName" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="childName" className="block text-sm font-medium text-chocolate-dark mb-1">
                 Ditt namn
               </label>
               <input
                 type="text"
-                id="userName"
-                value={userName}
-                onChange={(e) => setUserName(e.target.value)}
-                placeholder="t.ex. Emma"
+                id="childName"
+                value={childName}
+                onChange={(e) => setChildName(e.target.value)}
+                placeholder="Emma"
                 required
-                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-amber-500 focus:outline-none transition-colors"
+                className="input-chocolate"
               />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Jag är en...
-              </label>
-              <div className="grid grid-cols-2 gap-3">
-                <button
-                  type="button"
-                  onClick={() => setUserRole('child')}
-                  className={`p-4 rounded-xl border-2 transition-all ${
-                    userRole === 'child'
-                      ? 'border-amber-500 bg-amber-50'
-                      : 'border-gray-200 bg-white hover:border-gray-300'
-                  }`}
-                >
-                  <div className="flex justify-center mb-2">
-                    <ChildIcon size={40} color={userRole === 'child' ? '#D97706' : '#9CA3AF'} />
-                  </div>
-                  <div className="font-medium text-sm">Barn</div>
-                </button>
-                
-                <button
-                  type="button"
-                  onClick={() => setUserRole('parent')}
-                  className={`p-4 rounded-xl border-2 transition-all ${
-                    userRole === 'parent'
-                      ? 'border-amber-500 bg-amber-50'
-                      : 'border-gray-200 bg-white hover:border-gray-300'
-                  }`}
-                >
-                  <div className="flex justify-center mb-2">
-                    <ParentIcon size={40} color={userRole === 'parent' ? '#D97706' : '#9CA3AF'} />
-                  </div>
-                  <div className="font-medium text-sm">Förälder</div>
-                </button>
-              </div>
+              <p className="text-xs text-chocolate-milk mt-1">
+                Skriv ditt namn exakt som föräldern la in det
+              </p>
             </div>
             
             <div className="space-y-2 pt-2">
               <Button type="submit" variant="primary" size="lg" fullWidth loading={isLoading}>
-                Logga in / Gå med
+                Logga in
               </Button>
               
               <Button onClick={() => router.push('/')} variant="ghost" size="md" fullWidth disabled={isLoading}>
@@ -133,12 +88,21 @@ export default function LoginPage() {
           </form>
         </div>
         
-        <div className="mt-6 text-center">
-          <p className="text-sm text-gray-600">
-            Har ingen familjekod?{' '}
+        <div className="mt-6 text-center space-y-2">
+          <p className="text-sm text-chocolate-milk">
+            Är du förälder?{' '}
+            <button
+              onClick={() => router.push('/parent/join')}
+              className="text-nougat-gold font-medium hover:text-caramel underline"
+            >
+              Förälder-inloggning
+            </button>
+          </p>
+          <p className="text-sm text-chocolate-milk">
+            Har ingen familj än?{' '}
             <button
               onClick={() => router.push('/create-family')}
-              className="text-amber-600 font-medium hover:text-amber-700 underline"
+              className="text-nougat-gold font-medium hover:text-caramel underline"
             >
               Skapa familj
             </button>

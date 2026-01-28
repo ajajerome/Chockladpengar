@@ -13,15 +13,21 @@ export default function CreateFamilyPage() {
   
   const [familyName, setFamilyName] = useState('');
   const [parentName, setParentName] = useState('');
+  const [pin, setPin] = useState('');
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (pin.length !== 4 || !/^\d{4}$/.test(pin)) {
+      alert('PIN måste vara 4 siffror');
+      return;
+    }
+    
     try {
-      const result = await createFamily(familyName, parentName);
+      const result = await createFamily(familyName, parentName, pin);
       
       // Show family code
-      alert(`Familj skapad! Familje kod: ${result.family.code}\n\nSpara denna kod så andra kan gå med senare!`);
+      alert(`Familj skapad! Familjekod: ${result.family.code}\n\nSpara denna kod så andra kan gå med senare!`);
       
       router.push('/parent');
     } catch (err) {
@@ -30,25 +36,29 @@ export default function CreateFamilyPage() {
   };
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-cream via-nougat-light to-white-chocolate p-4">
       <div className="max-w-md mx-auto pt-12">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="mb-4 flex justify-center gap-2">
-            <ChocolateCoinIcon size={64} color="#D97706" />
-            <UsersIcon size={64} color="#D97706" />
+          <div className="mb-4 flex justify-center gap-3">
+            <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-nougat-gold to-caramel flex items-center justify-center shadow-lg animate-float">
+              <ChocolateCoinIcon size={48} color="white" />
+            </div>
+            <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-chocolate-medium to-chocolate-milk flex items-center justify-center shadow-lg animate-float" style={{animationDelay: '0.2s'}}>
+              <UsersIcon size={48} color="white" />
+            </div>
           </div>
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Skapa familj</h1>
-          <p className="text-gray-600">Börja er chokladpengar-resa!</p>
+          <h1 className="text-3xl font-bold text-chocolate-dark mb-2">Skapa familj</h1>
+          <p className="text-chocolate-milk">Börja er chokladpengar-resa</p>
         </div>
         
         {/* Form */}
-        <div className="bg-white rounded-2xl shadow-xl p-6">
+        <div className="card-glass">
           {error && <ErrorMessage message={error} />}
           
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="familyName" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="familyName" className="block text-sm font-medium text-chocolate-dark mb-1">
                 Familjens namn
               </label>
               <input
@@ -56,14 +66,14 @@ export default function CreateFamilyPage() {
                 id="familyName"
                 value={familyName}
                 onChange={(e) => setFamilyName(e.target.value)}
-                placeholder="t.ex. Familjen Andersson"
+                placeholder="Familjen Andersson"
                 required
-                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-amber-500 focus:outline-none transition-colors"
+                className="input-chocolate"
               />
             </div>
             
             <div>
-              <label htmlFor="parentName" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="parentName" className="block text-sm font-medium text-chocolate-dark mb-1">
                 Ditt namn (förälder)
               </label>
               <input
@@ -71,15 +81,36 @@ export default function CreateFamilyPage() {
                 id="parentName"
                 value={parentName}
                 onChange={(e) => setParentName(e.target.value)}
-                placeholder="t.ex. Anna"
+                placeholder="Anna"
                 required
-                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-amber-500 focus:outline-none transition-colors"
+                className="input-chocolate"
               />
             </div>
             
-            <div className="bg-amber-50 rounded-xl p-4 border-2 border-amber-200">
-              <p className="text-sm text-amber-800">
-                <strong>💡 Tips:</strong> Du får en familje kod som andra kan använda för att gå med i familjen senare!
+            <div>
+              <label htmlFor="pin" className="block text-sm font-medium text-chocolate-dark mb-1">
+                Skapa PIN-kod (4 siffror)
+              </label>
+              <input
+                type="password"
+                id="pin"
+                value={pin}
+                onChange={(e) => setPin(e.target.value.replace(/\D/g, '').slice(0, 4))}
+                placeholder="••••"
+                required
+                maxLength={4}
+                pattern="\d{4}"
+                inputMode="numeric"
+                className="input-chocolate text-center text-2xl tracking-widest"
+              />
+              <p className="text-xs text-chocolate-milk mt-1">
+                Denna PIN behövs för förälder-inloggning
+              </p>
+            </div>
+            
+            <div className="bg-nougat-light/50 rounded-2xl p-4 border-2 border-nougat-gold/30">
+              <p className="text-sm text-chocolate-medium">
+                <strong>Tips:</strong> Du får en familjekod som andra kan använda för att gå med i familjen!
               </p>
             </div>
             

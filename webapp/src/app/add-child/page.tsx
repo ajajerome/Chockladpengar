@@ -25,24 +25,26 @@ export default function AddChildPage() {
   };
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-cream via-nougat-light to-white-chocolate p-4">
       <div className="max-w-md mx-auto pt-12">
         {/* Header */}
         <div className="text-center mb-8">
           <div className="mb-4 flex justify-center">
-            <ChildIcon size={64} color="#D97706" />
+            <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-nougat-gold to-caramel flex items-center justify-center shadow-lg">
+              <ChildIcon size={48} color="white" />
+            </div>
           </div>
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Lägg till barn</h1>
-          <p className="text-gray-600">Skapa ett konto för ditt barn</p>
+          <h1 className="text-3xl font-bold text-chocolate-dark mb-2">Lägg till barn</h1>
+          <p className="text-chocolate-milk">Skapa ett konto för ditt barn</p>
         </div>
         
         {/* Form */}
-        <div className="bg-white rounded-2xl shadow-xl p-6">
+        <div className="card-glass">
           {error && <ErrorMessage message={error} />}
           
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="childName" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="childName" className="block text-sm font-medium text-chocolate-dark mb-1">
                 Barnets namn
               </label>
               <input
@@ -50,15 +52,15 @@ export default function AddChildPage() {
                 id="childName"
                 value={childName}
                 onChange={(e) => setChildName(e.target.value)}
-                placeholder="t.ex. Emma"
+                placeholder="Emma"
                 required
-                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-amber-500 focus:outline-none transition-colors"
+                className="input-chocolate"
               />
             </div>
             
-            <div className="bg-amber-50 rounded-xl p-4 border-2 border-amber-200">
-              <p className="text-sm text-amber-800">
-                <strong>💡 Så loggar barnet in:</strong> Öppna appen på barnets telefon/tablet → Logga in → ange familjekoden, barnets namn och välj &quot;Barn&quot; → Gå med. Då kommer barnet in på sitt konto.
+            <div className="bg-nougat-light/50 rounded-2xl p-4 border-2 border-nougat-gold/30">
+              <p className="text-sm text-chocolate-medium">
+                <strong>Så loggar barnet in:</strong> Barnet öppnar appen → väljer "Logga in" → anger familjekoden och sitt namn. Om du har lagt till barnet här kommer de automatiskt in på sitt konto.
               </p>
             </div>
             

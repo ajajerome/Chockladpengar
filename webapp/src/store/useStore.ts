@@ -33,6 +33,7 @@ interface StoreState extends AppState {
   addParent: (familyId: string, name: string, pin: string) => Promise<void>;
   families: Family[];
   loadFamilyForJoin: (familyId: string) => Promise<void>;
+  updateFamilySettings: (settings: Partial<import('@/types').FamilySettings>) => Promise<void>;
   
   // Actions - Tasks
   setTasks: (tasks: Task[]) => void;
@@ -46,10 +47,23 @@ interface StoreState extends AppState {
   // Actions - Rewards
   setRewards: (rewards: Reward[]) => void;
   addReward: (reward: Reward) => void;
+  deleteReward: (rewardId: string) => void;
   purchaseReward: (rewardId: string) => Promise<void>;
+  setPurchasedRewards: (purchases: PurchasedReward[]) => void;
   
   // Actions - Transactions
   setTransactions: (transactions: Transaction[]) => void;
+  
+  // Actions - Investments
+  setInvestments: (investments: Investment[]) => void;
+  buyFundShares: (fundId: string, shares: number, price: number) => Promise<void>;
+  sellFundShares: (investmentId: string, shares: number, currentPrice: number) => Promise<void>;
+  
+  // Actions - Factory
+  setOwnedFactories: (factories: OwnedFactory[]) => void;
+  buyFactory: (factoryItemId: string) => Promise<void>;
+  collectFactoryProduction: (factoryId: string) => Promise<void>;
+  payFactoryMaintenance: (factoryId: string, cost: number) => Promise<void>;
   
   // Actions - UI
   setLoading: (loading: boolean) => void;
@@ -169,10 +183,10 @@ export const useStore = create<StoreState>((set, get) => ({
     set({ familyMembers: members });
   },
   
-  addParent: async (familyId: string, name: string, _pin: string) => {
+  addParent: async (familyId: string, name: string, pin: string) => {
     const { mode } = get();
     if (mode === 'firebase') {
-      const parent = await FirebaseService.createParent({ name, familyId });
+      const parent = await FirebaseService.createParent({ name, familyId, pin });
       const members = [...get().familyMembers, parent];
       set({ familyMembers: members });
     } else {
@@ -182,6 +196,7 @@ export const useStore = create<StoreState>((set, get) => ({
         role: 'parent',
         familyId,
         children: [],
+        pin,
         createdAt: new Date().toISOString(),
       };
       const members = [...get().familyMembers, parent];
@@ -199,6 +214,33 @@ export const useStore = create<StoreState>((set, get) => ({
       }
     } else {
       set({ families: [] });
+    }
+  },
+  
+  updateFamilySettings: async (settings: Partial<import('@/types').FamilySettings>) => {
+    const { family, mode } = get();
+    if (!family) {
+      throw new Error('No family found');
+    }
+    
+    const updatedSettings = {
+      ...family.settings,
+      ...settings,
+    };
+    
+    const updatedFamily = {
+      ...family,
+      settings: updatedSettings,
+    };
+    
+    if (mode === 'firebase') {
+      await FirebaseService.updateFamily(family.id, { settings: updatedSettings });
+    }
+    
+    set({ family: updatedFamily });
+    
+    if (mode === 'local') {
+      LocalStorageService.saveFamily(updatedFamily);
     }
   },
   
@@ -337,6 +379,15 @@ export const useStore = create<StoreState>((set, get) => ({
     get().setRewards(rewards);
   },
   
+  deleteReward: (rewardId: string) => {
+    const { mode } = get();
+    if (mode === 'firebase') {
+      FirebaseService.deleteReward(rewardId);
+    }
+    const rewards = get().rewards.filter(r => r.id !== rewardId);
+    get().setRewards(rewards);
+  },
+  
   purchaseReward: async (rewardId: string) => {
     const { mode, currentUser, rewards } = get();
     const reward = rewards.find(r => r.id === rewardId);
@@ -383,6 +434,297 @@ export const useStore = create<StoreState>((set, get) => ({
       const transactions = [transaction, ...get().transactions];
       get().setTransactions(transactions);
     }
+  },
+  
+  // ============= PURCHASED REWARDS =============
+  
+  setPurchasedRewards: (purchasedRewards: PurchasedReward[]) => {
+    set({ purchasedRewards });
+  },
+  
+  // ============= INVESTMENTS =============
+  
+  setInvestments: (investments: Investment[]) => {
+    set({ investments });
+  },
+  
+  buyFundShares: async (fundId: string, shares: number, price: number) => {
+    const { currentUser, mode } = get();
+    if (!currentUser || currentUser.role !== 'child') {
+      throw new Error('Only children can buy funds');
+    }
+    
+    const child = currentUser as Child;
+    const totalCost = shares * price;
+    
+    if (child.balance < totalCost) {
+      throw new Error('Insufficient balance');
+    }
+    
+    // Skapa investering
+    const investment: Investment = {
+      id: `inv_${Date.now()}`,
+      childId: child.id,
+      fundId,
+      shares,
+      purchasePrice: price,
+      purchasedAt: new Date().toISOString(),
+    };
+    
+    // Uppdatera balans
+    const updatedChild: Child = {
+      ...child,
+      balance: child.balance - totalCost,
+    };
+    
+    set({ 
+      currentUser: updatedChild,
+      investments: [...get().investments, investment],
+    });
+    
+    if (mode === 'local') {
+      LocalStorageService.saveUser(updatedChild);
+    }
+    
+    // Lägg till transaktion
+    const transaction: Transaction = {
+      id: `txn_${Date.now()}`,
+      userId: child.id,
+      type: 'investment',
+      amount: -totalCost,
+      description: `Köpte ${shares} andelar i fond`,
+      timestamp: new Date().toISOString(),
+      relatedId: investment.id,
+    };
+    
+    const transactions = [transaction, ...get().transactions];
+    get().setTransactions(transactions);
+  },
+  
+  sellFundShares: async (investmentId: string, shares: number, currentPrice: number) => {
+    const { currentUser, investments, mode } = get();
+    if (!currentUser || currentUser.role !== 'child') {
+      throw new Error('Only children can sell funds');
+    }
+    
+    const investment = investments.find(i => i.id === investmentId);
+    if (!investment) {
+      throw new Error('Investment not found');
+    }
+    
+    if (investment.shares < shares) {
+      throw new Error('Not enough shares');
+    }
+    
+    const child = currentUser as Child;
+    const sellValue = shares * currentPrice;
+    
+    // Uppdatera eller ta bort investering
+    let updatedInvestments;
+    if (investment.shares === shares) {
+      updatedInvestments = investments.filter(i => i.id !== investmentId);
+    } else {
+      updatedInvestments = investments.map(i =>
+        i.id === investmentId ? { ...i, shares: i.shares - shares } : i
+      );
+    }
+    
+    // Uppdatera balans
+    const updatedChild: Child = {
+      ...child,
+      balance: child.balance + sellValue,
+    };
+    
+    set({
+      currentUser: updatedChild,
+      investments: updatedInvestments,
+    });
+    
+    if (mode === 'local') {
+      LocalStorageService.saveUser(updatedChild);
+    }
+    
+    // Lägg till transaktion
+    const profit = sellValue - (shares * investment.purchasePrice);
+    const transaction: Transaction = {
+      id: `txn_${Date.now()}`,
+      userId: child.id,
+      type: 'investment',
+      amount: sellValue,
+      description: `Sålde ${shares} andelar (${profit >= 0 ? '+' : ''}${Math.round(profit)} vinst)`,
+      timestamp: new Date().toISOString(),
+      relatedId: investmentId,
+    };
+    
+    const transactions = [transaction, ...get().transactions];
+    get().setTransactions(transactions);
+  },
+  
+  // ============= FACTORY =============
+  
+  setOwnedFactories: (ownedFactories: OwnedFactory[]) => {
+    set({ ownedFactories });
+  },
+  
+  buyFactory: async (factoryItemId: string) => {
+    const { currentUser, mode } = get();
+    if (!currentUser || currentUser.role !== 'child') {
+      throw new Error('Only children can buy factories');
+    }
+    
+    // Import här för att undvika circular dependency
+    const { FACTORY_ITEMS } = await import('@/constants/factory');
+    const factoryItem = FACTORY_ITEMS.find(f => f.id === factoryItemId);
+    
+    if (!factoryItem) {
+      throw new Error('Factory not found');
+    }
+    
+    const child = currentUser as Child;
+    
+    if (child.balance < factoryItem.cost) {
+      throw new Error('Insufficient balance');
+    }
+    
+    const now = new Date().toISOString();
+    const ownedFactory: OwnedFactory = {
+      id: `owned_${Date.now()}`,
+      childId: child.id,
+      factoryItemId,
+      purchasedAt: now,
+      level: 1,
+      lastMaintenance: now,
+      needsMaintenance: false,
+      isProducing: true,
+    };
+    
+    // Uppdatera balans
+    const updatedChild: Child = {
+      ...child,
+      balance: child.balance - factoryItem.cost,
+    };
+    
+    set({
+      currentUser: updatedChild,
+      ownedFactories: [...get().ownedFactories, ownedFactory],
+    });
+    
+    if (mode === 'local') {
+      LocalStorageService.saveUser(updatedChild);
+    }
+    
+    // Lägg till transaktion
+    const transaction: Transaction = {
+      id: `txn_${Date.now()}`,
+      userId: child.id,
+      type: 'factory',
+      amount: -factoryItem.cost,
+      description: `Köpte ${factoryItem.name}`,
+      timestamp: new Date().toISOString(),
+      relatedId: ownedFactory.id,
+    };
+    
+    const transactions = [transaction, ...get().transactions];
+    get().setTransactions(transactions);
+  },
+  
+  collectFactoryProduction: async (factoryId: string) => {
+    const { currentUser, ownedFactories, mode } = get();
+    if (!currentUser || currentUser.role !== 'child') return;
+    
+    const factory = ownedFactories.find(f => f.id === factoryId);
+    if (!factory || !factory.isProducing) return;
+    
+    const { FACTORY_ITEMS, calculateProduction } = await import('@/constants/factory');
+    const factoryItem = FACTORY_ITEMS.find(f => f.id === factory.factoryItemId);
+    
+    if (!factoryItem) return;
+    
+    const production = calculateProduction(factoryItem.productionRate, factory.purchasedAt);
+    
+    if (production === 0) return;
+    
+    const child = currentUser as Child;
+    const updatedChild: Child = {
+      ...child,
+      balance: child.balance + production,
+    };
+    
+    // Uppdatera fabrik - sätt ny purchasedAt för att nollställa produktion
+    const updatedFactories = ownedFactories.map(f =>
+      f.id === factoryId ? { ...f, purchasedAt: new Date().toISOString() } : f
+    );
+    
+    set({
+      currentUser: updatedChild,
+      ownedFactories: updatedFactories,
+    });
+    
+    if (mode === 'local') {
+      LocalStorageService.saveUser(updatedChild);
+    }
+    
+    // Lägg till transaktion
+    const transaction: Transaction = {
+      id: `txn_${Date.now()}`,
+      userId: child.id,
+      type: 'factory',
+      amount: production,
+      description: `Samlade in från ${factoryItem.name}`,
+      timestamp: new Date().toISOString(),
+      relatedId: factoryId,
+    };
+    
+    const transactions = [transaction, ...get().transactions];
+    get().setTransactions(transactions);
+  },
+  
+  payFactoryMaintenance: async (factoryId: string, cost: number) => {
+    const { currentUser, ownedFactories, mode } = get();
+    if (!currentUser || currentUser.role !== 'child') return;
+    
+    const child = currentUser as Child;
+    
+    if (child.balance < cost) {
+      throw new Error('Insufficient balance');
+    }
+    
+    const updatedChild: Child = {
+      ...child,
+      balance: child.balance - cost,
+    };
+    
+    const updatedFactories = ownedFactories.map(f =>
+      f.id === factoryId ? { 
+        ...f, 
+        lastMaintenance: new Date().toISOString(),
+        needsMaintenance: false,
+        isProducing: true,
+      } : f
+    );
+    
+    set({
+      currentUser: updatedChild,
+      ownedFactories: updatedFactories,
+    });
+    
+    if (mode === 'local') {
+      LocalStorageService.saveUser(updatedChild);
+    }
+    
+    // Lägg till transaktion
+    const transaction: Transaction = {
+      id: `txn_${Date.now()}`,
+      userId: child.id,
+      type: 'factory',
+      amount: -cost,
+      description: 'Fabriksunderhåll',
+      timestamp: new Date().toISOString(),
+      relatedId: factoryId,
+    };
+    
+    const transactions = [transaction, ...get().transactions];
+    get().setTransactions(transactions);
   },
   
   // ============= TRANSACTIONS =============

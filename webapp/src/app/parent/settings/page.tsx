@@ -5,11 +5,16 @@ import { useRouter } from 'next/navigation'
 import { useStore } from '@/store/useStore'
 import { Button } from '@/components/Button'
 import { Avatar } from '@/components/Avatar'
+import { SettingsIcon, ChocolateCoinIcon } from '@/components/icons'
 
 export default function FamilySettingsPage() {
   const router = useRouter()
   const currentUser = useStore((state) => state.currentUser)
   const family = useStore((state) => state.family)
+  const tasks = useStore((state) => state.tasks)
+  const rewards = useStore((state) => state.rewards)
+  const deleteTask = useStore((state) => state.deleteTask)
+  const deleteReward = useStore((state) => state.deleteReward)
   const parents = useStore((state) =>
     state.familyMembers.filter((u) => u.role === 'parent')
   )
@@ -34,10 +39,12 @@ export default function FamilySettingsPage() {
 
   if (!currentUser || !family) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-cream via-nougat-light to-white-chocolate flex items-center justify-center">
         <div className="text-center">
-          <div className="text-6xl mb-4">🍫</div>
-          <p className="text-secondary">Laddar...</p>
+          <div className="w-20 h-20 mx-auto mb-4 rounded-3xl bg-gradient-to-br from-nougat-gold to-caramel flex items-center justify-center animate-pulse">
+            <ChocolateCoinIcon size={48} color="white" />
+          </div>
+          <p className="text-chocolate-milk">Laddar...</p>
         </div>
       </div>
     )
@@ -55,7 +62,9 @@ export default function FamilySettingsPage() {
           </div>
 
           <div className="text-center mb-6">
-            <div className="text-6xl mb-4">⚙️</div>
+            <div className="w-20 h-20 mx-auto mb-4 rounded-3xl bg-gradient-to-br from-chocolate-medium to-chocolate-milk flex items-center justify-center shadow-lg">
+              <SettingsIcon size={48} color="white" />
+            </div>
             <h1 className="text-3xl font-bold text-primary mb-2">
               Familjeinställningar
             </h1>
@@ -82,13 +91,13 @@ export default function FamilySettingsPage() {
               onClick={() => {
                 if (inviteLink) {
                   navigator.clipboard.writeText(inviteLink);
-                  alert('Länken kopierad! Dela den med den andra föräldern. 📋');
+                  alert('Länken kopierad! Dela den med den andra föräldern.');
                 }
               }}
               className="w-full btn-primary text-sm"
               disabled={!inviteLink}
             >
-              📋 Kopiera länk
+              Kopiera länk
             </button>
             <p className="text-xs text-secondary mt-2 text-center">
               Den andra föräldern klickar på länken och skapar sitt konto
@@ -140,6 +149,135 @@ export default function FamilySettingsPage() {
               </div>
             ))}
           </div>
+        </div>
+
+        {/* Manage Tasks */}
+        <div className="mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold text-primary">Hantera uppgifter</h2>
+            <button
+              onClick={() => router.push('/parent/create-task')}
+              className="text-accent hover:text-accent-dark font-bold text-2xl"
+            >
+              + Skapa
+            </button>
+          </div>
+
+          {tasks.length === 0 ? (
+            <div className="card text-center">
+              <p className="text-secondary">Inga uppgifter ännu</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {tasks.map((task) => {
+                const assignedChild = children.find(c => c.id === task.assignedTo);
+                return (
+                  <div key={task.id} className="card">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex-1">
+                        <h3 className="font-bold text-primary mb-1">{task.title}</h3>
+                        <p className="text-sm text-secondary mb-2">{task.description}</p>
+                        <div className="flex items-center gap-3 text-xs text-secondary">
+                          <span>Tilldelad: {assignedChild?.name || 'Okänd'}</span>
+                          <span>•</span>
+                          <div className="flex items-center gap-1 text-nougat-gold font-bold">
+                            <ChocolateCoinIcon size={14} color="#D4AF37" />
+                            <span>{task.reward}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => {
+                          if (confirm(`Vill du ta bort uppgiften "${task.title}"?`)) {
+                            deleteTask(task.id);
+                          }
+                        }}
+                        className="text-red-500 hover:text-red-700 text-2xl p-2 font-bold leading-none"
+                        title="Ta bort uppgift"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* Manage Rewards */}
+        <div className="mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold text-primary">Hantera belöningar</h2>
+            <button
+              onClick={() => router.push('/parent/create-reward')}
+              className="text-accent hover:text-accent-dark font-bold text-2xl"
+            >
+              + Skapa
+            </button>
+          </div>
+
+          {rewards.length === 0 ? (
+            <div className="card text-center">
+              <p className="text-secondary">Inga belöningar ännu</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {rewards.map((reward) => (
+                <div key={reward.id} className="card">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-start gap-3 flex-1">
+                      <div className="text-3xl">{reward.icon}</div>
+                      <div className="flex-1">
+                        <h3 className="font-bold text-primary mb-1">{reward.title}</h3>
+                        <p className="text-sm text-secondary mb-2">{reward.description}</p>
+                        <div className="flex items-center gap-1 text-nougat-gold font-bold text-xs">
+                          <ChocolateCoinIcon size={14} color="#D4AF37" />
+                          <span>{reward.cost}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => {
+                        if (confirm(`Vill du ta bort belöningen "${reward.title}"?`)) {
+                          deleteReward(reward.id);
+                        }
+                      }}
+                      className="text-red-500 hover:text-red-700 text-2xl p-2 font-bold leading-none"
+                      title="Ta bort belöning"
+                    >
+                      ×
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Economic Settings Link */}
+        <div className="mb-6">
+          <button
+            onClick={() => router.push('/parent/settings/economy')}
+            className="card-interactive w-full p-4 text-left"
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-nougat-gold to-caramel flex items-center justify-center">
+                  <ChocolateCoinIcon size={24} color="white" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-primary">Ekonomiska inställningar</h3>
+                  <p className="text-sm text-secondary">
+                    {family.settings ? 
+                      `1 chokladpeng = ${family.settings.chokladpengValue} kr` : 
+                      'Sätt priser och värden'}
+                  </p>
+                </div>
+              </div>
+              <span className="text-accent text-2xl">→</span>
+            </div>
+          </button>
         </div>
 
         {/* Family Info */}

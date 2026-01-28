@@ -7,6 +7,7 @@ import { useRewards } from '@/hooks/useRewards';
 import { Button } from '@/components/Button';
 import { RewardCard } from '@/components/RewardCard';
 import { BalanceDisplay } from '@/components/BalanceDisplay';
+import { GiftIcon } from '@/components/icons';
 import type { Child } from '@/types';
 
 // Force dynamic rendering (no static generation)
@@ -27,11 +28,11 @@ export default function RewardsPage() {
   
   const handlePurchase = async (rewardId: string, cost: number) => {
     if (child.balance < cost) {
-      alert('Du har inte tillräckligt med chokladpengar! 😢');
+      alert('Du har inte tillräckligt med chokladpengar!');
       return;
     }
     
-    if (!confirm('Är du säker på att du vill köpa denna belöning?')) {
+    if (!confirm('Är du säker på att du vill köpa detta?')) {
       return;
     }
     
@@ -39,9 +40,9 @@ export default function RewardsPage() {
     
     try {
       await purchaseReward(rewardId);
-      alert('Grattis! Du har köpt belöningen! 🎉\n\nFråga dina föräldrar när du kan få din belöning!');
+      alert('Grattis! Du har köpt belöningen!\n\nFråga dina föräldrar när du kan få den!');
       
-      // Trigger confetti/vibration
+      // Trigger vibration
       if (typeof window !== 'undefined' && 'vibrate' in navigator) {
         navigator.vibrate([100, 50, 100, 50, 100]);
       }
@@ -53,18 +54,19 @@ export default function RewardsPage() {
   };
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 pb-20">
+    <div className="min-h-screen bg-gradient-to-br from-cream via-nougat-light to-white-chocolate pb-20">
       {/* Header */}
-      <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-6 shadow-lg">
+      <div className="bg-gradient-to-r from-chocolate-medium to-caramel text-white p-6 shadow-lg">
         <div className="max-w-4xl mx-auto">
           <button
             onClick={() => router.back()}
-            className="text-white/80 hover:text-white mb-4"
+            className="text-white/80 hover:text-white mb-4 font-medium"
           >
             ← Tillbaka
           </button>
           
-          <h1 className="text-3xl font-bold mb-4">🎁 Belöningar</h1>
+          <h1 className="text-3xl font-bold mb-4">Butiken</h1>
+          <p className="text-white/90 text-sm mb-4">Handla belöningar med dina chokladpengar</p>
           
           <BalanceDisplay balance={child.balance} label="Ditt saldo" />
         </div>
@@ -72,11 +74,13 @@ export default function RewardsPage() {
       
       <div className="max-w-4xl mx-auto px-4 py-6">
         {rewards.length === 0 ? (
-          <div className="bg-white rounded-2xl shadow p-8 text-center">
-            <div className="text-6xl mb-4">🎁</div>
-            <h2 className="text-xl font-bold text-gray-800 mb-2">Inga belöningar ännu</h2>
-            <p className="text-gray-600 mb-4">
-              Fråga dina föräldrar om de kan lägga till belöningar!
+          <div className="card-glass text-center">
+            <div className="w-20 h-20 mx-auto mb-4 rounded-3xl bg-gradient-to-br from-chocolate-light to-nougat-light flex items-center justify-center">
+              <GiftIcon size={48} color="#6B4423" />
+            </div>
+            <h2 className="text-xl font-bold text-chocolate-dark mb-2">Butiken är tom</h2>
+            <p className="text-chocolate-milk mb-4">
+              Fråga dina föräldrar om de kan lägga till saker i butiken!
             </p>
           </div>
         ) : (
@@ -99,9 +103,9 @@ export default function RewardsPage() {
         )}
         
         {rewards.length > 0 && (
-          <div className="mt-6 bg-amber-50 rounded-xl border-2 border-amber-200 p-4 text-center">
-            <p className="text-sm text-amber-800">
-              💡 <strong>Tips:</strong> Spara dina chokladpengar för att köpa större belöningar!
+          <div className="mt-6 bg-nougat-light/50 rounded-2xl border-2 border-nougat-gold/30 p-4">
+            <p className="text-sm text-chocolate-medium">
+              <strong>Tips:</strong> Spara dina chokladpengar för att köpa större belöningar!
             </p>
           </div>
         )}

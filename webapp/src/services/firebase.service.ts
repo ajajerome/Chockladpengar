@@ -148,6 +148,7 @@ export class FirebaseService {
       id: newUserRef.key!,
       role: 'parent',
       children: [],
+      pin: parentData.pin,
       createdAt: new Date().toISOString(),
     };
     
@@ -407,6 +408,58 @@ export class FirebaseService {
     });
     
     return () => off(rewardsQuery);
+  }
+  
+  static async deleteReward(rewardId: string) {
+    await remove(ref(getDatabase(), `rewards/${rewardId}`));
+  }
+  
+  // ============= PURCHASED REWARDS =============
+  
+  static async getFamilyPurchasedRewards(familyId: string): Promise<PurchasedReward[]> {
+    // Get all family members first
+    const members = await this.getFamilyMembers(familyId);
+    const childIds = members.filter(m => m.role === 'child').map(m => m.id);
+    
+    const purchasedRewardsRef = ref(getDatabase(), 'purchasedRewards');
+    const snapshot = await get(purchasedRewardsRef);
+    
+    if (snapshot.exists()) {
+      const allPurchases = snapshot.val();
+      const familyPurchases = Object.keys(allPurchases)
+        .map(id => ({ ...allPurchases[id], id }))
+        .filter((purchase: PurchasedReward) => childIds.includes(purchase.childId))
+        .sort((a: PurchasedReward, b: PurchasedReward) => 
+          new Date(b.purchasedAt).getTime() - new Date(a.purchasedAt).getTime()
+        );
+      return familyPurchases;
+    }
+    return [];
+  }
+  
+  static listenToFamilyPurchasedRewards(familyId: string, callback: (purchases: PurchasedReward[]) => void) {
+    const purchasedRewardsRef = ref(getDatabase(), 'purchasedRewards');
+    
+    onValue(purchasedRewardsRef, async (snapshot) => {
+      if (snapshot.exists()) {
+        // Get family members to filter purchases
+        const members = await this.getFamilyMembers(familyId);
+        const childIds = members.filter(m => m.role === 'child').map(m => m.id);
+        
+        const allPurchases = snapshot.val();
+        const familyPurchases = Object.keys(allPurchases)
+          .map(id => ({ ...allPurchases[id], id }))
+          .filter((purchase: PurchasedReward) => childIds.includes(purchase.childId))
+          .sort((a: PurchasedReward, b: PurchasedReward) => 
+            new Date(b.purchasedAt).getTime() - new Date(a.purchasedAt).getTime()
+          );
+        callback(familyPurchases);
+      } else {
+        callback([]);
+      }
+    });
+    
+    return () => off(purchasedRewardsRef);
   }
   
   // ============= TRANSACTIONS =============

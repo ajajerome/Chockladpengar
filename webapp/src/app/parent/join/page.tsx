@@ -1,191 +1,126 @@
-'use client'
+'use client';
 
-import { useState, useEffect, Suspense } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { useStore } from '@/store/useStore'
-import { Button } from '@/components/Button'
-import { ChocolateCoinIcon } from '@/components/icons'
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/hooks/useAuth';
+import { Button } from '@/components/Button';
+import { ErrorMessage } from '@/components/ErrorMessage';
+import { ParentIcon, KeyIcon } from '@/components/icons';
 
-function JoinFamilyContent() {
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const familyId = searchParams.get('familyId')
-  const { addParent, families, loadFamilyForJoin } = useStore()
-  const family = families.find(f => f.id === familyId)
+export default function ParentJoinPage() {
+  const router = useRouter();
+  const { joinFamilyAsParent, isLoading, error } = useAuth();
   
-  const [name, setName] = useState('')
-  const [pin, setPin] = useState('')
-  const [confirmPin, setConfirmPin] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-
-  useEffect(() => {
-    if (familyId) {
-      loadFamilyForJoin(familyId)
+  const [familyCode, setFamilyCode] = useState('');
+  const [parentName, setParentName] = useState('');
+  const [pin, setPin] = useState('');
+  
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (pin.length !== 4 || !/^\d{4}$/.test(pin)) {
+      alert('PIN måste vara 4 siffror');
+      return;
     }
-  }, [familyId, loadFamilyForJoin])
-
-  useEffect(() => {
-    if (!familyId || !family) {
-      setError('Ogiltig inbjudningslänk')
-    }
-  }, [familyId, family])
-
-  const handleJoin = () => {
-    if (!name.trim()) {
-      setError('Ange ditt namn')
-      return
-    }
-
-    if (pin.length !== 4) {
-      setError('PIN-koden måste vara 4 siffror')
-      return
-    }
-
-    if (pin !== confirmPin) {
-      setError('PIN-koderna matchar inte')
-      return
-    }
-
-    setLoading(true)
+    
     try {
-      addParent(familyId!, name.trim(), pin)
-      alert('Välkommen till familjen! Du kan nu logga in. 🎉')
-      router.push('/login')
-    } catch (error) {
-      setError('Kunde inte gå med i familjen')
-    } finally {
-      setLoading(false)
+      await joinFamilyAsParent(familyCode, parentName, pin);
+      router.push('/parent');
+    } catch (err) {
+      console.error('Failed to join family as parent:', err);
     }
-  }
-
-  if (!family) {
-    return (
-      <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="card max-w-md w-full text-center">
-          <div className="mb-4 flex justify-center">
-            <svg className="w-16 h-16 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </div>
-          <h1 className="text-2xl font-bold text-primary mb-2">Ogiltig länk</h1>
-          <p className="text-secondary mb-6">
-            Denna inbjudningslänk fungerar inte. Be den som bjöd in dig att skicka en ny länk.
-          </p>
-          <Button onClick={() => router.push('/login')} variant="ghost" fullWidth>
-            Gå till login
-          </Button>
-        </div>
-      </div>
-    )
-  }
-
+  };
+  
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="card max-w-md w-full">
-        <div className="text-center mb-6">
-          <div className="mb-4 flex justify-center">
-            <ChocolateCoinIcon size={64} color="#D4AF37" />
-          </div>
-          <h1 className="text-3xl font-bold text-primary mb-2">
-            Gå med i {family.name}
-          </h1>
-          <p className="text-secondary">
-            Du har blivit inbjuden att bli förälder i denna familj!
-          </p>
-        </div>
-
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-primary mb-2">
-              Ditt namn
-            </label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="t.ex. Mamma, Pappa"
-              className="input"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-primary mb-2">
-              Skapa PIN-kod (4 siffror)
-            </label>
-            <input
-              type="password"
-              inputMode="numeric"
-              maxLength={4}
-              value={pin}
-              onChange={(e) => setPin(e.target.value.replace(/\D/g, ''))}
-              placeholder="••••"
-              className="input"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-primary mb-2">
-              Bekräfta PIN-kod
-            </label>
-            <input
-              type="password"
-              inputMode="numeric"
-              maxLength={4}
-              value={confirmPin}
-              onChange={(e) => setConfirmPin(e.target.value.replace(/\D/g, ''))}
-              placeholder="••••"
-              className="input"
-            />
-          </div>
-
-          {error && (
-            <div className="p-3 bg-red-100 border border-red-300 rounded-xl text-red-700 text-sm">
-              {error}
+    <div className="min-h-screen bg-gradient-to-br from-cream via-nougat-light to-white-chocolate p-4">
+      <div className="max-w-md mx-auto pt-12">
+        <div className="text-center mb-8">
+          <div className="mb-4 flex justify-center gap-3">
+            <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-chocolate-medium to-chocolate-milk flex items-center justify-center shadow-lg">
+              <ParentIcon size={48} color="white" />
             </div>
-          )}
-
-          <div className="space-y-2">
-            <Button
-              onClick={handleJoin}
-              loading={loading}
-              disabled={loading || !family}
-              size="lg"
-              fullWidth
-            >
-              Gå med i familjen
-            </Button>
-
-            <Button
-              onClick={() => router.push('/login')}
-              variant="ghost"
-              fullWidth
-            >
-              Avbryt
-            </Button>
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-nougat-gold to-caramel flex items-center justify-center shadow-lg self-end">
+              <KeyIcon size={32} color="white" />
+            </div>
           </div>
+          <h1 className="text-3xl font-bold text-chocolate-dark mb-2">Förälder: Gå med</h1>
+          <p className="text-chocolate-milk">Gå med i en befintlig familj</p>
+        </div>
+        
+        <div className="card-glass">
+          {error && <ErrorMessage message={error} />}
+          
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label htmlFor="familyCode" className="block text-sm font-medium text-chocolate-dark mb-1">
+                Familjekod
+              </label>
+              <input
+                type="text"
+                id="familyCode"
+                value={familyCode}
+                onChange={(e) => setFamilyCode(e.target.value.toUpperCase())}
+                placeholder="ABC123"
+                required
+                maxLength={6}
+                className="input-chocolate uppercase text-center text-2xl font-bold tracking-wider"
+              />
+            </div>
+            
+            <div>
+              <label htmlFor="parentName" className="block text-sm font-medium text-chocolate-dark mb-1">
+                Ditt namn
+              </label>
+              <input
+                type="text"
+                id="parentName"
+                value={parentName}
+                onChange={(e) => setParentName(e.target.value)}
+                placeholder="Anna"
+                required
+                className="input-chocolate"
+              />
+            </div>
+            
+            <div>
+              <label htmlFor="pin" className="block text-sm font-medium text-chocolate-dark mb-1">
+                Skapa PIN-kod (4 siffror)
+              </label>
+              <input
+                type="password"
+                id="pin"
+                value={pin}
+                onChange={(e) => setPin(e.target.value.replace(/\D/g, '').slice(0, 4))}
+                placeholder="••••"
+                required
+                maxLength={4}
+                pattern="\d{4}"
+                inputMode="numeric"
+                className="input-chocolate text-center text-2xl tracking-widest"
+              />
+              <p className="text-xs text-chocolate-milk mt-1">
+                Denna PIN behövs för att logga in som förälder
+              </p>
+            </div>
+            
+            <div className="bg-nougat-light/50 rounded-2xl p-4 border-2 border-nougat-gold/30">
+              <p className="text-sm text-chocolate-medium">
+                <strong>Viktigt:</strong> Kom ihåg din PIN-kod! Den behövs för att logga in och för att andra föräldrar ska kunna gå med.
+              </p>
+            </div>
+            
+            <div className="space-y-2 pt-2">
+              <Button type="submit" variant="primary" size="lg" fullWidth loading={isLoading}>
+                Gå med som förälder
+              </Button>
+              
+              <Button onClick={() => router.push('/')} variant="ghost" size="md" fullWidth disabled={isLoading}>
+                Tillbaka
+              </Button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
-  )
+  );
 }
-
-export default function JoinFamilyPage() {
-  return (
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="mb-4 flex justify-center">
-            <ChocolateCoinIcon size={64} color="#D4AF37" />
-          </div>
-          <p className="text-secondary">Laddar...</p>
-        </div>
-      </div>
-    }>
-      <JoinFamilyContent />
-    </Suspense>
-  )
-}
-
-
-

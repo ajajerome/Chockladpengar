@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react';
 import { useStore } from '@/store/useStore';
 import { FirebaseService } from '@/services/firebase.service';
+import { playSuccessSound } from '@/utils/sounds';
 import type { Task, TaskFrequency } from '@/types';
 
 export function useTasks() {
@@ -103,6 +104,8 @@ export function useTasks() {
     
     try {
       await useStore.getState().approveTask(taskId);
+      // Play cash register sound when task is approved
+      playSuccessSound();
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to approve task';
       setError(message);
