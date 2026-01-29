@@ -182,7 +182,7 @@ export class FirebaseService {
     }
     
     // Ta bort barnets uppgifter
-    const tasks = await this.getTasks(child.familyId);
+    const tasks = await this.getFamilyTasks(child.familyId);
     for (const task of tasks) {
       if (task.assignedTo === childId) {
         await remove(ref(db, `tasks/${task.id}`));
