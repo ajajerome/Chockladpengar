@@ -47,7 +47,7 @@ export default function ChildHomePage() {
     return null;
   }
   
-  // Nu vet vi säkert att currentUser är Child
+  // Type guard - nu är currentUser garanterat Child
   const child = currentUser as Child;
   
   return (

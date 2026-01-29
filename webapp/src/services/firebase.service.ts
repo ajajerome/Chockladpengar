@@ -166,6 +166,77 @@ export class FirebaseService {
     }
   }
   
+  static async deleteChild(childId: string) {
+    const db = getDatabase();
+    const child = await this.getUser(childId) as Child;
+    
+    if (!child || child.role !== 'child') {
+      throw new Error('Användare är inte ett barn');
+    }
+    
+    // Ta bort barnet från förälderns children-array
+    const parent = await this.getUser(child.parentId) as Parent;
+    if (parent && parent.role === 'parent') {
+      const children = (parent.children || []).filter(id => id !== childId);
+      await update(ref(db, `users/${child.parentId}`), { children });
+    }
+    
+    // Ta bort barnets uppgifter
+    const tasks = await this.getTasks(child.familyId);
+    for (const task of tasks) {
+      if (task.assignedTo === childId) {
+        await remove(ref(db, `tasks/${task.id}`));
+      }
+    }
+    
+    // Ta bort barnets transaktioner
+    const transactionsRef = ref(db, 'transactions');
+    const transactionsQuery = query(transactionsRef, orderByChild('userId'), equalTo(childId));
+    const transactionsSnapshot = await get(transactionsQuery);
+    if (transactionsSnapshot.exists()) {
+      const transactions = transactionsSnapshot.val();
+      for (const txId of Object.keys(transactions)) {
+        await remove(ref(db, `transactions/${txId}`));
+      }
+    }
+    
+    // Ta bort barnets investeringar
+    const investmentsRef = ref(db, 'investments');
+    const investmentsQuery = query(investmentsRef, orderByChild('childId'), equalTo(childId));
+    const investmentsSnapshot = await get(investmentsQuery);
+    if (investmentsSnapshot.exists()) {
+      const investments = investmentsSnapshot.val();
+      for (const invId of Object.keys(investments)) {
+        await remove(ref(db, `investments/${invId}`));
+      }
+    }
+    
+    // Ta bort barnets fabriker
+    const factoriesRef = ref(db, 'ownedFactories');
+    const factoriesQuery = query(factoriesRef, orderByChild('childId'), equalTo(childId));
+    const factoriesSnapshot = await get(factoriesQuery);
+    if (factoriesSnapshot.exists()) {
+      const factories = factoriesSnapshot.val();
+      for (const factId of Object.keys(factories)) {
+        await remove(ref(db, `ownedFactories/${factId}`));
+      }
+    }
+    
+    // Ta bort barnets köpta belöningar
+    const purchasedRef = ref(db, 'purchasedRewards');
+    const purchasedQuery = query(purchasedRef, orderByChild('childId'), equalTo(childId));
+    const purchasedSnapshot = await get(purchasedQuery);
+    if (purchasedSnapshot.exists()) {
+      const purchased = purchasedSnapshot.val();
+      for (const prId of Object.keys(purchased)) {
+        await remove(ref(db, `purchasedRewards/${prId}`));
+      }
+    }
+    
+    // Till sist, ta bort själva barnet
+    await remove(ref(db, `users/${childId}`));
+  }
+  
   static async getUser(userId: string): Promise<User | null> {
     const userRef = ref(getDatabase(), `users/${userId}`);
     const snapshot = await get(userRef);

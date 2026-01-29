@@ -31,6 +31,7 @@ interface StoreState extends AppState {
   setFamily: (family: Family) => void;
   setFamilyMembers: (members: User[]) => void;
   addParent: (familyId: string, name: string, pin: string) => Promise<void>;
+  deleteChild: (childId: string) => Promise<void>;
   families: Family[];
   loadFamilyForJoin: (familyId: string) => Promise<void>;
   updateFamilySettings: (settings: Partial<import('@/types').FamilySettings>) => Promise<void>;
@@ -202,6 +203,16 @@ export const useStore = create<StoreState>((set, get) => ({
       const members = [...get().familyMembers, parent];
       set({ familyMembers: members });
     }
+  },
+  
+  deleteChild: async (childId: string) => {
+    const { mode } = get();
+    if (mode === 'firebase') {
+      await FirebaseService.deleteChild(childId);
+    }
+    // Ta bort från local state
+    const members = get().familyMembers.filter(m => m.id !== childId);
+    set({ familyMembers: members });
   },
   
   loadFamilyForJoin: async (familyId: string) => {

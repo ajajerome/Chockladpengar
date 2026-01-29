@@ -15,6 +15,7 @@ export default function FamilySettingsPage() {
   const rewards = useStore((state) => state.rewards)
   const deleteTask = useStore((state) => state.deleteTask)
   const deleteReward = useStore((state) => state.deleteReward)
+  const deleteChild = useStore((state) => state.deleteChild)
   const parents = useStore((state) =>
     state.familyMembers.filter((u) => u.role === 'parent')
   )
@@ -137,17 +138,34 @@ export default function FamilySettingsPage() {
           </div>
 
           <div className="space-y-3">
-            {children.map((child) => (
-              <div key={child.id} className="card flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <Avatar name={child.name} size="medium" />
-                  <div>
-                    <p className="font-bold text-primary">{child.name}</p>
-                    <p className="text-sm text-secondary">Barn</p>
-                  </div>
-                </div>
+            {children.length === 0 ? (
+              <div className="card text-center">
+                <p className="text-secondary">Inga barn ännu</p>
               </div>
-            ))}
+            ) : (
+              children.map((child) => (
+                <div key={child.id} className="card flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <Avatar name={child.name} size="medium" />
+                    <div>
+                      <p className="font-bold text-primary">{child.name}</p>
+                      <p className="text-sm text-secondary">Barn</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => {
+                      if (confirm(`Är du säker på att du vill ta bort ${child.name}? Detta tar bort ALLA barnets data (uppgifter, investeringar, transaktioner etc).`)) {
+                        deleteChild(child.id);
+                      }
+                    }}
+                    className="text-red-500 hover:text-red-700 text-2xl p-2 font-bold leading-none"
+                    title="Ta bort barn"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))
+            )}
           </div>
         </div>
 
