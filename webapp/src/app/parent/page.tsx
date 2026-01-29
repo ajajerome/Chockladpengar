@@ -7,7 +7,7 @@ import { useTasks } from '@/hooks/useTasks';
 import { Button } from '@/components/Button';
 import { TaskCard } from '@/components/TaskCard';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
-import { ChocolateCoinIcon, GiftIcon, CheckIcon } from '@/components/icons';
+import { ChocolateCoinIcon, GiftIcon, CheckIcon, SettingsIcon } from '@/components/icons';
 import type { Child } from '@/types';
 
 // Force dynamic rendering (no static generation)
@@ -38,12 +38,21 @@ export default function ParentHomePage() {
               <h1 className="text-2xl font-bold">Hej {currentUser.name}!</h1>
               <p className="text-white/80">{family?.name || 'Familjen'}</p>
             </div>
-            <button
-              onClick={logout}
-              className="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-xl text-sm font-medium transition-colors"
-            >
-              Logga ut
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => router.push('/parent/settings')}
+                className="bg-white/20 hover:bg-white/30 p-2 rounded-xl transition-colors"
+                title="Inställningar"
+              >
+                <SettingsIcon size={20} color="#FFF" />
+              </button>
+              <button
+                onClick={logout}
+                className="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-xl text-sm font-medium transition-colors"
+              >
+                Logga ut
+              </button>
+            </div>
           </div>
           
           {family && (
@@ -93,6 +102,40 @@ export default function ParentHomePage() {
               ))}
             </div>
           )}
+        </div>
+        
+        {/* Quick Actions */}
+        <div className="grid grid-cols-2 gap-4">
+          <button
+            onClick={() => router.push('/parent/create-task')}
+            className="card-chocolate text-center hover:shadow-xl transition-shadow"
+          >
+            <div className="text-4xl mb-2">📝</div>
+            <h3 className="font-bold text-chocolate-dark">Skapa uppgift</h3>
+            <p className="text-sm text-chocolate-milk mt-1">Lägg till ny uppgift</p>
+          </button>
+          
+          <button
+            onClick={() => router.push('/parent/create-reward')}
+            className="card-chocolate text-center hover:shadow-xl transition-shadow"
+          >
+            <div className="text-4xl mb-2">🎁</div>
+            <h3 className="font-bold text-chocolate-dark">Lägg till i Butiken</h3>
+            <p className="text-sm text-chocolate-milk mt-1">Skapa ny belöning</p>
+          </button>
+          
+          <button
+            onClick={() => router.push('/parent/settings')}
+            className="card-chocolate text-center hover:shadow-xl transition-shadow col-span-2"
+          >
+            <div className="flex items-center justify-center gap-3">
+              <SettingsIcon size={32} color="#6B4423" />
+              <div className="text-left">
+                <h3 className="font-bold text-chocolate-dark">Inställningar</h3>
+                <p className="text-sm text-chocolate-milk">Hantera familj, barn, uppgifter och belöningar</p>
+              </div>
+            </div>
+          </button>
         </div>
         
         {/* Tasks to Review */}
