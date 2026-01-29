@@ -18,12 +18,10 @@ export default function ChildHomePage() {
   const { currentUser, investments, ownedFactories, logout } = useStore();
   const { pendingTasks, submitForReview } = useTasks();
   
-  // Cast early to access child properties
-  const child = currentUser as Child | null;
-  
   // Beräkna total förmögenhet
   const totalAssets = useMemo(() => {
-    if (!child) return 0;
+    if (!currentUser || currentUser.role !== 'child') return 0;
+    const child = currentUser as Child;
     let total = child.balance;
     
     // Lägg till värde av investeringar (placeholder - ska uppdateras med faktiska priser)
@@ -34,7 +32,7 @@ export default function ChildHomePage() {
     // TODO: Lägg till värde av fabriker
     
     return total;
-  }, [child, investments]);
+  }, [currentUser, investments]);
   
   const investmentValue = useMemo(() => {
     let value = 0;
@@ -48,6 +46,9 @@ export default function ChildHomePage() {
     router.push('/');
     return null;
   }
+  
+  // Nu vet vi säkert att currentUser är Child
+  const child = currentUser as Child;
   
   return (
     <div className="min-h-screen bg-gradient-to-br from-cream via-nougat-light to-white-chocolate pb-20">
