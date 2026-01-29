@@ -18,15 +18,12 @@ export default function ChildHomePage() {
   const { currentUser, investments, ownedFactories, logout } = useStore();
   const { pendingTasks, submitForReview } = useTasks();
   
-  if (!currentUser || currentUser.role !== 'child') {
-    router.push('/');
-    return null;
-  }
-  
-  const child = currentUser as Child;
+  // Cast early to access child properties
+  const child = currentUser as Child | null;
   
   // Beräkna total förmögenhet
   const totalAssets = useMemo(() => {
+    if (!child) return 0;
     let total = child.balance;
     
     // Lägg till värde av investeringar (placeholder - ska uppdateras med faktiska priser)
@@ -37,7 +34,7 @@ export default function ChildHomePage() {
     // TODO: Lägg till värde av fabriker
     
     return total;
-  }, [child.balance, investments]);
+  }, [child, investments]);
   
   const investmentValue = useMemo(() => {
     let value = 0;
@@ -46,6 +43,11 @@ export default function ChildHomePage() {
     });
     return value;
   }, [investments]);
+  
+  if (!currentUser || currentUser.role !== 'child') {
+    router.push('/');
+    return null;
+  }
   
   return (
     <div className="min-h-screen bg-gradient-to-br from-cream via-nougat-light to-white-chocolate pb-20">

@@ -60,7 +60,7 @@ export default function AddChildPage() {
             
             <div className="bg-nougat-light/50 rounded-2xl p-4 border-2 border-nougat-gold/30">
               <p className="text-sm text-chocolate-medium">
-                <strong>Så loggar barnet in:</strong> Barnet öppnar appen → väljer "Logga in" → anger familjekoden och sitt namn. Om du har lagt till barnet här kommer de automatiskt in på sitt konto.
+                <strong>Så loggar barnet in:</strong> Barnet öppnar appen → väljer &quot;Logga in&quot; → anger familjekoden och sitt namn. Om du har lagt till barnet här kommer de automatiskt in på sitt konto.
               </p>
             </div>
             
