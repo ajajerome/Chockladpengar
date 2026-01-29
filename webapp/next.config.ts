@@ -1,6 +1,11 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
+  // Force new build hash
+  env: {
+    BUILD_TIME: new Date().toISOString(),
+  },
+  
   // Generate ETag headers to help with cache validation
   generateEtags: true,
   
