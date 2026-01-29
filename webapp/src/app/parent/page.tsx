@@ -110,7 +110,9 @@ export default function ParentHomePage() {
             onClick={() => router.push('/parent/create-task')}
             className="card-chocolate text-center hover:shadow-xl transition-shadow"
           >
-            <div className="text-4xl mb-2">📝</div>
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-400 to-indigo-400 flex items-center justify-center mx-auto mb-2">
+              <CheckIcon size={32} color="white" />
+            </div>
             <h3 className="font-bold text-chocolate-dark">Skapa uppgift</h3>
             <p className="text-sm text-chocolate-milk mt-1">Lägg till ny uppgift</p>
           </button>
@@ -119,7 +121,9 @@ export default function ParentHomePage() {
             onClick={() => router.push('/parent/create-reward')}
             className="card-chocolate text-center hover:shadow-xl transition-shadow"
           >
-            <div className="text-4xl mb-2">🎁</div>
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center mx-auto mb-2">
+              <GiftIcon size={32} color="white" />
+            </div>
             <h3 className="font-bold text-chocolate-dark">Lägg till i Butiken</h3>
             <p className="text-sm text-chocolate-milk mt-1">Skapa ny belöning</p>
           </button>
@@ -129,7 +133,9 @@ export default function ParentHomePage() {
             className="card-chocolate text-center hover:shadow-xl transition-shadow col-span-2"
           >
             <div className="flex items-center justify-center gap-3">
-              <SettingsIcon size={32} color="#6B4423" />
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-400 to-amber-400 flex items-center justify-center">
+                <SettingsIcon size={24} color="white" />
+              </div>
               <div className="text-left">
                 <h3 className="font-bold text-chocolate-dark">Inställningar</h3>
                 <p className="text-sm text-chocolate-milk">Hantera familj, barn, uppgifter och belöningar</p>
