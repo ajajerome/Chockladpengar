@@ -748,6 +748,36 @@ export const useStore = create<StoreState>((set, get) => ({
     }
   },
   
+  // ============= INVESTMENTS =============
+  
+  addInvestment: (investment: Investment) => {
+    const investments = [...get().investments, investment];
+    set({ investments });
+  },
+  
+  removeInvestment: (investmentId: string) => {
+    const investments = get().investments.filter(inv => inv.id !== investmentId);
+    set({ investments });
+  },
+  
+  updateUserBalance: (userId: string, amount: number) => {
+    const { currentUser, mode } = get();
+    if (!currentUser || currentUser.id !== userId) return;
+    
+    if (currentUser.role === 'child') {
+      const updatedChild: Child = {
+        ...currentUser as Child,
+        balance: (currentUser as Child).balance + amount,
+      };
+      
+      set({ currentUser: updatedChild });
+      
+      if (mode === 'local') {
+        LocalStorageService.saveUser(updatedChild);
+      }
+    }
+  },
+  
   // ============= UI =============
   
   setLoading: (isLoading: boolean) => {

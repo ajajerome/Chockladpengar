@@ -43,6 +43,15 @@ export default function ChildHomePage() {
     return value;
   }, [investments]);
   
+  const factoryValue = useMemo(() => {
+    // Placeholder värde för fabriker - beräknas som kostnad * 1.5 för att visa tillväxt
+    let value = 0;
+    ownedFactories.forEach(factory => {
+      value += factory.purchasePrice * 1.2; // Factories ökar i värde
+    });
+    return value;
+  }, [ownedFactories]);
+  
   if (!currentUser || currentUser.role !== 'child') {
     router.push('/');
     return null;
@@ -87,16 +96,32 @@ export default function ChildHomePage() {
             </button>
           </div>
           
-          {/* Saldo-kort */}
+          {/* Saldo-kort med uppdelning */}
           <div className="bg-white rounded-3xl p-6 shadow-lg" style={{ borderLeft: '6px solid #FFD700' }}>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium mb-2" style={{ color: '#8B5A3C' }}>Du har samlat ihop</p>
-                <div className="flex items-center gap-3">
-                  <ChocolateCoinIcon size={48} />
-                  <span className="text-5xl font-bold" style={{ color: '#8B5A3C' }}>{child.balance}</span>
-                  <span className="text-lg" style={{ color: '#A67C52' }}>chokladpengar</span>
-                </div>
+            <p className="text-sm font-medium mb-3" style={{ color: '#8B5A3C' }}>Din totala förmögenhet</p>
+            <div className="flex items-center gap-3 mb-4">
+              <ChocolateCoinIcon size={48} />
+              <span className="text-5xl font-bold" style={{ color: '#8B5A3C' }}>{Math.floor(totalAssets)}</span>
+            </div>
+            
+            {/* Uppdelning */}
+            <div className="grid grid-cols-3 gap-2 mt-4">
+              <div className="bg-gradient-to-br from-yellow-50 to-amber-50 rounded-2xl p-3 text-center border" style={{ borderColor: '#FFE55C' }}>
+                <div className="text-2xl mb-1">💰</div>
+                <p className="text-xs font-medium mb-1" style={{ color: '#8B5A3C' }}>Plånbok</p>
+                <p className="text-lg font-bold" style={{ color: '#FFD700' }}>{child.balance}</p>
+              </div>
+              
+              <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-3 text-center border" style={{ borderColor: '#A8D8FF' }}>
+                <div className="text-2xl mb-1">📈</div>
+                <p className="text-xs font-medium mb-1" style={{ color: '#8B5A3C' }}>Fonder</p>
+                <p className="text-lg font-bold" style={{ color: '#64B5F6' }}>{Math.floor(investmentValue)}</p>
+              </div>
+              
+              <div className="bg-gradient-to-br from-orange-50 to-amber-50 rounded-2xl p-3 text-center border" style={{ borderColor: '#A67C52' }}>
+                <div className="text-2xl mb-1">🏭</div>
+                <p className="text-xs font-medium mb-1" style={{ color: '#8B5A3C' }}>Fabriker</p>
+                <p className="text-lg font-bold" style={{ color: '#8B5A3C' }}>{Math.floor(factoryValue)}</p>
               </div>
             </div>
           </div>
