@@ -66,14 +66,7 @@ export default function InvestmentsPage() {
     },
   ], [prices]);
   
-  if (!currentUser || currentUser.role !== 'child') {
-    router.push('/');
-    return null;
-  }
-  
-  const child = currentUser as Child;
-  
-  // Beräkna totalt värde i fonder
+  // Beräkna totalt värde i fonder - FÖRE early return!
   const totalInvestedValue = useMemo(() => {
     let total = 0;
     investments.forEach(inv => {
@@ -83,7 +76,14 @@ export default function InvestmentsPage() {
       }
     });
     return total;
-  }, [investments]);
+  }, [investments, AVAILABLE_FUNDS]);
+  
+  if (!currentUser || currentUser.role !== 'child') {
+    router.push('/');
+    return null;
+  }
+  
+  const child = currentUser as Child;
   
   // Hitta befintlig investering för vald fond
   const existingInvestment = selectedFund 
