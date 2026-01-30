@@ -1,47 +1,14 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useStore } from '@/store/useStore';
 import { ChocolateCoinIcon, BarChartIcon } from '@/components/icons';
+import { FUND_BASE_PRICES, initializePrices, updateAllPrices, getPriceChange } from '@/utils/fundPrices';
 import type { Child, Fund } from '@/types';
 
 // Force dynamic rendering (no static generation)
 export const dynamic = 'force-dynamic';
-
-// Demo funds med simulerade priser
-const AVAILABLE_FUNDS: Fund[] = [
-  {
-    id: 'fund_1',
-    name: 'Mjölkchokladfonden',
-    description: 'Låg risk, stabil tillväxt',
-    riskLevel: 'low',
-    currentPrice: 10,
-    priceHistory: [],
-    icon: '🥛',
-    color: '#8B6F47',
-  },
-  {
-    id: 'fund_2',
-    name: 'Nougat Mix',
-    description: 'Medel risk, bra balans',
-    riskLevel: 'medium',
-    currentPrice: 15,
-    priceHistory: [],
-    icon: '🍯',
-    color: '#C68642',
-  },
-  {
-    id: 'fund_3',
-    name: 'Guldchokladgruvan',
-    description: 'Hög risk, stor potential',
-    riskLevel: 'high',
-    currentPrice: 20,
-    priceHistory: [],
-    icon: '✨',
-    color: '#D4AF37',
-  },
-];
 
 export default function InvestmentsPage() {
   const router = useRouter();
@@ -49,6 +16,55 @@ export default function InvestmentsPage() {
   const [selectedFund, setSelectedFund] = useState<Fund | null>(null);
   const [amount, setAmount] = useState(1);
   const [action, setAction] = useState<'buy' | 'sell'>('buy');
+  const [prices, setPrices] = useState(FUND_BASE_PRICES);
+  
+  // Initiera och uppdatera priser
+  useEffect(() => {
+    initializePrices();
+    setPrices({...FUND_BASE_PRICES});
+    
+    // Uppdatera priser var 30:e sekund
+    const interval = setInterval(() => {
+      updateAllPrices();
+      setPrices({...FUND_BASE_PRICES});
+    }, 30000);
+    
+    return () => clearInterval(interval);
+  }, []);
+  
+  // Skapa fonder med aktuella priser
+  const AVAILABLE_FUNDS: Fund[] = useMemo(() => [
+    {
+      id: 'fund_1',
+      name: 'Mjölkchokladfonden',
+      description: 'Låg risk, stabil tillväxt',
+      riskLevel: 'low',
+      currentPrice: Math.round(prices.fund_1?.currentPrice || 10),
+      priceHistory: [],
+      icon: '🥛',
+      color: '#8B6F47',
+    },
+    {
+      id: 'fund_2',
+      name: 'Nougat Mix',
+      description: 'Medel risk, bra balans',
+      riskLevel: 'medium',
+      currentPrice: Math.round(prices.fund_2?.currentPrice || 15),
+      priceHistory: [],
+      icon: '🍯',
+      color: '#C68642',
+    },
+    {
+      id: 'fund_3',
+      name: 'Guldchokladgruvan',
+      description: 'Hög risk, stor potential',
+      riskLevel: 'high',
+      currentPrice: Math.round(prices.fund_3?.currentPrice || 20),
+      priceHistory: [],
+      icon: '✨',
+      color: '#D4AF37',
+    },
+  ], [prices]);
   
   if (!currentUser || currentUser.role !== 'child') {
     router.push('/');
@@ -264,6 +280,7 @@ export default function InvestmentsPage() {
               };
               
               const colors = riskColors[fund.riskLevel];
+              const priceChange = getPriceChange(fund.id);
               
               return (
                 <div key={fund.id} className="bg-white rounded-3xl shadow-md p-5 border-2" style={{ borderColor: colors.border }}>
@@ -284,6 +301,11 @@ export default function InvestmentsPage() {
                         <ChocolateCoinIcon size={24} />
                         <span className="text-xl font-bold" style={{ color: '#FFD700' }}>{fund.currentPrice}</span>
                         <span className="text-sm" style={{ color: '#A67C52' }}>per andel</span>
+                        {priceChange !== 0 && (
+                          <span className={`text-xs font-bold ${priceChange > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                            {priceChange > 0 ? '↗' : '↘'} {Math.abs(priceChange).toFixed(1)}%
+                          </span>
+                        )}
                       </div>
                     </div>
                     <button
