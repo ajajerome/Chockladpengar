@@ -43,9 +43,9 @@ export default function ChildHomePage() {
     return value;
   }, [investments]);
   
+  // Beräkna värde av fabriker (kommer att implementeras när factory-funktionen är klar)
   const factoryValue = useMemo(() => {
-    // Placeholder värde för fabriker - kommer att implementeras senare
-    // TODO: Beräkna värde baserat på faktisk fabrikskostnad när factory är implementerat
+    // TODO: Implementera när factory-funktionen är färdig
     return 0;
   }, [ownedFactories]);
   
