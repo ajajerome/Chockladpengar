@@ -110,7 +110,7 @@ export default function InvestmentsPage() {
       fundId: selectedFund.id,
       shares: amount,
       purchasePrice: selectedFund.currentPrice,
-      purchaseDate: new Date().toISOString(),
+      purchasedAt: new Date().toISOString(),
     });
     
     alert(`Du köpte ${amount} andelar i ${selectedFund.name}!`);
