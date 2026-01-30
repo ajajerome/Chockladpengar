@@ -60,10 +60,22 @@ export default function ChildHomePage() {
         <div className="max-w-4xl mx-auto p-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-4">
-              <ChokiMascot size={80} withCoins={true} withWave={true} className="animate-bounce-soft" />
+              <ChokiMascot 
+                size={80} 
+                withCoins={child.balance > 0} 
+                withWave={true} 
+                balance={child.balance}
+                className="animate-bounce-soft" 
+              />
               <div>
                 <h1 className="text-3xl font-bold" style={{ color: '#8B5A3C' }}>Hej {currentUser.name}!</h1>
-                <p style={{ color: '#6B4423' }}>Välkommen tillbaka! 🍫</p>
+                <p style={{ color: '#6B4423' }}>
+                  {child.balance === 0 ? 'Gör uppgifter för att tjäna pengar!' :
+                   child.balance < 30 ? 'Du har lite chokladpengar!' :
+                   child.balance < 100 ? 'Bra jobbat! 🍫' :
+                   child.balance < 200 ? 'Du sparar bra! ⭐' :
+                   'Wow! Du är rik! 🌟'}
+                </p>
               </div>
             </div>
             <button

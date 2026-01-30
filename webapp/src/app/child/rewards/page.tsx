@@ -54,32 +54,41 @@ export default function RewardsPage() {
   };
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-cream via-nougat-light to-white-chocolate pb-20">
+    <div className="min-h-screen pb-20" style={{ backgroundColor: '#FFF8F0' }}>
       {/* Header */}
-      <div className="bg-gradient-to-r from-chocolate-medium to-caramel text-white p-6 shadow-lg">
-        <div className="max-w-4xl mx-auto">
+      <div className="relative overflow-hidden" style={{ 
+        background: 'linear-gradient(135deg, #FF9999 0%, #FFB4A2 50%, #FFE4E4 100%)'
+      }}>
+        <div className="max-w-4xl mx-auto p-6">
           <button
             onClick={() => router.back()}
-            className="text-white/80 hover:text-white mb-4 font-medium"
+            className="mb-4 font-medium bg-white/90 hover:bg-white px-4 py-2 rounded-2xl shadow-md transition-all"
+            style={{ color: '#8B5A3C' }}
           >
             ← Tillbaka
           </button>
           
-          <h1 className="text-3xl font-bold mb-4">Butiken</h1>
-          <p className="text-white/90 text-sm mb-4">Handla belöningar med dina chokladpengar</p>
+          <h1 className="text-3xl font-bold mb-2" style={{ color: '#8B5A3C' }}>Butiken</h1>
+          <p className="text-sm mb-4" style={{ color: '#6B4423' }}>Handla belöningar med dina chokladpengar</p>
           
-          <BalanceDisplay balance={child.balance} label="Ditt saldo" />
+          <div className="bg-white rounded-3xl p-4 shadow-lg">
+            <p className="text-sm font-medium mb-1" style={{ color: '#8B5A3C' }}>Ditt saldo</p>
+            <div className="flex items-center gap-2">
+              <span className="text-3xl font-bold" style={{ color: '#FFD700' }}>{child.balance}</span>
+              <span className="text-lg" style={{ color: '#A67C52' }}>chokladpengar</span>
+            </div>
+          </div>
         </div>
       </div>
       
       <div className="max-w-4xl mx-auto px-4 py-6">
         {rewards.length === 0 ? (
-          <div className="card-glass text-center">
-            <div className="w-20 h-20 mx-auto mb-4 rounded-3xl bg-gradient-to-br from-chocolate-light to-nougat-light flex items-center justify-center">
-              <GiftIcon size={48} color="#6B4423" />
+          <div className="bg-white rounded-3xl shadow-md text-center p-8">
+            <div className="w-20 h-20 mx-auto mb-4 rounded-3xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #FF9999 0%, #FFB4A2 100%)' }}>
+              <GiftIcon size={48} />
             </div>
-            <h2 className="text-xl font-bold text-chocolate-dark mb-2">Butiken är tom</h2>
-            <p className="text-chocolate-milk mb-4">
+            <h2 className="text-xl font-bold mb-2" style={{ color: '#8B5A3C' }}>Butiken är tom</h2>
+            <p className="mb-4" style={{ color: '#A67C52' }}>
               Fråga dina föräldrar om de kan lägga till saker i butiken!
             </p>
           </div>
@@ -103,10 +112,13 @@ export default function RewardsPage() {
         )}
         
         {rewards.length > 0 && (
-          <div className="mt-6 bg-nougat-light/50 rounded-2xl border-2 border-nougat-gold/30 p-4">
-            <p className="text-sm text-chocolate-medium">
-              <strong>Tips:</strong> Spara dina chokladpengar för att köpa större belöningar!
-            </p>
+          <div className="mt-6 bg-white rounded-3xl shadow-md p-4 border-l-4" style={{ borderColor: '#FFE55C' }}>
+            <div className="flex items-start gap-3">
+              <div className="text-2xl">💡</div>
+              <p className="text-sm" style={{ color: '#A67C52' }}>
+                <strong style={{ color: '#8B5A3C' }}>Choki-tips:</strong> Spara dina chokladpengar för att köpa större belöningar!
+              </p>
+            </div>
           </div>
         )}
       </div>
