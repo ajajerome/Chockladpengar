@@ -44,12 +44,9 @@ export default function ChildHomePage() {
   }, [investments]);
   
   const factoryValue = useMemo(() => {
-    // Placeholder värde för fabriker - beräknas som kostnad * 1.5 för att visa tillväxt
-    let value = 0;
-    ownedFactories.forEach(factory => {
-      value += factory.purchasePrice * 1.2; // Factories ökar i värde
-    });
-    return value;
+    // Placeholder värde för fabriker - kommer att implementeras senare
+    // TODO: Beräkna värde baserat på faktisk fabrikskostnad när factory är implementerat
+    return 0;
   }, [ownedFactories]);
   
   if (!currentUser || currentUser.role !== 'child') {
