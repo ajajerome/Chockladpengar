@@ -103,7 +103,7 @@ export default function InvestmentsPage() {
     // Dra av pengar från plånbok
     updateUserBalance(child.id, -cost);
     
-    // Lägg till investering
+    // Lägg till investering i fonden
     addInvestment({
       id: `inv_${Date.now()}`,
       childId: child.id,
