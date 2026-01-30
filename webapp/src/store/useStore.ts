@@ -59,6 +59,7 @@ interface StoreState extends AppState {
   setInvestments: (investments: Investment[]) => void;
   addInvestment: (investment: Investment) => void;
   removeInvestment: (investmentId: string) => void;
+  updateUserBalance: (userId: string, amount: number) => void;
   buyFundShares: (fundId: string, shares: number, price: number) => Promise<void>;
   sellFundShares: (investmentId: string, shares: number, currentPrice: number) => Promise<void>;
   
