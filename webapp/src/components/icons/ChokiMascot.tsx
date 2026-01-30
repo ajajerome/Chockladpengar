@@ -137,15 +137,9 @@ export const ChokiMascot: React.FC<ChokiMascotProps> = ({
         {/* Sparkles */}
         {withCoins && (
           <>
-            <circle cx="20" cy="25" r="2" fill="#FFD700" opacity="0.6">
-              <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite" />
-            </circle>
-            <circle cx="100" cy="30" r="2.5" fill="#FFD700" opacity="0.6">
-              <animate attributeName="opacity" values="0.3;1;0.3" dur="2.5s" repeatCount="indefinite" />
-            </circle>
-            <circle cx="15" cy="50" r="1.5" fill="#FFE55C" opacity="0.6">
-              <animate attributeName="opacity" values="0.3;1;0.3" dur="2.2s" repeatCount="indefinite" />
-            </circle>
+            <circle cx="20" cy="25" r="2" fill="#FFD700" opacity="0.5" />
+            <circle cx="100" cy="30" r="2.5" fill="#FFD700" opacity="0.5" />
+            <circle cx="15" cy="50" r="1.5" fill="#FFE55C" opacity="0.5" />
           </>
         )}
         
@@ -184,18 +178,8 @@ export const ChokiMascot: React.FC<ChokiMascotProps> = ({
             rx="8" 
             ry="15" 
             fill="#A67C52" 
-            transform={withWave ? "rotate(25 90 70)" : "rotate(25 90 70)"}
-          >
-            {withWave && (
-              <animateTransform
-                attributeName="transform"
-                type="rotate"
-                values="25 90 70; 45 90 70; 25 90 70"
-                dur="1s"
-                repeatCount="indefinite"
-              />
-            )}
-          </ellipse>
+            transform="rotate(25 90 70)"
+          />
         </g>
         
         {/* Legs */}
