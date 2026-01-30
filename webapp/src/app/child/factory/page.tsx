@@ -74,7 +74,9 @@ export default function FactoryPage() {
             onClick={() => router.back()}
             className="text-white/80 hover:text-white mb-4 flex items-center gap-2"
           >
-            <ArrowRightIcon size={20} style={{ transform: 'rotate(180deg)' }} />
+            <span style={{ transform: 'rotate(180deg)', display: 'inline-block' }}>
+              <ArrowRightIcon size={20} />
+            </span>
             <span>Tillbaka</span>
           </button>
           
