@@ -36,24 +36,24 @@ export default function CreateFamilyPage() {
   };
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-cream via-nougat-light to-white-chocolate p-4">
+    <div className="min-h-screen p-4" style={{ backgroundColor: '#FFF8F0' }}>
       <div className="max-w-md mx-auto pt-12">
         {/* Header */}
         <div className="text-center mb-8">
           <div className="mb-4 flex justify-center gap-3">
-            <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-nougat-gold to-caramel flex items-center justify-center shadow-lg animate-float">
-              <ChocolateCoinIcon size={48} color="white" />
+            <div className="w-20 h-20 rounded-3xl flex items-center justify-center shadow-lg animate-float" style={{ background: 'linear-gradient(135deg, #FFE55C 0%, #FFD700 100%)' }}>
+              <ChocolateCoinIcon size={48} />
             </div>
-            <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-chocolate-medium to-chocolate-milk flex items-center justify-center shadow-lg animate-float" style={{animationDelay: '0.2s'}}>
-              <UsersIcon size={48} color="white" />
+            <div className="w-20 h-20 rounded-3xl flex items-center justify-center shadow-lg animate-float" style={{ animationDelay: '0.2s', background: 'linear-gradient(135deg, #8B5A3C 0%, #A67C52 100%)' }}>
+              <UsersIcon size={48} />
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-chocolate-dark mb-2">Skapa familj</h1>
-          <p className="text-chocolate-milk">Börja er chokladpengar-resa</p>
+          <h1 className="text-3xl font-bold mb-2" style={{ color: '#8B5A3C' }}>Skapa familj</h1>
+          <p style={{ color: '#A67C52' }}>Börja er chokladpengar-resa</p>
         </div>
         
         {/* Form */}
-        <div className="card-glass">
+        <div className="bg-white rounded-3xl shadow-lg p-6">
           {error && <ErrorMessage message={error} />}
           
           <form onSubmit={handleSubmit} className="space-y-4">
