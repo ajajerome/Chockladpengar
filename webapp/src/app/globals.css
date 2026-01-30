@@ -3,23 +3,22 @@
 @tailwind utilities;
 
 :root {
-  /* Chocolate-themed color palette */
-  --chocolate-dark: #3D2817;
-  --chocolate-medium: #6B4423;
-  --chocolate-milk: #8B6F47;
-  --chocolate-light: #C7A882;
-  
-  --nougat-gold: #D4AF37;
-  --nougat-light: #F5E6C8;
-  
-  --cream: #FFF8E7;
-  --caramel: #C68642;
-  --white-chocolate: #FDFAF1;
+  /* Choki-themed color palette - ljusare och luftigare */
+  --choki-bg: #FFF8F0;
+  --choki-card: #FFFFFF;
+  --choki-brown: #8B5A3C;
+  --choki-brown-dark: #6B4423;
+  --choki-gold: #FFD700;
+  --choki-gold-dark: #D4AF37;
+  --choki-pink: #FF9999;
+  --choki-pink-light: #FFE4E4;
+  --choki-cream: #FFFBF0;
+  --choki-beige: #F5E6D3;
   
   /* Gradients */
-  --gradient-chocolate: linear-gradient(135deg, #8B6F47 0%, #C7A882 100%);
-  --gradient-nougat: linear-gradient(135deg, #F5E6C8 0%, #D4AF37 100%);
-  --gradient-warm: linear-gradient(135deg, #FFF8E7 0%, #F5E6C8 100%);
+  --gradient-choki: linear-gradient(135deg, #8B5A3C 0%, #A67C52 100%);
+  --gradient-gold: linear-gradient(135deg, #FFD700 0%, #FFE55C 100%);
+  --gradient-cream: linear-gradient(180deg, #FFFBF0 0%, #FFF8F0 100%);
 }
 
 * {
@@ -32,7 +31,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   margin: 0;
   padding: 0;
-  background: linear-gradient(135deg, #FFF8E7 0%, #F5E6C8 50%, #FDFAF1 100%);
+  background: #FFF8F0;
   min-height: 100vh;
 }
 

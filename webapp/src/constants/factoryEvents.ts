@@ -130,3 +130,4 @@ export function getRandomFactoryEvent(): FactoryEventTemplate {
   return eventsOfType[Math.floor(Math.random() * eventsOfType.length)];
 }
 
+

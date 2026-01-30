@@ -8,6 +8,7 @@ import { Button } from '@/components/Button';
 import { TaskCard } from '@/components/TaskCard';
 import { BalanceDisplay } from '@/components/BalanceDisplay';
 import { GiftIcon, BarChartIcon, FactoryIcon, CheckIcon, ChocolateCoinIcon } from '@/components/icons';
+import { ChokiMascot } from '@/components/icons/ChokiMascot';
 import type { Child } from '@/types';
 
 // Force dynamic rendering (no static generation)
@@ -51,129 +52,124 @@ export default function ChildHomePage() {
   const child = currentUser as Child;
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-cream via-nougat-light to-white-chocolate pb-20">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-chocolate-medium to-caramel text-white p-6 shadow-lg">
-        <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen pb-20" style={{ backgroundColor: '#FFF8F0' }}>
+      {/* Header med Choki */}
+      <div className="relative overflow-hidden" style={{ 
+        background: 'linear-gradient(135deg, #FFE55C 0%, #FFBD7F 50%, #FFB4A2 100%)'
+      }}>
+        <div className="max-w-4xl mx-auto p-6">
           <div className="flex items-center justify-between mb-4">
-            <div>
-              <h1 className="text-2xl font-bold">Hej {currentUser.name}!</h1>
-              <p className="text-white/80">Din Chokladekonomi</p>
+            <div className="flex items-center gap-4">
+              <ChokiMascot size={80} withCoins={true} withWave={true} className="animate-bounce-soft" />
+              <div>
+                <h1 className="text-3xl font-bold" style={{ color: '#8B5A3C' }}>Hej {currentUser.name}!</h1>
+                <p style={{ color: '#6B4423' }}>Välkommen tillbaka! 🍫</p>
+              </div>
             </div>
             <button
               onClick={logout}
-              className="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-xl text-sm font-medium transition-colors"
+              className="bg-white/90 hover:bg-white px-4 py-2 rounded-2xl text-sm font-medium transition-all shadow-md"
+              style={{ color: '#8B5A3C' }}
             >
               Logga ut
             </button>
           </div>
           
-          {/* Total förmögenhet */}
-          <div className="bg-white/10 rounded-3xl p-6 backdrop-blur mb-4">
-            <p className="text-sm text-white/80 mb-2">Total förmögenhet</p>
-            <div className="flex items-center gap-3 mb-4">
-              <ChocolateCoinIcon size={40} color="#FFF" />
-              <span className="text-4xl font-bold">{Math.floor(totalAssets)}</span>
-            </div>
-            
-            {/* Uppdelning */}
-            <div className="grid grid-cols-3 gap-3 text-sm">
-              <div className="bg-white/10 rounded-xl p-3">
-                <p className="text-white/70 text-xs mb-1">I plånbok</p>
-                <div className="flex items-center gap-1">
-                  <ChocolateCoinIcon size={16} color="#FFF" />
-                  <span className="font-bold">{child.balance}</span>
-                </div>
-              </div>
-              
-              <div className="bg-white/10 rounded-xl p-3">
-                <p className="text-white/70 text-xs mb-1">I fonder</p>
-                <div className="flex items-center gap-1">
-                  <ChocolateCoinIcon size={16} color="#FFF" />
-                  <span className="font-bold">{Math.floor(investmentValue)}</span>
-                </div>
-              </div>
-              
-              <div className="bg-white/10 rounded-xl p-3">
-                <p className="text-white/70 text-xs mb-1">Fabriker</p>
-                <div className="flex items-center gap-1">
-                  <span className="font-bold">{ownedFactories.length}</span>
-                  <span className="text-xs">st</span>
+          {/* Saldo-kort */}
+          <div className="bg-white rounded-3xl p-6 shadow-lg" style={{ borderLeft: '6px solid #FFD700' }}>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium mb-2" style={{ color: '#8B5A3C' }}>Du har samlat ihop</p>
+                <div className="flex items-center gap-3">
+                  <ChocolateCoinIcon size={48} />
+                  <span className="text-5xl font-bold" style={{ color: '#8B5A3C' }}>{child.balance}</span>
+                  <span className="text-lg" style={{ color: '#A67C52' }}>chokladpengar</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
+        
+        {/* Dekorativa element */}
+        <div className="absolute top-10 right-10 opacity-20">
+          <ChocolateCoinIcon size={60} />
+        </div>
+        <div className="absolute bottom-10 left-10 opacity-15">
+          <ChocolateCoinIcon size={40} />
+        </div>
       </div>
       
       <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
-        {/* Quick Actions */}
+        {/* Quick Actions - Choki-stil */}
         <div>
-          <h2 className="text-lg font-bold text-chocolate-dark mb-3">Vad vill du göra?</h2>
           <div className="grid grid-cols-2 gap-4">
             <button
               onClick={() => router.push('/child/rewards')}
-              className="bg-gradient-to-br from-nougat-gold to-caramel text-white rounded-3xl shadow-lg p-6 hover:shadow-xl transition-all text-center"
+              className="bg-white rounded-3xl shadow-md hover:shadow-xl transition-all text-center p-6 border-2"
+              style={{ borderColor: '#FFB4A2' }}
             >
-              <div className="w-16 h-16 mx-auto mb-3 rounded-2xl bg-white/20 flex items-center justify-center">
-                <GiftIcon size={36} color="white" />
+              <div className="w-16 h-16 mx-auto mb-3 rounded-2xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #FF9999 0%, #FFB4A2 100%)' }}>
+                <GiftIcon size={36} />
               </div>
-              <h3 className="font-bold text-lg">Butiken</h3>
-              <p className="text-sm text-white/80 mt-1">Handla belöningar</p>
+              <h3 className="font-bold text-lg" style={{ color: '#8B5A3C' }}>Butiken</h3>
+              <p className="text-sm mt-1" style={{ color: '#A67C52' }}>Handla belöningar</p>
             </button>
             
             <button
               onClick={() => router.push('/child/investments')}
-              className="bg-gradient-to-br from-green-500 to-emerald-500 text-white rounded-3xl shadow-lg p-6 hover:shadow-xl transition-all text-center"
+              className="bg-white rounded-3xl shadow-md hover:shadow-xl transition-all text-center p-6 border-2"
+              style={{ borderColor: '#B4E7CE' }}
             >
-              <div className="w-16 h-16 mx-auto mb-3 rounded-2xl bg-white/20 flex items-center justify-center">
-                <BarChartIcon size={36} color="white" />
+              <div className="w-16 h-16 mx-auto mb-3 rounded-2xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #B4E7CE 0%, #4CAF50 100%)' }}>
+                <BarChartIcon size={36} />
               </div>
-              <h3 className="font-bold text-lg">Fonder</h3>
-              <p className="text-sm text-white/80 mt-1">
+              <h3 className="font-bold text-lg" style={{ color: '#8B5A3C' }}>Fonder</h3>
+              <p className="text-sm mt-1" style={{ color: '#A67C52' }}>
                 {investments.length > 0 ? `${investments.length} aktiva` : 'Investera nu'}
               </p>
             </button>
             
             <button
               onClick={() => router.push('/child/factory')}
-              className="bg-gradient-to-br from-chocolate-medium to-chocolate-milk text-white rounded-3xl shadow-lg p-6 hover:shadow-xl transition-all text-center"
+              className="bg-white rounded-3xl shadow-md hover:shadow-xl transition-all text-center p-6 border-2"
+              style={{ borderColor: '#A67C52' }}
             >
-              <div className="w-16 h-16 mx-auto mb-3 rounded-2xl bg-white/20 flex items-center justify-center">
-                <FactoryIcon size={36} color="white" />
+              <div className="w-16 h-16 mx-auto mb-3 rounded-2xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #8B5A3C 0%, #A67C52 100%)' }}>
+                <FactoryIcon size={36} />
               </div>
-              <h3 className="font-bold text-lg">Fabrik</h3>
-              <p className="text-sm text-white/80 mt-1">
+              <h3 className="font-bold text-lg" style={{ color: '#8B5A3C' }}>Fabrik</h3>
+              <p className="text-sm mt-1" style={{ color: '#A67C52' }}>
                 {ownedFactories.length > 0 ? `${ownedFactories.length} fabriker` : 'Passiv inkomst'}
               </p>
             </button>
             
             <button
               onClick={() => alert('Kommande funktion!')}
-              className="bg-gradient-to-br from-blue-500 to-indigo-500 text-white rounded-3xl shadow-lg p-6 hover:shadow-xl transition-all text-center"
+              className="bg-white rounded-3xl shadow-md hover:shadow-xl transition-all text-center p-6 border-2"
+              style={{ borderColor: '#A8D8FF' }}
             >
-              <div className="w-16 h-16 mx-auto mb-3 rounded-2xl bg-white/20 flex items-center justify-center">
-                <BarChartIcon size={36} color="white" />
+              <div className="w-16 h-16 mx-auto mb-3 rounded-2xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #A8D8FF 0%, #64B5F6 100%)' }}>
+                <BarChartIcon size={36} />
               </div>
-              <h3 className="font-bold text-lg">Statistik</h3>
-              <p className="text-sm text-white/80 mt-1">Se din framgång</p>
+              <h3 className="font-bold text-lg" style={{ color: '#8B5A3C' }}>Statistik</h3>
+              <p className="text-sm mt-1" style={{ color: '#A67C52' }}>Se din framgång</p>
             </button>
           </div>
         </div>
         
-        {/* Pending Tasks */}
+        {/* Mina uppgifter */}
         <div>
-          <h2 className="text-xl font-bold text-chocolate-dark mb-4">
-            Mina uppgifter ({pendingTasks.length})
+          <h2 className="text-xl font-bold mb-4" style={{ color: '#8B5A3C' }}>
+            Mina uppgifter
           </h2>
           
           {pendingTasks.length === 0 ? (
-            <div className="card-glass text-center">
-              <div className="w-20 h-20 mx-auto mb-4 rounded-3xl bg-gradient-to-br from-nougat-gold to-caramel flex items-center justify-center">
-                <CheckIcon size={48} color="white" />
+            <div className="bg-white rounded-3xl shadow-md text-center p-8">
+              <div className="w-20 h-20 mx-auto mb-4 rounded-3xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #B4E7CE 0%, #4CAF50 100%)' }}>
+                <CheckIcon size={48} />
               </div>
-              <p className="text-chocolate-medium font-medium">Inga uppgifter just nu!</p>
-              <p className="text-sm text-chocolate-milk mt-1">Fråga dina föräldrar om fler uppgifter</p>
+              <p className="font-medium" style={{ color: '#8B5A3C' }}>Inga uppgifter just nu!</p>
+              <p className="text-sm mt-1" style={{ color: '#A67C52' }}>Fråga dina föräldrar om fler uppgifter</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -193,16 +189,21 @@ export default function ChildHomePage() {
           )}
         </div>
         
-        {/* Tips */}
-        <div className="bg-gradient-to-r from-nougat-light to-cream rounded-3xl border-2 border-nougat-gold/30 p-6">
-          <h3 className="font-bold text-chocolate-dark mb-2">Spara smartare!</h3>
-          <p className="text-chocolate-medium text-sm">
-            {child.balance < 50 
-              ? 'Gör uppgifter och spara ihop chokladpengar. Försök nå 50 chokladpengar!'
-              : child.balance < 100
-              ? 'Bra jobbat! Du kan snart investera i din första fond eller köpa en liten fabrik.'
-              : 'Du har en fin summa! Överväg att investera för att växa dina pengar ännu mer.'}
-          </p>
+        {/* Tips-kort */}
+        <div className="bg-white rounded-3xl shadow-md p-6 border-l-4" style={{ borderColor: '#FFE55C' }}>
+          <div className="flex items-start gap-3">
+            <div className="text-3xl">💡</div>
+            <div>
+              <h3 className="font-bold mb-2" style={{ color: '#8B5A3C' }}>Choki-tips!</h3>
+              <p className="text-sm" style={{ color: '#A67C52' }}>
+                {child.balance < 50 
+                  ? 'Gör uppgifter och spara ihop chokladpengar. Försök nå 50 chokladpengar!'
+                  : child.balance < 100
+                  ? 'Bra jobbat! Du kan snart investera i din första fond eller köpa en liten fabrik.'
+                  : 'Du har en fin summa! Överväg att investera för att växa dina pengar ännu mer.'}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

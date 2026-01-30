@@ -420,3 +420,4 @@ Med **45-65 timmars arbete till** kan du ha en fullt fungerande, lanserklar app 
 4. Implementera Stripe-betalning
 5. Lansera! 🎊
 
+
