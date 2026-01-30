@@ -91,7 +91,8 @@ export function useAuth() {
         return { family: newFamily, user: parent };
       }
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Failed to create family';
+      const message = err instanceof Error ? err.message : 'Kunde inte skapa familj';
+      console.error('❌ Fel vid skapande av familj:', err);
       setError(message);
       throw err;
     } finally {
@@ -138,7 +139,8 @@ export function useAuth() {
         throw new Error('Gå med med kod kräver att appen är kopplad till molnet.');
       }
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Failed to join family';
+      const message = err instanceof Error ? err.message : 'Kunde inte gå med i familj';
+      console.error('❌ Fel vid anslutning till familj (barn):', err);
       setError(message);
       throw err;
     } finally {
@@ -173,7 +175,8 @@ export function useAuth() {
         throw new Error('Gå med med kod kräver att appen är kopplad till molnet.');
       }
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Failed to join family';
+      const message = err instanceof Error ? err.message : 'Kunde inte gå med i familj';
+      console.error('❌ Fel vid anslutning till familj (förälder):', err);
       setError(message);
       throw err;
     } finally {

@@ -12,15 +12,17 @@ import {
   equalTo,
   DataSnapshot,
 } from 'firebase/database';
-import { database } from '@/lib/firebase';
+import { database, initError } from '@/lib/firebase';
 
 // Guard for server-side rendering
 function getDatabase() {
   if (typeof window === 'undefined') {
-    throw new Error('Firebase is only available on the client side');
+    throw new Error('Firebase är endast tillgängligt på klientsidan');
   }
   if (!database) {
-    throw new Error('Firebase database not initialized');
+    const errorMsg = initError || 'Firebase-databasen är inte initierad. Kontrollera att alla Firebase-variabler är korrekt konfigurerade i .env.local';
+    console.error('❌ Firebase-fel:', errorMsg);
+    throw new Error(errorMsg);
   }
   return database;
 }
