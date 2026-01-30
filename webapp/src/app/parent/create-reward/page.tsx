@@ -34,22 +34,23 @@ export default function CreateRewardPage() {
   };
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-cream via-nougat-light to-white-chocolate p-4">
+    <div className="min-h-screen p-4" style={{ backgroundColor: '#FFF8F0' }}>
       <div className="max-w-md mx-auto pt-8">
         {/* Header */}
         <div className="mb-6">
           <button
             onClick={() => router.back()}
-            className="text-chocolate-milk hover:text-chocolate-dark mb-4 font-medium"
+            className="mb-4 font-medium"
+            style={{ color: '#A67C52' }}
           >
             ← Tillbaka
           </button>
-          <h1 className="text-3xl font-bold text-chocolate-dark">Lägg till i butiken</h1>
-          <p className="text-chocolate-milk mt-1">Skapa en ny belöning som barn kan köpa</p>
+          <h1 className="text-3xl font-bold" style={{ color: '#8B5A3C' }}>Lägg till i butiken</h1>
+          <p className="mt-1" style={{ color: '#A67C52' }}>Skapa en ny belöning som barn kan köpa</p>
         </div>
         
         {/* Form */}
-        <div className="card-glass">
+        <div className="bg-white rounded-3xl shadow-lg p-6">
           {error && <ErrorMessage message={error} />}
           
           <form onSubmit={handleSubmit} className="space-y-4">

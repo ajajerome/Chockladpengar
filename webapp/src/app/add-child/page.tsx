@@ -25,21 +25,21 @@ export default function AddChildPage() {
   };
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-cream via-nougat-light to-white-chocolate p-4">
+    <div className="min-h-screen p-4" style={{ backgroundColor: '#FFF8F0' }}>
       <div className="max-w-md mx-auto pt-12">
         {/* Header */}
         <div className="text-center mb-8">
           <div className="mb-4 flex justify-center">
-            <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-nougat-gold to-caramel flex items-center justify-center shadow-lg">
-              <ChildIcon size={48} color="white" />
+            <div className="w-20 h-20 rounded-3xl flex items-center justify-center shadow-lg" style={{ background: 'linear-gradient(135deg, #FFB4A2 0%, #FF9999 100%)' }}>
+              <ChildIcon size={48} />
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-chocolate-dark mb-2">Lägg till barn</h1>
-          <p className="text-chocolate-milk">Skapa ett konto för ditt barn</p>
+          <h1 className="text-3xl font-bold mb-2" style={{ color: '#8B5A3C' }}>Lägg till barn</h1>
+          <p style={{ color: '#A67C52' }}>Skapa ett konto för ditt barn</p>
         </div>
         
         {/* Form */}
-        <div className="card-glass">
+        <div className="bg-white rounded-3xl shadow-lg p-6">
           {error && <ErrorMessage message={error} />}
           
           <form onSubmit={handleSubmit} className="space-y-4">

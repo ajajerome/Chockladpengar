@@ -41,14 +41,14 @@ export default function CreateTaskPage() {
   
   if (children.length === 0) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-cream via-nougat-light to-white-chocolate p-4">
+      <div className="min-h-screen p-4" style={{ backgroundColor: '#FFF8F0' }}>
         <div className="max-w-md mx-auto pt-12">
-          <div className="card-glass text-center">
-            <div className="w-20 h-20 mx-auto mb-4 rounded-3xl bg-gradient-to-br from-nougat-gold to-caramel flex items-center justify-center">
-              <ChildIcon size={48} color="white" />
+          <div className="bg-white rounded-3xl shadow-lg p-6 text-center">
+            <div className="w-20 h-20 mx-auto mb-4 rounded-3xl flex items-center justify-center shadow-lg" style={{ background: 'linear-gradient(135deg, #FFB4A2 0%, #FF9999 100%)' }}>
+              <ChildIcon size={48} />
             </div>
-            <h2 className="text-xl font-bold text-chocolate-dark mb-2">Inga barn</h2>
-            <p className="text-chocolate-milk mb-4">Du måste lägga till barn innan du kan skapa uppgifter</p>
+            <h2 className="text-xl font-bold mb-2" style={{ color: '#8B5A3C' }}>Inga barn</h2>
+            <p className="mb-4" style={{ color: '#A67C52' }}>Du måste lägga till barn innan du kan skapa uppgifter</p>
             <Button onClick={() => router.push('/add-child')} variant="primary" fullWidth>
               Lägg till barn
             </Button>
@@ -59,21 +59,22 @@ export default function CreateTaskPage() {
   }
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-cream via-nougat-light to-white-chocolate p-4">
+    <div className="min-h-screen p-4" style={{ backgroundColor: '#FFF8F0' }}>
       <div className="max-w-md mx-auto pt-8">
         {/* Header */}
         <div className="mb-6">
           <button
             onClick={() => router.back()}
-            className="text-chocolate-milk hover:text-chocolate-dark mb-4 font-medium"
+            className="mb-4 font-medium"
+            style={{ color: '#A67C52' }}
           >
             ← Tillbaka
           </button>
-          <h1 className="text-3xl font-bold text-chocolate-dark">Skapa uppgift</h1>
+          <h1 className="text-3xl font-bold" style={{ color: '#8B5A3C' }}>Skapa uppgift</h1>
         </div>
         
         {/* Form */}
-        <div className="card-glass">
+        <div className="bg-white rounded-3xl shadow-lg p-6">
           {error && <ErrorMessage message={error} />}
           
           <form onSubmit={handleSubmit} className="space-y-4">
