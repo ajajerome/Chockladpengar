@@ -76,15 +76,18 @@ export const ChokiMascot: React.FC<ChokiMascotProps> = ({
       <div 
         style={{ 
           width: size, 
-          height: size,
+          height: size * 1.1, // Lite extra höjd för att inte klippa
           overflow: 'hidden',
           position: 'relative',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
         }}
       >
         <div
           style={{
             width: size * 3, // The image contains 3 characters
-            height: size,
+            height: size * 1.1,
             position: 'absolute',
             left: 0,
             top: 0,
@@ -99,8 +102,8 @@ export const ChokiMascot: React.FC<ChokiMascotProps> = ({
             height={size}
             style={{
               width: size * 3,
-              height: size,
-              objectFit: 'cover',
+              height: 'auto',
+              objectFit: 'contain',
               display: 'block',
             }}
             priority
