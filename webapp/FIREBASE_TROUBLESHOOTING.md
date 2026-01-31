@@ -137,3 +137,6 @@ Om du ser `❌` istället, läs felmeddelandet och följ instruktionerna ovan.
 - Öppna webbläsarens konsol (F12) för detaljerade fel
 
 
+
+
+

@@ -42,18 +42,17 @@ export const ChokiMascot: React.FC<ChokiMascotProps> = ({
   
   const currentMood = getMood();
   
-  // Calculate which part of the sprite to show
-  // The image has 3 characters: happy (left), sad (middle), sleeping (right)
-  const getTransform = () => {
+  // Get the correct SVG file based on mood
+  const getImageSrc = () => {
     switch (currentMood) {
       case 'happy':
-        return 'translateX(0%)'; // Show left third
+        return '/choki-happy.svg';
       case 'sad':
-        return 'translateX(-33.33%)'; // Show middle third
+        return '/choki-sad.svg';
       case 'sleeping':
-        return 'translateX(-66.66%)'; // Show right third
+        return '/choki-sleeping.svg';
       default:
-        return 'translateX(0%)';
+        return '/choki-happy.svg';
     }
   };
   
@@ -76,39 +75,26 @@ export const ChokiMascot: React.FC<ChokiMascotProps> = ({
       <div 
         style={{ 
           width: size, 
-          height: size * 1.2, // Mer höjd för att inte klippa
-          overflow: 'hidden',
+          height: size,
           position: 'relative',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
         }}
       >
-        <div
+        <Image
+          src={getImageSrc()}
+          alt={`Choki mascot - ${currentMood}`}
+          width={size}
+          height={size}
           style={{
-            width: size * 3, // The image contains 3 characters
-            height: size * 1.2,
-            position: 'absolute',
-            left: 0,
-            top: 0,
-            transform: getTransform(),
-            transition: 'transform 0.5s ease-in-out',
+            width: size,
+            height: size,
+            objectFit: 'contain',
+            transition: 'opacity 0.3s ease-in-out',
           }}
-        >
-          <Image
-            src="/choki-mascot.png"
-            alt="Choki mascot"
-            width={size * 3}
-            height={size * 1.2}
-            style={{
-              width: size * 3,
-              height: size * 1.2,
-              objectFit: 'contain',
-              display: 'block',
-            }}
-            priority
-          />
-        </div>
+          priority
+        />
       </div>
       
       {/* Optional message that shows on hover */}

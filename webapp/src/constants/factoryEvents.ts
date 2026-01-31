@@ -132,3 +132,6 @@ export function getRandomFactoryEvent(): FactoryEventTemplate {
 
 
 
+
+
+

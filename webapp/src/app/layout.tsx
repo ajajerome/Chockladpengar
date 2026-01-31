@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { Providers } from './providers';
-import { FirebaseStatus } from '@/components/FirebaseStatus';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -34,7 +33,6 @@ export default function RootLayout({
       <body className={inter.className}>
         <Providers>
           {children}
-          <FirebaseStatus />
         </Providers>
       </body>
     </html>

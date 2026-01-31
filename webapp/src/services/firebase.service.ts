@@ -20,8 +20,8 @@ function getDatabase() {
     throw new Error('Firebase är endast tillgängligt på klientsidan');
   }
   if (!database) {
-    const errorMsg = initError || 'Firebase-databasen är inte initierad. Kontrollera att alla Firebase-variabler är korrekt konfigurerade i .env.local';
-    console.error('❌ Firebase-fel:', errorMsg);
+    const errorMsg = initError || 'Firebase-databasen är inte initierad. Kör appen i local mode istället.';
+    console.warn('⚠️ Firebase-varning:', errorMsg);
     throw new Error(errorMsg);
   }
   return database;
