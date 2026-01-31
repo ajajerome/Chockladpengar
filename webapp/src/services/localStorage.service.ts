@@ -1,4 +1,4 @@
-import type { User, Family, Task, Reward, Transaction } from '@/types';
+import type { User, Family, Task, Reward, Transaction, Investment, OwnedFactory } from '@/types';
 
 const STORAGE_KEYS = {
   USER: 'chokladpengar_user',
@@ -6,6 +6,8 @@ const STORAGE_KEYS = {
   TASKS: 'chokladpengar_tasks',
   REWARDS: 'chokladpengar_rewards',
   TRANSACTIONS: 'chokladpengar_transactions',
+  INVESTMENTS: 'chokladpengar_investments',
+  FACTORIES: 'chokladpengar_factories',
   MODE: 'chokladpengar_mode', // 'local' or 'firebase'
 } as const;
 
@@ -102,6 +104,36 @@ export class LocalStorageService {
   static getTransactions(): Transaction[] {
     if (typeof window !== 'undefined') {
       const data = localStorage.getItem(STORAGE_KEYS.TRANSACTIONS);
+      return data ? JSON.parse(data) : [];
+    }
+    return [];
+  }
+  
+  // Investments
+  static saveInvestments(investments: Investment[]) {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(STORAGE_KEYS.INVESTMENTS, JSON.stringify(investments));
+    }
+  }
+  
+  static getInvestments(): Investment[] {
+    if (typeof window !== 'undefined') {
+      const data = localStorage.getItem(STORAGE_KEYS.INVESTMENTS);
+      return data ? JSON.parse(data) : [];
+    }
+    return [];
+  }
+  
+  // Factories
+  static saveFactories(factories: OwnedFactory[]) {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(STORAGE_KEYS.FACTORIES, JSON.stringify(factories));
+    }
+  }
+  
+  static getFactories(): OwnedFactory[] {
+    if (typeof window !== 'undefined') {
+      const data = localStorage.getItem(STORAGE_KEYS.FACTORIES);
       return data ? JSON.parse(data) : [];
     }
     return [];

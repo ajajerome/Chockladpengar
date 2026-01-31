@@ -119,6 +119,8 @@ export const useStore = create<StoreState>((set, get) => ({
         const tasks = LocalStorageService.getTasks();
         const rewards = LocalStorageService.getRewards();
         const transactions = LocalStorageService.getTransactions();
+        const investments = LocalStorageService.getInvestments();
+        const ownedFactories = LocalStorageService.getFactories();
         
         set({
           currentUser: user,
@@ -127,6 +129,8 @@ export const useStore = create<StoreState>((set, get) => ({
           tasks,
           rewards,
           transactions,
+          investments,
+          ownedFactories,
           mode: 'local',
         });
       } else {
@@ -460,6 +464,10 @@ export const useStore = create<StoreState>((set, get) => ({
   
   setInvestments: (investments: Investment[]) => {
     set({ investments });
+    
+    if (get().mode === 'local') {
+      LocalStorageService.saveInvestments(investments);
+    }
   },
   
   buyFundShares: async (fundId: string, shares: number, price: number) => {
@@ -485,19 +493,35 @@ export const useStore = create<StoreState>((set, get) => ({
       purchasedAt: new Date().toISOString(),
     };
     
+    // Spara i Firebase om aktiverat
+    if (mode === 'firebase') {
+      await FirebaseService.createInvestment(investment);
+      await FirebaseService.updateUserBalance(child.id, -totalCost);
+      await FirebaseService.createTransaction({
+        userId: child.id,
+        type: 'investment',
+        amount: -totalCost,
+        description: `Köpte ${shares} andelar i fond`,
+        relatedId: investment.id,
+      });
+    }
+    
     // Uppdatera balans
     const updatedChild: Child = {
       ...child,
       balance: child.balance - totalCost,
     };
     
+    const updatedInvestments = [...get().investments, investment];
+    
     set({ 
       currentUser: updatedChild,
-      investments: [...get().investments, investment],
+      investments: updatedInvestments,
     });
     
     if (mode === 'local') {
       LocalStorageService.saveUser(updatedChild);
+      LocalStorageService.saveInvestments(updatedInvestments);
     }
     
     // Lägg till transaktion
@@ -537,10 +561,16 @@ export const useStore = create<StoreState>((set, get) => ({
     let updatedInvestments;
     if (investment.shares === shares) {
       updatedInvestments = investments.filter(i => i.id !== investmentId);
+      if (mode === 'firebase') {
+        await FirebaseService.deleteInvestment(investmentId);
+      }
     } else {
       updatedInvestments = investments.map(i =>
         i.id === investmentId ? { ...i, shares: i.shares - shares } : i
       );
+      if (mode === 'firebase') {
+        await FirebaseService.updateInvestment(investmentId, { shares: investment.shares - shares });
+      }
     }
     
     // Uppdatera balans
@@ -549,6 +579,18 @@ export const useStore = create<StoreState>((set, get) => ({
       balance: child.balance + sellValue,
     };
     
+    if (mode === 'firebase') {
+      await FirebaseService.updateUserBalance(child.id, sellValue);
+      const profit = sellValue - (shares * investment.purchasePrice);
+      await FirebaseService.createTransaction({
+        userId: child.id,
+        type: 'investment',
+        amount: sellValue,
+        description: `Sålde ${shares} andelar (${profit >= 0 ? '+' : ''}${Math.round(profit)} vinst)`,
+        relatedId: investmentId,
+      });
+    }
+    
     set({
       currentUser: updatedChild,
       investments: updatedInvestments,
@@ -556,6 +598,7 @@ export const useStore = create<StoreState>((set, get) => ({
     
     if (mode === 'local') {
       LocalStorageService.saveUser(updatedChild);
+      LocalStorageService.saveInvestments(updatedInvestments);
     }
     
     // Lägg till transaktion
@@ -756,11 +799,19 @@ export const useStore = create<StoreState>((set, get) => ({
   addInvestment: (investment: Investment) => {
     const investments = [...get().investments, investment];
     set({ investments });
+    
+    if (get().mode === 'local') {
+      LocalStorageService.saveInvestments(investments);
+    }
   },
   
   removeInvestment: (investmentId: string) => {
     const investments = get().investments.filter(inv => inv.id !== investmentId);
     set({ investments });
+    
+    if (get().mode === 'local') {
+      LocalStorageService.saveInvestments(investments);
+    }
   },
   
   updateUserBalance: (userId: string, amount: number) => {

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useStore } from '@/store/useStore';
 import { useTasks } from '@/hooks/useTasks';
@@ -9,6 +9,7 @@ import { TaskCard } from '@/components/TaskCard';
 import { BalanceDisplay } from '@/components/BalanceDisplay';
 import { GiftIcon, BarChartIcon, FactoryIcon, CheckIcon, ChocolateCoinIcon } from '@/components/icons';
 import { ChokiMascot } from '@/components/icons/ChokiMascot';
+import { playSuccessSound } from '@/utils/sounds';
 import type { Child } from '@/types';
 
 // Force dynamic rendering (no static generation)
@@ -18,6 +19,9 @@ export default function ChildHomePage() {
   const router = useRouter();
   const { currentUser, investments, ownedFactories, logout } = useStore();
   const { pendingTasks, submitForReview } = useTasks();
+  const previousBalanceRef = useRef<number | null>(null);
+  const [displayBalance, setDisplayBalance] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
   
   // Beräkna total förmögenhet
   const totalAssets = useMemo(() => {
@@ -49,6 +53,14 @@ export default function ChildHomePage() {
     return 0;
   }, [ownedFactories]);
   
+  // Sätt initial displayBalance
+  useEffect(() => {
+    if (child && previousBalanceRef.current === null) {
+      setDisplayBalance(totalAssets);
+      previousBalanceRef.current = totalAssets;
+    }
+  }, []);
+  
   if (!currentUser || currentUser.role !== 'child') {
     router.push('/');
     return null;
@@ -56,6 +68,48 @@ export default function ChildHomePage() {
   
   // Type guard - nu är currentUser garanterat Child
   const child = currentUser as Child;
+  
+  // Kontrollera om balansen har ökat och spela ljud + animera
+  useEffect(() => {
+    if (child) {
+      const currentBalance = totalAssets;
+      
+      // Om vi har ett tidigare värde och balansen har ökat
+      if (previousBalanceRef.current !== null && currentBalance > previousBalanceRef.current) {
+        playSuccessSound();
+        setIsAnimating(true);
+        
+        // Animera siffror från gammalt till nytt värde
+        const startBalance = previousBalanceRef.current;
+        const endBalance = currentBalance;
+        const duration = 1000; // 1 sekund
+        const startTime = Date.now();
+        
+        const animate = () => {
+          const elapsed = Date.now() - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          
+          // Easing function för smidig animation
+          const easeOut = 1 - Math.pow(1 - progress, 3);
+          const newValue = Math.floor(startBalance + (endBalance - startBalance) * easeOut);
+          
+          setDisplayBalance(newValue);
+          
+          if (progress < 1) {
+            requestAnimationFrame(animate);
+          } else {
+            setIsAnimating(false);
+          }
+        };
+        
+        animate();
+      } else if (previousBalanceRef.current === null) {
+        setDisplayBalance(currentBalance);
+      }
+      
+      previousBalanceRef.current = currentBalance;
+    }
+  }, [totalAssets]);
   
   return (
     <div className="min-h-screen pb-20" style={{ backgroundColor: '#FFF8F0' }}>
@@ -78,9 +132,9 @@ export default function ChildHomePage() {
                 <p style={{ color: '#6B4423' }}>
                   {child.balance === 0 ? 'Gör uppgifter för att tjäna pengar!' :
                    child.balance < 30 ? 'Du har lite chokladpengar!' :
-                   child.balance < 100 ? 'Bra jobbat! 🍫' :
-                   child.balance < 200 ? 'Du sparar bra! ⭐' :
-                   'Wow! Du är rik! 🌟'}
+                   child.balance < 100 ? 'Bra jobbat!' :
+                   child.balance < 200 ? 'Du sparar bra!' :
+                   'Wow! Du är rik!'}
                 </p>
               </div>
             </div>
@@ -97,26 +151,31 @@ export default function ChildHomePage() {
           <div className="bg-white rounded-3xl p-6 shadow-lg" style={{ borderLeft: '6px solid #FFD700' }}>
             <p className="text-sm font-medium mb-3" style={{ color: '#8B5A3C' }}>Din totala förmögenhet</p>
             <div className="flex items-center gap-3 mb-4">
-              <ChocolateCoinIcon size={48} />
-              <span className="text-5xl font-bold" style={{ color: '#8B5A3C' }}>{Math.floor(totalAssets)}</span>
+              <ChocolateCoinIcon size={48} className={isAnimating ? 'animate-bounce-soft' : ''} />
+              <span 
+                className={`text-5xl font-bold transition-all duration-300 ${isAnimating ? 'scale-110' : 'scale-100'}`} 
+                style={{ color: '#8B5A3C' }}
+              >
+                {Math.floor(displayBalance)}
+              </span>
             </div>
             
             {/* Uppdelning */}
             <div className="grid grid-cols-3 gap-2 mt-4">
               <div className="bg-gradient-to-br from-yellow-50 to-amber-50 rounded-2xl p-3 text-center border" style={{ borderColor: '#FFE55C' }}>
-                <div className="text-2xl mb-1">💰</div>
+                <ChocolateCoinIcon size={32} className="mx-auto mb-1" />
                 <p className="text-xs font-medium mb-1" style={{ color: '#8B5A3C' }}>Plånbok</p>
                 <p className="text-lg font-bold" style={{ color: '#FFD700' }}>{child.balance}</p>
               </div>
               
               <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-3 text-center border" style={{ borderColor: '#A8D8FF' }}>
-                <div className="text-2xl mb-1">📈</div>
+                <BarChartIcon size={32} className="mx-auto mb-1" />
                 <p className="text-xs font-medium mb-1" style={{ color: '#8B5A3C' }}>Fonder</p>
                 <p className="text-lg font-bold" style={{ color: '#64B5F6' }}>{Math.floor(investmentValue)}</p>
               </div>
               
               <div className="bg-gradient-to-br from-orange-50 to-amber-50 rounded-2xl p-3 text-center border" style={{ borderColor: '#A67C52' }}>
-                <div className="text-2xl mb-1">🏭</div>
+                <FactoryIcon size={32} className="mx-auto mb-1" />
                 <p className="text-xs font-medium mb-1" style={{ color: '#8B5A3C' }}>Fabriker</p>
                 <p className="text-lg font-bold" style={{ color: '#8B5A3C' }}>{Math.floor(factoryValue)}</p>
               </div>

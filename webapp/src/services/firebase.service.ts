@@ -590,5 +590,107 @@ export class FirebaseService {
     
     return () => off(transactionsQuery);
   }
+  
+  // ============= INVESTMENTS =============
+  
+  static async createInvestment(investmentData: Omit<Investment, 'id'>): Promise<Investment> {
+    const investmentsRef = ref(getDatabase(), 'investments');
+    const newInvestmentRef = push(investmentsRef);
+    
+    const investment: Investment = {
+      ...investmentData,
+      id: newInvestmentRef.key!,
+    };
+    
+    await set(newInvestmentRef, investment);
+    return investment;
+  }
+  
+  static async getChildInvestments(childId: string): Promise<Investment[]> {
+    const investmentsRef = ref(getDatabase(), 'investments');
+    const investmentsQuery = query(investmentsRef, orderByChild('childId'), equalTo(childId));
+    const snapshot = await get(investmentsQuery);
+    
+    if (snapshot.exists()) {
+      const investments = snapshot.val();
+      return Object.keys(investments).map(id => ({ ...investments[id], id }));
+    }
+    return [];
+  }
+  
+  static async updateInvestment(investmentId: string, updates: Partial<Investment>) {
+    await update(ref(getDatabase(), `investments/${investmentId}`), updates);
+  }
+  
+  static async deleteInvestment(investmentId: string) {
+    await remove(ref(getDatabase(), `investments/${investmentId}`));
+  }
+  
+  static listenToChildInvestments(childId: string, callback: (investments: Investment[]) => void) {
+    const investmentsRef = ref(getDatabase(), 'investments');
+    const investmentsQuery = query(investmentsRef, orderByChild('childId'), equalTo(childId));
+    
+    onValue(investmentsQuery, (snapshot) => {
+      if (snapshot.exists()) {
+        const investments = snapshot.val();
+        callback(Object.keys(investments).map(id => ({ ...investments[id], id })));
+      } else {
+        callback([]);
+      }
+    });
+    
+    return () => off(investmentsQuery);
+  }
+  
+  // ============= OWNED FACTORIES =============
+  
+  static async createOwnedFactory(factoryData: Omit<OwnedFactory, 'id'>): Promise<OwnedFactory> {
+    const factoriesRef = ref(getDatabase(), 'ownedFactories');
+    const newFactoryRef = push(factoriesRef);
+    
+    const factory: OwnedFactory = {
+      ...factoryData,
+      id: newFactoryRef.key!,
+    };
+    
+    await set(newFactoryRef, factory);
+    return factory;
+  }
+  
+  static async getChildFactories(childId: string): Promise<OwnedFactory[]> {
+    const factoriesRef = ref(getDatabase(), 'ownedFactories');
+    const factoriesQuery = query(factoriesRef, orderByChild('childId'), equalTo(childId));
+    const snapshot = await get(factoriesQuery);
+    
+    if (snapshot.exists()) {
+      const factories = snapshot.val();
+      return Object.keys(factories).map(id => ({ ...factories[id], id }));
+    }
+    return [];
+  }
+  
+  static async updateOwnedFactory(factoryId: string, updates: Partial<OwnedFactory>) {
+    await update(ref(getDatabase(), `ownedFactories/${factoryId}`), updates);
+  }
+  
+  static async deleteOwnedFactory(factoryId: string) {
+    await remove(ref(getDatabase(), `ownedFactories/${factoryId}`));
+  }
+  
+  static listenToChildFactories(childId: string, callback: (factories: OwnedFactory[]) => void) {
+    const factoriesRef = ref(getDatabase(), 'ownedFactories');
+    const factoriesQuery = query(factoriesRef, orderByChild('childId'), equalTo(childId));
+    
+    onValue(factoriesQuery, (snapshot) => {
+      if (snapshot.exists()) {
+        const factories = snapshot.val();
+        callback(Object.keys(factories).map(id => ({ ...factories[id], id })));
+      } else {
+        callback([]);
+      }
+    });
+    
+    return () => off(factoriesQuery);
+  }
 }
 

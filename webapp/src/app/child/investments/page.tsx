@@ -12,7 +12,7 @@ export const dynamic = 'force-dynamic';
 
 export default function InvestmentsPage() {
   const router = useRouter();
-  const { currentUser, investments, addInvestment, removeInvestment, updateUserBalance } = useStore();
+  const { currentUser, investments, buyFundShares, sellFundShares } = useStore();
   const [selectedFund, setSelectedFund] = useState<Fund | null>(null);
   const [amount, setAmount] = useState(1);
   const [action, setAction] = useState<'buy' | 'sell'>('buy');
@@ -90,7 +90,7 @@ export default function InvestmentsPage() {
     ? investments.find(inv => inv.fundId === selectedFund.id)
     : null;
   
-  const handleBuy = () => {
+  const handleBuy = async () => {
     if (!selectedFund || amount <= 0) return;
     
     const cost = selectedFund.currentPrice * amount;
@@ -100,25 +100,18 @@ export default function InvestmentsPage() {
       return;
     }
     
-    // Dra av pengar från plånbok
-    updateUserBalance(child.id, -cost);
-    
-    // Lägg till investering i fonden
-    addInvestment({
-      id: `inv_${Date.now()}`,
-      childId: child.id,
-      fundId: selectedFund.id,
-      shares: amount,
-      purchasePrice: selectedFund.currentPrice,
-      purchasedAt: new Date().toISOString(),
-    });
-    
-    alert(`Du köpte ${amount} andelar i ${selectedFund.name}!`);
-    setSelectedFund(null);
-    setAmount(1);
+    try {
+      await buyFundShares(selectedFund.id, amount, selectedFund.currentPrice);
+      alert(`Du köpte ${amount} andelar i ${selectedFund.name}!`);
+      setSelectedFund(null);
+      setAmount(1);
+    } catch (error) {
+      console.error('Error buying fund:', error);
+      alert('Något gick fel vid köpet. Försök igen!');
+    }
   };
   
-  const handleSell = () => {
+  const handleSell = async () => {
     if (!selectedFund || !existingInvestment || amount <= 0) return;
     
     if (amount > existingInvestment.shares) {
@@ -126,27 +119,16 @@ export default function InvestmentsPage() {
       return;
     }
     
-    const sellValue = selectedFund.currentPrice * amount;
-    
-    // Lägg tillbaka pengar till plånbok
-    updateUserBalance(child.id, sellValue);
-    
-    // Ta bort/uppdatera investering
-    if (amount === existingInvestment.shares) {
-      removeInvestment(existingInvestment.id);
-    } else {
-      // Uppdatera antal andelar (behöver ny metod i store)
-      // För nu: ta bort och lägg till ny
-      removeInvestment(existingInvestment.id);
-      addInvestment({
-        ...existingInvestment,
-        shares: existingInvestment.shares - amount,
-      });
+    try {
+      await sellFundShares(existingInvestment.id, amount, selectedFund.currentPrice);
+      const sellValue = selectedFund.currentPrice * amount;
+      alert(`Du sålde ${amount} andelar i ${selectedFund.name} för ${Math.floor(sellValue)} chokladpengar!`);
+      setSelectedFund(null);
+      setAmount(1);
+    } catch (error) {
+      console.error('Error selling fund:', error);
+      alert('Något gick fel vid försäljningen. Försök igen!');
     }
-    
-    alert(`Du sålde ${amount} andelar i ${selectedFund.name} för ${Math.floor(sellValue)} chokladpengar!`);
-    setSelectedFund(null);
-    setAmount(1);
   };
   
   return (
