@@ -47,7 +47,7 @@ export function Avatar({ name, size = 'medium', color }: AvatarProps) {
 
   return (
     <div
-      className={`${sizeClasses[size]} ${getColor()} rounded-full flex items-center justify-center text-white font-bold shadow-md`}
+      className={`${sizeClasses[size]} ${getColor()} rounded-full flex items-center justify-center text-white font-extrabold shadow-md`}
     >
       {getInitials(name)}
     </div>

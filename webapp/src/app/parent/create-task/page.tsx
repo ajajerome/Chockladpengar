@@ -47,7 +47,7 @@ export default function CreateTaskPage() {
             <div className="w-20 h-20 mx-auto mb-4 rounded-3xl flex items-center justify-center shadow-lg" style={{ background: 'linear-gradient(135deg, #FFB4A2 0%, #FF9999 100%)' }}>
               <ChildIcon size={48} />
             </div>
-            <h2 className="text-xl font-bold mb-2" style={{ color: '#8B5A3C' }}>Inga barn</h2>
+            <h2 className="text-xl font-extrabold mb-2" style={{ color: '#8B5A3C' }}>Inga barn</h2>
             <p className="mb-4" style={{ color: '#A67C52' }}>Du måste lägga till barn innan du kan skapa uppgifter</p>
             <Button onClick={() => router.push('/add-child')} variant="primary" fullWidth>
               Lägg till barn
@@ -70,7 +70,7 @@ export default function CreateTaskPage() {
           >
             ← Tillbaka
           </button>
-          <h1 className="text-3xl font-bold" style={{ color: '#8B5A3C' }}>Skapa uppgift</h1>
+          <h1 className="text-3xl font-extrabold" style={{ color: '#8B5A3C' }}>Skapa uppgift</h1>
         </div>
         
         {/* Form */}

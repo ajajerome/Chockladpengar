@@ -95,13 +95,13 @@ export default function EconomySettingsPage() {
           >
             ← Tillbaka
           </button>
-          <h1 className="text-3xl font-bold text-chocolate-dark">Ekonomiska inställningar</h1>
+          <h1 className="text-3xl font-extrabold text-chocolate-dark">Ekonomiska inställningar</h1>
           <p className="text-chocolate-milk mt-1">Hantera priser och värden i familjen</p>
         </div>
         
         {/* Chokladpeng-värde */}
         <div className="card-glass mb-6">
-          <h2 className="text-xl font-bold text-chocolate-dark mb-4 flex items-center gap-2">
+          <h2 className="text-xl font-extrabold text-chocolate-dark mb-4 flex items-center gap-2">
             <ChocolateCoinIcon size={24} color="#D4AF37" />
             Chokladpengens värde
           </h2>
@@ -131,15 +131,15 @@ export default function EconomySettingsPage() {
             <div className="space-y-1 text-sm text-chocolate-medium">
               <div className="flex justify-between">
                 <span>10 chokladpengar =</span>
-                <span className="font-bold">{(10 * chokladpengValue).toFixed(2)} kr</span>
+                <span className="font-extrabold">{(10 * chokladpengValue).toFixed(2)} kr</span>
               </div>
               <div className="flex justify-between">
                 <span>50 chokladpengar =</span>
-                <span className="font-bold">{(50 * chokladpengValue).toFixed(2)} kr</span>
+                <span className="font-extrabold">{(50 * chokladpengValue).toFixed(2)} kr</span>
               </div>
               <div className="flex justify-between">
                 <span>100 chokladpengar =</span>
-                <span className="font-bold">{(100 * chokladpengValue).toFixed(2)} kr</span>
+                <span className="font-extrabold">{(100 * chokladpengValue).toFixed(2)} kr</span>
               </div>
             </div>
           </div>
@@ -147,7 +147,7 @@ export default function EconomySettingsPage() {
         
         {/* Anpassade fabriker */}
         <div className="card-glass mb-6">
-          <h2 className="text-xl font-bold text-chocolate-dark mb-4 flex items-center gap-2">
+          <h2 className="text-xl font-extrabold text-chocolate-dark mb-4 flex items-center gap-2">
             <FactoryIcon size={24} color="#6B4423" />
             Anpassade fabriker
           </h2>
@@ -182,7 +182,7 @@ export default function EconomySettingsPage() {
                           <div className="flex items-start gap-3 flex-1">
                             <div className="text-3xl">{factory.icon}</div>
                             <div className="flex-1">
-                              <h4 className="font-bold text-chocolate-dark">{factory.name}</h4>
+                              <h4 className="font-extrabold text-chocolate-dark">{factory.name}</h4>
                               <p className="text-sm text-chocolate-milk">{factory.description}</p>
                               <div className="flex gap-4 mt-2 text-xs text-chocolate-medium">
                                 <span>Kostnad: {factory.cost}</span>
@@ -196,7 +196,7 @@ export default function EconomySettingsPage() {
                           </div>
                           <button
                             onClick={() => handleRemoveFactory(factory.id)}
-                            className="text-red-500 hover:text-red-700 text-xl p-2 font-bold leading-none"
+                            className="text-red-500 hover:text-red-700 text-xl p-2 font-extrabold leading-none"
                           >
                             ×
                           </button>

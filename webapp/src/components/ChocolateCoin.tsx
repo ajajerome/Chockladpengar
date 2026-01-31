@@ -29,7 +29,7 @@ export function ChocolateCoin({ amount, size = 'md', showSign = false, animate =
   const animateClass = animate ? 'animate-bounce' : '';
   
   return (
-    <div className={`inline-flex items-center gap-2 font-bold ${sizeClasses[size]}`}>
+    <div className={`inline-flex items-center gap-2 font-extrabold ${sizeClasses[size]}`}>
       <ChocolateCoinIcon size={iconSizes[size]} className={animateClass} />
       <span className={colorClass} style={{ color: isNegative ? '#FF6B6B' : '#FFD700' }}>
         {sign}{displayAmount}

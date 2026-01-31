@@ -68,13 +68,13 @@ export default function RewardsPage() {
             ← Tillbaka
           </button>
           
-          <h1 className="text-3xl font-bold mb-2" style={{ color: '#8B5A3C' }}>Butiken</h1>
+          <h1 className="text-3xl font-extrabold mb-2" style={{ color: '#8B5A3C' }}>Butiken</h1>
           <p className="text-sm mb-4" style={{ color: '#6B4423' }}>Handla belöningar med dina chokladpengar</p>
           
           <div className="bg-white rounded-3xl p-4 shadow-lg">
             <p className="text-sm font-medium mb-1" style={{ color: '#8B5A3C' }}>Ditt saldo</p>
             <div className="flex items-center gap-2">
-              <span className="text-3xl font-bold" style={{ color: '#FFD700' }}>{child.balance}</span>
+              <span className="text-3xl font-extrabold" style={{ color: '#FFD700' }}>{child.balance}</span>
               <span className="text-lg" style={{ color: '#A67C52' }}>chokladpengar</span>
             </div>
           </div>
@@ -87,7 +87,7 @@ export default function RewardsPage() {
             <div className="w-20 h-20 mx-auto mb-4 rounded-3xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #FF9999 0%, #FFB4A2 100%)' }}>
               <GiftIcon size={48} />
             </div>
-            <h2 className="text-xl font-bold mb-2" style={{ color: '#8B5A3C' }}>Butiken är tom</h2>
+            <h2 className="text-xl font-extrabold mb-2" style={{ color: '#8B5A3C' }}>Butiken är tom</h2>
             <p className="mb-4" style={{ color: '#A67C52' }}>
               Fråga dina föräldrar om de kan lägga till saker i butiken!
             </p>

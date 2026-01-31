@@ -43,7 +43,7 @@ export default function ParentJoinPage() {
               <KeyIcon size={32} />
             </div>
           </div>
-          <h1 className="text-3xl font-bold mb-2" style={{ color: '#8B5A3C' }}>Förälder: Gå med</h1>
+          <h1 className="text-3xl font-extrabold mb-2" style={{ color: '#8B5A3C' }}>Förälder: Gå med</h1>
           <p style={{ color: '#A67C52' }}>Gå med i en befintlig familj</p>
         </div>
         
@@ -63,7 +63,7 @@ export default function ParentJoinPage() {
                 placeholder="ABC123"
                 required
                 maxLength={6}
-                className="w-full px-4 py-3 rounded-2xl border-2 uppercase text-center text-2xl font-bold tracking-wider focus:outline-none focus:ring-2 transition-all"
+                className="w-full px-4 py-3 rounded-2xl border-2 uppercase text-center text-2xl font-extrabold tracking-wider focus:outline-none focus:ring-2 transition-all"
                 style={{ borderColor: '#FFE55C', color: '#8B5A3C' }}
               />
             </div>

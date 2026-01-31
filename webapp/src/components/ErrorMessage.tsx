@@ -11,7 +11,7 @@ export function ErrorMessage({ message, onRetry }: ErrorMessageProps) {
       <div className="flex items-start gap-3">
         <span className="text-2xl">⚠️</span>
         <div className="flex-1">
-          <h3 className="font-bold text-red-800 mb-1">Ett fel uppstod</h3>
+          <h3 className="font-extrabold text-red-800 mb-1">Ett fel uppstod</h3>
           <p className="text-sm text-red-700">{message}</p>
           {onRetry && (
             <button

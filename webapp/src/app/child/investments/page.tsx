@@ -147,7 +147,7 @@ export default function InvestmentsPage() {
             ← Tillbaka
           </button>
           
-          <h1 className="text-3xl font-bold mb-2" style={{ color: '#8B5A3C' }}>Fonder</h1>
+          <h1 className="text-3xl font-extrabold mb-2" style={{ color: '#8B5A3C' }}>Fonder</h1>
           <p className="text-sm mb-4" style={{ color: '#6B4423' }}>Investera dina chokladpengar</p>
           
           {/* Saldo-kort */}
@@ -156,7 +156,7 @@ export default function InvestmentsPage() {
               <p className="text-xs font-medium mb-1" style={{ color: '#8B5A3C' }}>Plånbok</p>
               <div className="flex items-center gap-2">
                 <ChocolateCoinIcon size={32} />
-                <span className="text-2xl font-bold" style={{ color: '#FFD700' }}>{child.balance}</span>
+                <span className="text-2xl font-extrabold" style={{ color: '#FFD700' }}>{child.balance}</span>
               </div>
             </div>
             
@@ -164,7 +164,7 @@ export default function InvestmentsPage() {
               <p className="text-xs font-medium mb-1" style={{ color: '#8B5A3C' }}>I fonder</p>
               <div className="flex items-center gap-2">
                 <BarChartIcon size={32} />
-                <span className="text-2xl font-bold" style={{ color: '#64B5F6' }}>{Math.floor(totalInvestedValue)}</span>
+                <span className="text-2xl font-extrabold" style={{ color: '#64B5F6' }}>{Math.floor(totalInvestedValue)}</span>
               </div>
             </div>
           </div>
@@ -179,7 +179,7 @@ export default function InvestmentsPage() {
               <BarChartIcon size={24} />
             </div>
             <div>
-              <h3 className="font-bold mb-1" style={{ color: '#8B5A3C' }}>Choki-tips!</h3>
+              <h3 className="font-extrabold mb-1" style={{ color: '#8B5A3C' }}>Choki-tips!</h3>
               <p className="text-sm" style={{ color: '#A67C52' }}>
                 Köp andelar i fonder! Priset kan gå upp eller ner. Sälj när priset är högt för att tjäna pengar!
               </p>
@@ -190,7 +190,7 @@ export default function InvestmentsPage() {
         {/* Mina investeringar */}
         {investments.length > 0 && (
           <div>
-            <h2 className="text-xl font-bold mb-3" style={{ color: '#8B5A3C' }}>Mina investeringar</h2>
+            <h2 className="text-xl font-extrabold mb-3" style={{ color: '#8B5A3C' }}>Mina investeringar</h2>
             <div className="space-y-3">
               {investments.map((inv) => {
                 const fund = AVAILABLE_FUNDS.find(f => f.id === inv.fundId);
@@ -205,11 +205,11 @@ export default function InvestmentsPage() {
                   <div key={inv.id} className="bg-white rounded-3xl shadow-md p-5 border-2" style={{ borderColor: '#A8D8FF' }}>
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-white font-bold text-lg" style={{ backgroundColor: fund.color }}>
+                        <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-white font-extrabold text-lg" style={{ backgroundColor: fund.color }}>
                           {fund.name.charAt(0)}
                         </div>
                         <div>
-                          <h3 className="font-bold text-lg" style={{ color: '#8B5A3C' }}>{fund.name}</h3>
+                          <h3 className="font-extrabold text-lg" style={{ color: '#8B5A3C' }}>{fund.name}</h3>
                           <p className="text-sm" style={{ color: '#A67C52' }}>{inv.shares} andelar</p>
                         </div>
                       </div>
@@ -229,15 +229,15 @@ export default function InvestmentsPage() {
                     <div className="grid grid-cols-3 gap-3 mt-3 pt-3 border-t" style={{ borderColor: '#F5E6D3' }}>
                       <div>
                         <p className="text-xs" style={{ color: '#A67C52' }}>Nuvarande värde</p>
-                        <p className="font-bold" style={{ color: '#8B5A3C' }}>{Math.floor(currentValue)}</p>
+                        <p className="font-extrabold" style={{ color: '#8B5A3C' }}>{Math.floor(currentValue)}</p>
                       </div>
                       <div>
                         <p className="text-xs" style={{ color: '#A67C52' }}>Inköpsvärde</p>
-                        <p className="font-bold" style={{ color: '#8B5A3C' }}>{Math.floor(purchaseValue)}</p>
+                        <p className="font-extrabold" style={{ color: '#8B5A3C' }}>{Math.floor(purchaseValue)}</p>
                       </div>
                       <div>
                         <p className="text-xs" style={{ color: '#A67C52' }}>Vinst/Förlust</p>
-                        <p className={`font-bold ${profit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                        <p className={`font-extrabold ${profit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                           {profit >= 0 ? '+' : ''}{Math.floor(profit)} ({profitPercent}%)
                         </p>
                       </div>
@@ -251,7 +251,7 @@ export default function InvestmentsPage() {
         
         {/* Tillgängliga fonder */}
         <div>
-          <h2 className="text-xl font-bold mb-3" style={{ color: '#8B5A3C' }}>Tillgängliga fonder</h2>
+          <h2 className="text-xl font-extrabold mb-3" style={{ color: '#8B5A3C' }}>Tillgängliga fonder</h2>
           <div className="grid grid-cols-1 gap-4">
             {AVAILABLE_FUNDS.map((fund) => {
               const riskColors = {
@@ -273,11 +273,11 @@ export default function InvestmentsPage() {
                 <div key={fund.id} className="bg-white rounded-3xl shadow-md p-5 border-2" style={{ borderColor: colors.border }}>
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-white font-bold text-2xl" style={{ backgroundColor: fund.color }}>
+                      <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-white font-extrabold text-2xl" style={{ backgroundColor: fund.color }}>
                         {fund.name.charAt(0)}
                       </div>
                       <div>
-                        <h3 className="font-bold text-lg" style={{ color: '#8B5A3C' }}>{fund.name}</h3>
+                        <h3 className="font-extrabold text-lg" style={{ color: '#8B5A3C' }}>{fund.name}</h3>
                         <p className="text-sm" style={{ color: '#A67C52' }}>{fund.description}</p>
                       </div>
                     </div>
@@ -288,10 +288,10 @@ export default function InvestmentsPage() {
                       <p className="text-xs mb-1" style={{ color: '#A67C52' }}>{riskLabels[fund.riskLevel]}</p>
                       <div className="flex items-center gap-2">
                         <ChocolateCoinIcon size={24} />
-                        <span className="text-xl font-bold" style={{ color: '#FFD700' }}>{fund.currentPrice}</span>
+                        <span className="text-xl font-extrabold" style={{ color: '#FFD700' }}>{fund.currentPrice}</span>
                         <span className="text-sm" style={{ color: '#A67C52' }}>per andel</span>
                         {priceChange !== 0 && (
-                          <span className={`text-xs font-bold ${priceChange > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                          <span className={`text-xs font-extrabold ${priceChange > 0 ? 'text-green-600' : 'text-red-600'}`}>
                             {priceChange > 0 ? '↗' : '↘'} {Math.abs(priceChange).toFixed(1)}%
                           </span>
                         )}
@@ -320,7 +320,7 @@ export default function InvestmentsPage() {
       {selectedFund && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50" onClick={() => setSelectedFund(null)}>
           <div className="bg-white rounded-3xl shadow-xl p-6 max-w-md w-full" onClick={(e) => e.stopPropagation()}>
-            <h2 className="text-2xl font-bold mb-4" style={{ color: '#8B5A3C' }}>
+            <h2 className="text-2xl font-extrabold mb-4" style={{ color: '#8B5A3C' }}>
               {action === 'buy' ? 'Köp' : 'Sälj'} {selectedFund.name}
             </h2>
             
@@ -335,7 +335,7 @@ export default function InvestmentsPage() {
                   max={action === 'sell' ? existingInvestment?.shares : Math.floor(child.balance / selectedFund.currentPrice)}
                   value={amount}
                   onChange={(e) => setAmount(parseInt(e.target.value) || 1)}
-                  className="w-full px-4 py-3 rounded-2xl border-2 text-center text-2xl font-bold"
+                  className="w-full px-4 py-3 rounded-2xl border-2 text-center text-2xl font-extrabold"
                   style={{ borderColor: '#FFE55C', color: '#8B5A3C' }}
                 />
                 {action === 'sell' && existingInvestment && (
@@ -351,7 +351,7 @@ export default function InvestmentsPage() {
                 </p>
                 <div className="flex items-center gap-2">
                   <ChocolateCoinIcon size={32} />
-                  <span className="text-3xl font-bold" style={{ color: '#FFD700' }}>
+                  <span className="text-3xl font-extrabold" style={{ color: '#FFD700' }}>
                     {Math.floor(selectedFund.currentPrice * amount)}
                   </span>
                 </div>

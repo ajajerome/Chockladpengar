@@ -74,7 +74,7 @@ export function RewardCard({
           {getRewardIcon(reward)}
         </div>
         <div className="flex-1 min-w-0">
-          <h3 className="font-bold text-lg" style={{ color: '#8B5A3C' }}>{reward.title}</h3>
+          <h3 className="font-extrabold text-lg" style={{ color: '#8B5A3C' }}>{reward.title}</h3>
           {reward.description && (
             <p className="text-sm mt-1" style={{ color: '#A67C52' }}>{reward.description}</p>
           )}
@@ -84,7 +84,7 @@ export function RewardCard({
       <div className="flex items-center justify-between mt-4 pt-3 border-t" style={{ borderColor: '#F5E6D3' }}>
         <div className="flex items-center gap-2">
           <ChocolateCoinIcon size={28} />
-          <span className="text-2xl font-bold" style={{ color: '#FFD700' }}>{reward.cost}</span>
+          <span className="text-2xl font-extrabold" style={{ color: '#FFD700' }}>{reward.cost}</span>
         </div>
         
         {onPurchase && (

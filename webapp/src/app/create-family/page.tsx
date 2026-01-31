@@ -48,7 +48,7 @@ export default function CreateFamilyPage() {
               <UsersIcon size={48} />
             </div>
           </div>
-          <h1 className="text-3xl font-bold mb-2" style={{ color: '#8B5A3C' }}>Skapa familj</h1>
+          <h1 className="text-3xl font-extrabold mb-2" style={{ color: '#8B5A3C' }}>Skapa familj</h1>
           <p style={{ color: '#A67C52' }}>Börja er chokladpengar-resa</p>
         </div>
         

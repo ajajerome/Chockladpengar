@@ -39,7 +39,7 @@ export default function ParentHomePage() {
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-4">
               <div className="text-white">
-                <h1 className="text-3xl font-bold">Hej {currentUser.name}!</h1>
+                <h1 className="text-3xl font-extrabold">Hej {currentUser.name}!</h1>
                 <p className="text-white/90">{family?.name || 'Familjen'}</p>
               </div>
             </div>
@@ -64,7 +64,7 @@ export default function ParentHomePage() {
           {family && (
             <div className="bg-white rounded-3xl p-4 shadow-lg">
               <p className="text-sm font-medium mb-1" style={{ color: '#8B5A3C' }}>Familjekod</p>
-              <p className="text-3xl font-bold tracking-wider" style={{ color: '#FFD700' }}>{family.code}</p>
+              <p className="text-3xl font-extrabold tracking-wider" style={{ color: '#FFD700' }}>{family.code}</p>
               <p className="text-xs mt-1" style={{ color: '#A67C52' }}>Dela koden med familjemedlemmar</p>
             </div>
           )}
@@ -80,7 +80,7 @@ export default function ParentHomePage() {
         {/* Children Overview */}
         <div>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold" style={{ color: '#8B5A3C' }}>Barn</h2>
+            <h2 className="text-xl font-extrabold" style={{ color: '#8B5A3C' }}>Barn</h2>
             <button
               onClick={() => router.push('/add-child')}
               className="bg-white px-4 py-2 rounded-2xl text-sm font-medium shadow-md hover:shadow-lg transition-all"
@@ -107,12 +107,12 @@ export default function ParentHomePage() {
               {children.map((child) => (
                 <div key={child.id} className="bg-white rounded-3xl shadow-md p-5 border-2" style={{ borderColor: '#FFE55C' }}>
                   <div className="flex items-center gap-3">
-                    <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-white font-bold text-xl" style={{ background: 'linear-gradient(135deg, #FFB4A2 0%, #FF9999 100%)' }}>
+                    <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-white font-extrabold text-xl" style={{ background: 'linear-gradient(135deg, #FFB4A2 0%, #FF9999 100%)' }}>
                       {child.name.charAt(0).toUpperCase()}
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-bold text-lg" style={{ color: '#8B5A3C' }}>{child.name}</h3>
-                      <div className="flex items-center gap-2 font-bold" style={{ color: '#FFD700' }}>
+                      <h3 className="font-extrabold text-lg" style={{ color: '#8B5A3C' }}>{child.name}</h3>
+                      <div className="flex items-center gap-2 font-extrabold" style={{ color: '#FFD700' }}>
                         <ChocolateCoinIcon size={20} />
                         <span>{child.balance || 0}</span>
                       </div>
@@ -134,7 +134,7 @@ export default function ParentHomePage() {
             <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-2" style={{ background: 'linear-gradient(135deg, #B4E7CE 0%, #4CAF50 100%)' }}>
               <CheckIcon size={32} />
             </div>
-            <h3 className="font-bold" style={{ color: '#8B5A3C' }}>Skapa uppgift</h3>
+            <h3 className="font-extrabold" style={{ color: '#8B5A3C' }}>Skapa uppgift</h3>
             <p className="text-sm mt-1" style={{ color: '#A67C52' }}>Lägg till ny uppgift</p>
           </button>
           
@@ -146,7 +146,7 @@ export default function ParentHomePage() {
             <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-2" style={{ background: 'linear-gradient(135deg, #FF9999 0%, #FFB4A2 100%)' }}>
               <GiftIcon size={32} />
             </div>
-            <h3 className="font-bold" style={{ color: '#8B5A3C' }}>Lägg till i Butiken</h3>
+            <h3 className="font-extrabold" style={{ color: '#8B5A3C' }}>Lägg till i Butiken</h3>
             <p className="text-sm mt-1" style={{ color: '#A67C52' }}>Skapa ny belöning</p>
           </button>
           
@@ -160,7 +160,7 @@ export default function ParentHomePage() {
                 <SettingsIcon size={24} />
               </div>
               <div className="text-left">
-                <h3 className="font-bold" style={{ color: '#8B5A3C' }}>Inställningar</h3>
+                <h3 className="font-extrabold" style={{ color: '#8B5A3C' }}>Inställningar</h3>
                 <p className="text-sm" style={{ color: '#A67C52' }}>Hantera familj, barn, uppgifter och belöningar</p>
               </div>
             </div>
@@ -169,7 +169,7 @@ export default function ParentHomePage() {
         
         {/* Tasks to Review */}
         <div>
-          <h2 className="text-xl font-bold mb-4" style={{ color: '#8B5A3C' }}>
+          <h2 className="text-xl font-extrabold mb-4" style={{ color: '#8B5A3C' }}>
             Uppgifter att granska
           </h2>
           
@@ -198,7 +198,7 @@ export default function ParentHomePage() {
         {/* Recent Purchases */}
         {recentPurchases.length > 0 && (
           <div>
-            <h2 className="text-xl font-bold mb-4" style={{ color: '#8B5A3C' }}>
+            <h2 className="text-xl font-extrabold mb-4" style={{ color: '#8B5A3C' }}>
               Senaste köpen
             </h2>
             
@@ -215,14 +215,14 @@ export default function ParentHomePage() {
                       <div className="flex items-center gap-3">
                         <div className="text-3xl">{reward.icon}</div>
                         <div>
-                          <h3 className="font-bold" style={{ color: '#8B5A3C' }}>{reward.title}</h3>
+                          <h3 className="font-extrabold" style={{ color: '#8B5A3C' }}>{reward.title}</h3>
                           <p className="text-sm" style={{ color: '#A67C52' }}>
                             Köpt av {child.name}
                           </p>
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="flex items-center gap-2 font-bold" style={{ color: '#FFD700' }}>
+                        <div className="flex items-center gap-2 font-extrabold" style={{ color: '#FFD700' }}>
                           <ChocolateCoinIcon size={20} />
                           <span>{reward.cost}</span>
                         </div>

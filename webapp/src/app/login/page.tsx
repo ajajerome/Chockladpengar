@@ -34,7 +34,7 @@ export default function LoginPage() {
               <ChildIcon size={48} />
             </div>
           </div>
-          <h1 className="text-3xl font-bold mb-2" style={{ color: '#8B5A3C' }}>Barn: Logga in</h1>
+          <h1 className="text-3xl font-extrabold mb-2" style={{ color: '#8B5A3C' }}>Barn: Logga in</h1>
           <p style={{ color: '#A67C52' }}>Ange din familjekod och ditt namn</p>
         </div>
         
@@ -54,7 +54,7 @@ export default function LoginPage() {
                 placeholder="ABC123"
                 required
                 maxLength={6}
-                className="input-chocolate uppercase text-center text-2xl font-bold tracking-wider"
+                className="input-chocolate uppercase text-center text-2xl font-extrabold tracking-wider"
               />
             </div>
             

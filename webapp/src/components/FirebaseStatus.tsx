@@ -38,7 +38,7 @@ export function FirebaseStatus() {
 
   return (
     <div className="fixed bottom-4 right-4 bg-red-500 text-white px-6 py-4 rounded-lg shadow-lg max-w-md z-50">
-      <div className="font-bold mb-2">❌ Firebase-fel</div>
+      <div className="font-extrabold mb-2">❌ Firebase-fel</div>
       <div className="text-sm">{error}</div>
       <div className="mt-3 text-xs opacity-80">
         Kontrollera att alla NEXT_PUBLIC_FIREBASE_* variabler är satta i .env.local

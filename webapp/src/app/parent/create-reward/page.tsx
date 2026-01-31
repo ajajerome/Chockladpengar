@@ -45,7 +45,7 @@ export default function CreateRewardPage() {
           >
             ← Tillbaka
           </button>
-          <h1 className="text-3xl font-bold" style={{ color: '#8B5A3C' }}>Lägg till i butiken</h1>
+          <h1 className="text-3xl font-extrabold" style={{ color: '#8B5A3C' }}>Lägg till i butiken</h1>
           <p className="mt-1" style={{ color: '#A67C52' }}>Skapa en ny belöning som barn kan köpa</p>
         </div>
         
@@ -138,8 +138,8 @@ export default function CreateRewardPage() {
               <div className="flex items-center gap-3">
                 <div className="text-4xl">{icon}</div>
                 <div className="flex-1">
-                  <h3 className="font-bold" style={{ color: '#8B5A3C' }}>{title || 'Belöningens namn'}</h3>
-                  <div className="flex items-center gap-2 font-bold text-sm" style={{ color: '#FFD700' }}>
+                  <h3 className="font-extrabold" style={{ color: '#8B5A3C' }}>{title || 'Belöningens namn'}</h3>
+                  <div className="flex items-center gap-2 font-extrabold text-sm" style={{ color: '#FFD700' }}>
                     <ChocolateCoinIcon size={16} />
                     <span>{cost}</span>
                   </div>

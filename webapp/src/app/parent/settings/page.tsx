@@ -69,7 +69,7 @@ export default function FamilySettingsPage() {
             <div className="w-20 h-20 mx-auto mb-4 rounded-3xl flex items-center justify-center shadow-lg text-white" style={{ background: 'linear-gradient(135deg, #8B5A3C 0%, #A67C52 100%)' }}>
               <SettingsIcon size={48} />
             </div>
-            <h1 className="text-3xl font-bold text-white mb-2">
+            <h1 className="text-3xl font-extrabold text-white mb-2">
               Familjeinställningar
             </h1>
             <p className="text-white/90">{family.name}</p>
@@ -80,11 +80,11 @@ export default function FamilySettingsPage() {
       <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
         {/* Föräldrar */}
         <div>
-          <h2 className="text-xl font-bold mb-4" style={{ color: '#8B5A3C' }}>Föräldrar</h2>
+          <h2 className="text-xl font-extrabold mb-4" style={{ color: '#8B5A3C' }}>Föräldrar</h2>
 
           {/* Invite Link Card */}
           <div className="bg-white rounded-3xl shadow-md p-5 mb-4 border-l-4" style={{ borderColor: '#FFD700' }}>
-            <h3 className="font-bold mb-2" style={{ color: '#8B5A3C' }}>Bjud in annan förälder</h3>
+            <h3 className="font-extrabold mb-2" style={{ color: '#8B5A3C' }}>Bjud in annan förälder</h3>
             <p className="text-sm mb-3" style={{ color: '#A67C52' }}>
               Dela denna länk via mail, SMS eller WhatsApp:
             </p>
@@ -113,11 +113,11 @@ export default function FamilySettingsPage() {
             {parents.map((parent) => (
               <div key={parent.id} className="bg-white rounded-3xl shadow-md p-5 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-white font-bold text-xl" style={{ background: 'linear-gradient(135deg, #8B5A3C 0%, #A67C52 100%)' }}>
+                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-white font-extrabold text-xl" style={{ background: 'linear-gradient(135deg, #8B5A3C 0%, #A67C52 100%)' }}>
                     {parent.name.charAt(0).toUpperCase()}
                   </div>
                   <div>
-                    <p className="font-bold" style={{ color: '#8B5A3C' }}>{parent.name}</p>
+                    <p className="font-extrabold" style={{ color: '#8B5A3C' }}>{parent.name}</p>
                     <p className="text-sm" style={{ color: '#A67C52' }}>Förälder</p>
                   </div>
                 </div>
@@ -134,7 +134,7 @@ export default function FamilySettingsPage() {
         {/* Barn */}
         <div>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold" style={{ color: '#8B5A3C' }}>Barn</h2>
+            <h2 className="text-xl font-extrabold" style={{ color: '#8B5A3C' }}>Barn</h2>
             <button
               onClick={() => router.push(`/add-child?familyId=${family.id}`)}
               className="px-4 py-2 rounded-2xl font-medium shadow-md hover:shadow-lg transition-all"
@@ -154,12 +154,12 @@ export default function FamilySettingsPage() {
               children.map((child) => (
                 <div key={child.id} className="bg-white rounded-3xl shadow-md p-5 flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-white font-bold text-xl" style={{ background: 'linear-gradient(135deg, #FFB4A2 0%, #FF9999 100%)' }}>
+                    <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-white font-extrabold text-xl" style={{ background: 'linear-gradient(135deg, #FFB4A2 0%, #FF9999 100%)' }}>
                       {child.name.charAt(0).toUpperCase()}
                     </div>
                     <div>
-                      <p className="font-bold" style={{ color: '#8B5A3C' }}>{child.name}</p>
-                      <div className="flex items-center gap-1 text-sm font-bold" style={{ color: '#FFD700' }}>
+                      <p className="font-extrabold" style={{ color: '#8B5A3C' }}>{child.name}</p>
+                      <div className="flex items-center gap-1 text-sm font-extrabold" style={{ color: '#FFD700' }}>
                         <ChocolateCoinIcon size={16} />
                         <span>{child.balance || 0}</span>
                       </div>
@@ -171,7 +171,7 @@ export default function FamilySettingsPage() {
                         deleteChild(child.id);
                       }
                     }}
-                    className="text-red-500 hover:text-red-700 text-3xl font-bold leading-none w-10 h-10 flex items-center justify-center rounded-xl hover:bg-red-50 transition-all"
+                    className="text-red-500 hover:text-red-700 text-3xl font-extrabold leading-none w-10 h-10 flex items-center justify-center rounded-xl hover:bg-red-50 transition-all"
                     title="Ta bort barn"
                   >
                     ×
@@ -185,7 +185,7 @@ export default function FamilySettingsPage() {
         {/* Hantera uppgifter */}
         <div>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold" style={{ color: '#8B5A3C' }}>Hantera uppgifter</h2>
+            <h2 className="text-xl font-extrabold" style={{ color: '#8B5A3C' }}>Hantera uppgifter</h2>
             <button
               onClick={() => router.push('/parent/create-task')}
               className="px-4 py-2 rounded-2xl font-medium shadow-md hover:shadow-lg transition-all"
@@ -208,12 +208,12 @@ export default function FamilySettingsPage() {
                   <div key={task.id} className="bg-white rounded-3xl shadow-md p-5">
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex-1">
-                        <h3 className="font-bold mb-1" style={{ color: '#8B5A3C' }}>{task.title}</h3>
+                        <h3 className="font-extrabold mb-1" style={{ color: '#8B5A3C' }}>{task.title}</h3>
                         <p className="text-sm mb-2" style={{ color: '#A67C52' }}>{task.description}</p>
                         <div className="flex items-center gap-3 text-xs" style={{ color: '#A67C52' }}>
                           <span>Tilldelad: {assignedChild?.name || 'Okänd'}</span>
                           <span>•</span>
-                          <div className="flex items-center gap-1 font-bold" style={{ color: '#FFD700' }}>
+                          <div className="flex items-center gap-1 font-extrabold" style={{ color: '#FFD700' }}>
                             <ChocolateCoinIcon size={14} />
                             <span>{task.reward}</span>
                           </div>
@@ -225,7 +225,7 @@ export default function FamilySettingsPage() {
                             deleteTask(task.id);
                           }
                         }}
-                        className="text-red-500 hover:text-red-700 text-3xl font-bold leading-none w-10 h-10 flex items-center justify-center rounded-xl hover:bg-red-50 transition-all"
+                        className="text-red-500 hover:text-red-700 text-3xl font-extrabold leading-none w-10 h-10 flex items-center justify-center rounded-xl hover:bg-red-50 transition-all"
                         title="Ta bort uppgift"
                       >
                         ×
@@ -241,7 +241,7 @@ export default function FamilySettingsPage() {
         {/* Hantera belöningar */}
         <div>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold" style={{ color: '#8B5A3C' }}>Hantera belöningar</h2>
+            <h2 className="text-xl font-extrabold" style={{ color: '#8B5A3C' }}>Hantera belöningar</h2>
             <button
               onClick={() => router.push('/parent/create-reward')}
               className="px-4 py-2 rounded-2xl font-medium shadow-md hover:shadow-lg transition-all"
@@ -264,9 +264,9 @@ export default function FamilySettingsPage() {
                     <div className="flex items-start gap-3 flex-1">
                       <div className="text-3xl">{reward.icon}</div>
                       <div className="flex-1">
-                        <h3 className="font-bold mb-1" style={{ color: '#8B5A3C' }}>{reward.title}</h3>
+                        <h3 className="font-extrabold mb-1" style={{ color: '#8B5A3C' }}>{reward.title}</h3>
                         <p className="text-sm mb-2" style={{ color: '#A67C52' }}>{reward.description}</p>
-                        <div className="flex items-center gap-1 font-bold text-xs" style={{ color: '#FFD700' }}>
+                        <div className="flex items-center gap-1 font-extrabold text-xs" style={{ color: '#FFD700' }}>
                           <ChocolateCoinIcon size={14} />
                           <span>{reward.cost}</span>
                         </div>
@@ -278,7 +278,7 @@ export default function FamilySettingsPage() {
                           deleteReward(reward.id);
                         }
                       }}
-                      className="text-red-500 hover:text-red-700 text-3xl font-bold leading-none w-10 h-10 flex items-center justify-center rounded-xl hover:bg-red-50 transition-all"
+                      className="text-red-500 hover:text-red-700 text-3xl font-extrabold leading-none w-10 h-10 flex items-center justify-center rounded-xl hover:bg-red-50 transition-all"
                       title="Ta bort belöning"
                     >
                       ×
@@ -302,7 +302,7 @@ export default function FamilySettingsPage() {
                 <ChocolateCoinIcon size={24} />
               </div>
               <div>
-                <h3 className="font-bold" style={{ color: '#8B5A3C' }}>Ekonomiska inställningar</h3>
+                <h3 className="font-extrabold" style={{ color: '#8B5A3C' }}>Ekonomiska inställningar</h3>
                 <p className="text-sm" style={{ color: '#A67C52' }}>
                   {family.settings ? 
                     `1 chokladpeng = ${family.settings.chokladpengValue} kr` : 
@@ -316,7 +316,7 @@ export default function FamilySettingsPage() {
 
         {/* Familjeinformation */}
         <div className="bg-gradient-to-br from-yellow-50 to-amber-50 rounded-3xl shadow-md p-5 border-2" style={{ borderColor: '#FFE55C' }}>
-          <h3 className="font-bold mb-3" style={{ color: '#8B5A3C' }}>Familjeinformation</h3>
+          <h3 className="font-extrabold mb-3" style={{ color: '#8B5A3C' }}>Familjeinformation</h3>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
               <span style={{ color: '#A67C52' }}>Familjenamn:</span>

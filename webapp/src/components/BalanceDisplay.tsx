@@ -25,7 +25,7 @@ export function BalanceDisplay({ balance, label = 'Saldo', size = 'lg' }: Balanc
       <p className="text-sm font-medium mb-2" style={{ color: '#8B5A3C' }}>{label}</p>
       <div className="flex items-center gap-2">
         <ChocolateCoinIcon size={iconSizes[size]} />
-        <span className={`font-bold ${textSizes[size]}`} style={{ color: '#FFD700' }}>{balance}</span>
+        <span className={`font-extrabold ${textSizes[size]}`} style={{ color: '#FFD700' }}>{balance}</span>
       </div>
     </div>
   );

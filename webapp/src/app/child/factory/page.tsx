@@ -40,7 +40,7 @@ export default function FactoryPage() {
             <div className="w-16 h-16 rounded-2xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #FFD700 0%, #FFE55C 100%)' }}>
               <FactoryIcon size={36} />
             </div>
-            <h1 className="text-3xl font-bold text-white">Chokladfabrik</h1>
+            <h1 className="text-3xl font-extrabold text-white">Chokladfabrik</h1>
           </div>
           
           {/* Saldo */}
@@ -48,7 +48,7 @@ export default function FactoryPage() {
             <p className="text-xs font-medium mb-1" style={{ color: '#8B5A3C' }}>Ditt saldo</p>
             <div className="flex items-center gap-2">
               <ChocolateCoinIcon size={32} />
-              <span className="text-2xl font-bold" style={{ color: '#FFD700' }}>{child.balance}</span>
+              <span className="text-2xl font-extrabold" style={{ color: '#FFD700' }}>{child.balance}</span>
             </div>
           </div>
         </div>
@@ -62,7 +62,7 @@ export default function FactoryPage() {
               <FactoryIcon size={24} />
             </div>
             <div>
-              <h3 className="font-bold mb-1" style={{ color: '#8B5A3C' }}>Vad är fabriken?</h3>
+              <h3 className="font-extrabold mb-1" style={{ color: '#8B5A3C' }}>Vad är fabriken?</h3>
               <p className="text-sm" style={{ color: '#A67C52' }}>
                 Köp maskiner som producerar chokladpengar automatiskt varje vecka! Ju dyrare maskin, desto mer tjänar du. Det kallas passiv inkomst!
               </p>
@@ -75,13 +75,13 @@ export default function FactoryPage() {
           <div className="mb-4 mx-auto w-20 h-20 rounded-3xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #A67C52 0%, #8B5A3C 100%)' }}>
             <FactoryIcon size={48} />
           </div>
-          <h2 className="text-2xl font-bold mb-2" style={{ color: '#8B5A3C' }}>Kommer snart!</h2>
+          <h2 className="text-2xl font-extrabold mb-2" style={{ color: '#8B5A3C' }}>Kommer snart!</h2>
           <p className="mb-6" style={{ color: '#A67C52' }}>
             Fabriksfunktionen är under utveckling. Snart kan du börja tjäna passiv inkomst!
           </p>
           
           <div className="space-y-3 max-w-md mx-auto">
-            <h3 className="font-bold text-left mb-3" style={{ color: '#8B5A3C' }}>Kommande maskiner:</h3>
+            <h3 className="font-extrabold text-left mb-3" style={{ color: '#8B5A3C' }}>Kommande maskiner:</h3>
             {FACTORY_ITEMS.map((item) => {
               const canAfford = child.balance >= item.cost;
               
@@ -103,18 +103,18 @@ export default function FactoryPage() {
                       <FactoryIcon size={28} />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-bold text-lg mb-1" style={{ color: '#8B5A3C' }}>{item.name}</h3>
+                      <h3 className="font-extrabold text-lg mb-1" style={{ color: '#8B5A3C' }}>{item.name}</h3>
                       <p className="text-sm mb-3" style={{ color: '#A67C52' }}>{item.description}</p>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <div className="flex items-center gap-1 font-bold" style={{ color: '#FFD700' }}>
+                          <div className="flex items-center gap-1 font-extrabold" style={{ color: '#FFD700' }}>
                             <ChocolateCoinIcon size={20} />
                             <span>{item.cost}</span>
                           </div>
                           <span className="text-xs" style={{ color: '#A67C52' }}>kostnad</span>
                         </div>
                         <span
-                          className="text-xs font-bold px-3 py-1 rounded-full"
+                          className="text-xs font-extrabold px-3 py-1 rounded-full"
                           style={{
                             backgroundColor: canAfford ? '#C8E6C9' : '#F5E6D3',
                             color: canAfford ? '#2E7D32' : '#8B5A3C',
@@ -133,7 +133,7 @@ export default function FactoryPage() {
         
         {/* Tips */}
         <div className="bg-white rounded-3xl shadow-md p-5 border-l-4" style={{ borderColor: '#FFE55C' }}>
-          <h3 className="font-bold mb-2" style={{ color: '#8B5A3C' }}>Choki-tips!</h3>
+          <h3 className="font-extrabold mb-2" style={{ color: '#8B5A3C' }}>Choki-tips!</h3>
           <p className="text-sm" style={{ color: '#A67C52' }}>
             {child.balance < 50 
               ? 'Spara ihop 50 chokladpengar för att köpa din första maskin!'

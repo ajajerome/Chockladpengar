@@ -44,7 +44,7 @@ export default function HomePage() {
             <div className="mb-6 flex justify-center">
               <ChokiMascot size={160} mood="happy" className="animate-bounce-soft" />
             </div>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-3 tracking-tight" style={{ 
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-3 tracking-tight" style={{ 
               background: 'linear-gradient(to right, #8B5A3C, #FFD700, #8B5A3C)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
@@ -63,7 +63,7 @@ export default function HomePage() {
                   <CheckCircleIcon size={28} />
                 </div>
                 <div>
-                  <h3 className="font-bold text-lg mb-1" style={{ color: '#8B5A3C' }}>Gör uppgifter</h3>
+                  <h3 className="font-extrabold text-lg mb-1" style={{ color: '#8B5A3C' }}>Gör uppgifter</h3>
                   <p className="text-sm" style={{ color: '#A67C52' }}>Tjäna chokladpengar genom att hjälpa till hemma</p>
                 </div>
               </div>
@@ -73,7 +73,7 @@ export default function HomePage() {
                   <GiftIcon size={28} />
                 </div>
                 <div>
-                  <h3 className="font-bold text-lg mb-1" style={{ color: '#8B5A3C' }}>Butiken</h3>
+                  <h3 className="font-extrabold text-lg mb-1" style={{ color: '#8B5A3C' }}>Butiken</h3>
                   <p className="text-sm" style={{ color: '#A67C52' }}>Handla belöningar med dina chokladpengar</p>
                 </div>
               </div>
@@ -83,7 +83,7 @@ export default function HomePage() {
                   <BarChartIcon size={28} />
                 </div>
                 <div>
-                  <h3 className="font-bold text-lg mb-1" style={{ color: '#8B5A3C' }}>Investera</h3>
+                  <h3 className="font-extrabold text-lg mb-1" style={{ color: '#8B5A3C' }}>Investera</h3>
                   <p className="text-sm" style={{ color: '#A67C52' }}>Lär dig om sparande och investering</p>
                 </div>
               </div>
@@ -93,7 +93,7 @@ export default function HomePage() {
                   <FactoryIcon size={28} />
                 </div>
                 <div>
-                  <h3 className="font-bold text-lg mb-1" style={{ color: '#8B5A3C' }}>Chokladfabrik</h3>
+                  <h3 className="font-extrabold text-lg mb-1" style={{ color: '#8B5A3C' }}>Chokladfabrik</h3>
                   <p className="text-sm" style={{ color: '#A67C52' }}>Bygg passiv inkomst genom fabriker</p>
                 </div>
               </div>
@@ -110,7 +110,7 @@ export default function HomePage() {
                 <KeyIcon size={32} />
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="font-bold text-base sm:text-lg mb-1 break-words" style={{ color: '#8B5A3C' }}>1. Logga in</h3>
+                <h3 className="font-extrabold text-base sm:text-lg mb-1 break-words" style={{ color: '#8B5A3C' }}>1. Logga in</h3>
                 <p className="text-sm leading-relaxed" style={{ color: '#A67C52' }}>Har redan konto? Ange din familjekod och namn.</p>
               </div>
               <div className="shrink-0 flex items-center opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all">
@@ -126,7 +126,7 @@ export default function HomePage() {
                 <EnvelopeIcon size={32} />
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="font-bold text-base sm:text-lg mb-1 break-words" style={{ color: '#8B5A3C' }}>2. Har familjekod?</h3>
+                <h3 className="font-extrabold text-base sm:text-lg mb-1 break-words" style={{ color: '#8B5A3C' }}>2. Har familjekod?</h3>
                 <p className="text-sm leading-relaxed" style={{ color: '#A67C52' }}>Gå med i familjen med din kod och ditt namn.</p>
               </div>
               <div className="shrink-0 flex items-center opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all">
@@ -142,7 +142,7 @@ export default function HomePage() {
                 <UsersIcon size={32} />
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="font-bold text-base sm:text-lg mb-1 break-words" style={{ color: '#8B5A3C' }}>3. Skapa familj</h3>
+                <h3 className="font-extrabold text-base sm:text-lg mb-1 break-words" style={{ color: '#8B5A3C' }}>3. Skapa familj</h3>
                 <p className="text-sm leading-relaxed" style={{ color: '#A67C52' }}>Starta nytt! Skapa familj och få din kod.</p>
               </div>
               <div className="shrink-0 flex items-center opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all">

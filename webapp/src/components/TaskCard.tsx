@@ -52,12 +52,12 @@ export function TaskCard({
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2">
             <span 
-              className="text-xs font-bold px-2 py-1 rounded-full"
+              className="text-xs font-extrabold px-2 py-1 rounded-full"
               style={{ backgroundColor: colors.bg, color: colors.text }}
             >
               {frequencyIcons[task.frequency]}
             </span>
-            <h3 className="font-bold text-lg" style={{ color: '#8B5A3C' }}>{task.title}</h3>
+            <h3 className="font-extrabold text-lg" style={{ color: '#8B5A3C' }}>{task.title}</h3>
           </div>
           {task.description && (
             <p className="text-sm mb-2" style={{ color: '#A67C52' }}>{task.description}</p>
@@ -67,7 +67,7 @@ export function TaskCard({
         <div className="flex flex-col items-end gap-2">
           <div className="flex items-center gap-1 px-3 py-1 rounded-full" style={{ backgroundColor: '#FFF8F0' }}>
             <ChocolateCoinIcon size={20} />
-            <span className="font-bold" style={{ color: '#FFD700' }}>{task.reward}</span>
+            <span className="font-extrabold" style={{ color: '#FFD700' }}>{task.reward}</span>
           </div>
           <span 
             className="text-xs font-medium px-2 py-1 rounded-full"

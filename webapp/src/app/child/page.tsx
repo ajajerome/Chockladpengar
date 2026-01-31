@@ -138,7 +138,7 @@ export default function ChildHomePage() {
                 className="animate-bounce-soft" 
               />
               <div>
-                <h1 className="text-3xl font-bold" style={{ color: '#8B5A3C' }}>Hej {currentUser.name}!</h1>
+                <h1 className="text-3xl font-extrabold" style={{ color: '#8B5A3C' }}>Hej {currentUser.name}!</h1>
                 <p style={{ color: '#6B4423' }}>
                   {child.balance === 0 ? 'Gör uppgifter för att tjäna pengar!' :
                    child.balance < 30 ? 'Du har lite chokladpengar!' :
@@ -163,7 +163,7 @@ export default function ChildHomePage() {
             <div className="flex items-center gap-3 mb-4">
               <ChocolateCoinIcon size={48} className={isAnimating ? 'animate-bounce-soft' : ''} />
               <span 
-                className={`text-5xl font-bold transition-all duration-300 ${isAnimating ? 'scale-110' : 'scale-100'}`} 
+                className={`text-5xl font-extrabold transition-all duration-300 ${isAnimating ? 'scale-110' : 'scale-100'}`} 
                 style={{ color: '#8B5A3C' }}
               >
                 {Math.floor(displayBalance)}
@@ -175,19 +175,19 @@ export default function ChildHomePage() {
               <div className="bg-gradient-to-br from-yellow-50 to-amber-50 rounded-2xl p-3 text-center border" style={{ borderColor: '#FFE55C' }}>
                 <ChocolateCoinIcon size={32} className="mx-auto mb-1" />
                 <p className="text-xs font-medium mb-1" style={{ color: '#8B5A3C' }}>Plånbok</p>
-                <p className="text-lg font-bold" style={{ color: '#FFD700' }}>{child.balance}</p>
+                <p className="text-lg font-extrabold" style={{ color: '#FFD700' }}>{child.balance}</p>
               </div>
               
               <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-3 text-center border" style={{ borderColor: '#A8D8FF' }}>
                 <BarChartIcon size={32} className="mx-auto mb-1" />
                 <p className="text-xs font-medium mb-1" style={{ color: '#8B5A3C' }}>Fonder</p>
-                <p className="text-lg font-bold" style={{ color: '#64B5F6' }}>{Math.floor(investmentValue)}</p>
+                <p className="text-lg font-extrabold" style={{ color: '#64B5F6' }}>{Math.floor(investmentValue)}</p>
               </div>
               
               <div className="bg-gradient-to-br from-orange-50 to-amber-50 rounded-2xl p-3 text-center border" style={{ borderColor: '#A67C52' }}>
                 <FactoryIcon size={32} className="mx-auto mb-1" />
                 <p className="text-xs font-medium mb-1" style={{ color: '#8B5A3C' }}>Fabriker</p>
-                <p className="text-lg font-bold" style={{ color: '#8B5A3C' }}>{Math.floor(factoryValue)}</p>
+                <p className="text-lg font-extrabold" style={{ color: '#8B5A3C' }}>{Math.floor(factoryValue)}</p>
               </div>
             </div>
           </div>
@@ -214,7 +214,7 @@ export default function ChildHomePage() {
               <div className="w-16 h-16 mx-auto mb-3 rounded-2xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #FF9999 0%, #FFB4A2 100%)' }}>
                 <GiftIcon size={36} />
               </div>
-              <h3 className="font-bold text-lg" style={{ color: '#8B5A3C' }}>Butiken</h3>
+              <h3 className="font-extrabold text-lg" style={{ color: '#8B5A3C' }}>Butiken</h3>
               <p className="text-sm mt-1" style={{ color: '#A67C52' }}>Handla belöningar</p>
             </button>
             
@@ -226,7 +226,7 @@ export default function ChildHomePage() {
               <div className="w-16 h-16 mx-auto mb-3 rounded-2xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #B4E7CE 0%, #4CAF50 100%)' }}>
                 <BarChartIcon size={36} />
               </div>
-              <h3 className="font-bold text-lg" style={{ color: '#8B5A3C' }}>Fonder</h3>
+              <h3 className="font-extrabold text-lg" style={{ color: '#8B5A3C' }}>Fonder</h3>
               <p className="text-sm mt-1" style={{ color: '#A67C52' }}>
                 {investments.length > 0 ? `${investments.length} aktiva` : 'Investera nu'}
               </p>
@@ -240,7 +240,7 @@ export default function ChildHomePage() {
               <div className="w-16 h-16 mx-auto mb-3 rounded-2xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #8B5A3C 0%, #A67C52 100%)' }}>
                 <FactoryIcon size={36} />
               </div>
-              <h3 className="font-bold text-lg" style={{ color: '#8B5A3C' }}>Fabrik</h3>
+              <h3 className="font-extrabold text-lg" style={{ color: '#8B5A3C' }}>Fabrik</h3>
               <p className="text-sm mt-1" style={{ color: '#A67C52' }}>
                 {ownedFactories.length > 0 ? `${ownedFactories.length} fabriker` : 'Passiv inkomst'}
               </p>
@@ -254,7 +254,7 @@ export default function ChildHomePage() {
               <div className="w-16 h-16 mx-auto mb-3 rounded-2xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #A8D8FF 0%, #64B5F6 100%)' }}>
                 <BarChartIcon size={36} />
               </div>
-              <h3 className="font-bold text-lg" style={{ color: '#8B5A3C' }}>Statistik</h3>
+              <h3 className="font-extrabold text-lg" style={{ color: '#8B5A3C' }}>Statistik</h3>
               <p className="text-sm mt-1" style={{ color: '#A67C52' }}>Se din framgång</p>
             </button>
           </div>
@@ -262,7 +262,7 @@ export default function ChildHomePage() {
         
         {/* Mina uppgifter */}
         <div>
-          <h2 className="text-xl font-bold mb-4" style={{ color: '#8B5A3C' }}>
+          <h2 className="text-xl font-extrabold mb-4" style={{ color: '#8B5A3C' }}>
             Mina uppgifter
           </h2>
           
@@ -297,7 +297,7 @@ export default function ChildHomePage() {
           <div className="flex items-start gap-3">
             <div className="text-3xl">💡</div>
             <div>
-              <h3 className="font-bold mb-2" style={{ color: '#8B5A3C' }}>Choki-tips!</h3>
+              <h3 className="font-extrabold mb-2" style={{ color: '#8B5A3C' }}>Choki-tips!</h3>
               <p className="text-sm" style={{ color: '#A67C52' }}>
                 {child.balance < 50 
                   ? 'Gör uppgifter och spara ihop chokladpengar. Försök nå 50 chokladpengar!'

@@ -28,7 +28,7 @@ export function FundCard({ fund, onClick }: FundCardProps) {
       <div className="flex items-start gap-3 mb-3">
         <div className="text-4xl">{fund.icon}</div>
         <div className="flex-1">
-          <h3 className="font-bold text-lg text-gray-800">{fund.name}</h3>
+          <h3 className="font-extrabold text-lg text-gray-800">{fund.name}</h3>
           <p className="text-sm text-gray-600 mt-1">{fund.description}</p>
         </div>
       </div>
