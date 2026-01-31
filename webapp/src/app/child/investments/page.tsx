@@ -4,6 +4,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useStore } from '@/store/useStore';
 import { ChocolateCoinIcon, BarChartIcon } from '@/components/icons';
+import { MilkChocolateFundIcon, NougatMixFundIcon, GoldMineFundIcon } from '@/components/icons/FundIcons';
 import { FUND_BASE_PRICES, initializePrices, updateAllPrices, getPriceChange } from '@/utils/fundPrices';
 import type { Child, Fund } from '@/types';
 
@@ -201,12 +202,17 @@ export default function InvestmentsPage() {
                 const profit = currentValue - purchaseValue;
                 const profitPercent = ((profit / purchaseValue) * 100).toFixed(1);
                 
+                // Select correct icon
+                const FundIcon = fund.id === 'fund_1' ? MilkChocolateFundIcon : 
+                                 fund.id === 'fund_2' ? NougatMixFundIcon : 
+                                 GoldMineFundIcon;
+                
                 return (
                   <div key={inv.id} className="bg-white rounded-3xl shadow-md p-5 border-2" style={{ borderColor: '#A8D8FF' }}>
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-white font-extrabold text-lg" style={{ backgroundColor: fund.color }}>
-                          {fund.name.charAt(0)}
+                        <div className="w-16 h-16 rounded-2xl flex items-center justify-center" style={{ background: `linear-gradient(135deg, ${fund.color}dd, ${fund.color})` }}>
+                          <FundIcon size={48} />
                         </div>
                         <div>
                           <h3 className="font-extrabold text-lg" style={{ color: '#8B5A3C' }}>{fund.name}</h3>
@@ -269,12 +275,17 @@ export default function InvestmentsPage() {
               const colors = riskColors[fund.riskLevel];
               const priceChange = getPriceChange(fund.id);
               
+              // Select correct icon
+              const FundIcon = fund.id === 'fund_1' ? MilkChocolateFundIcon : 
+                               fund.id === 'fund_2' ? NougatMixFundIcon : 
+                               GoldMineFundIcon;
+              
               return (
                 <div key={fund.id} className="bg-white rounded-3xl shadow-md p-5 border-2" style={{ borderColor: colors.border }}>
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-white font-extrabold text-2xl" style={{ backgroundColor: fund.color }}>
-                        {fund.name.charAt(0)}
+                      <div className="w-20 h-20 rounded-2xl flex items-center justify-center" style={{ background: `linear-gradient(135deg, ${fund.color}dd, ${fund.color})` }}>
+                        <FundIcon size={64} />
                       </div>
                       <div>
                         <h3 className="font-extrabold text-lg" style={{ color: '#8B5A3C' }}>{fund.name}</h3>
