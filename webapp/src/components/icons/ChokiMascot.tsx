@@ -74,10 +74,14 @@ export const ChokiMascot: React.FC<ChokiMascotProps> = ({
   return (
     <div className={`relative inline-block group ${className}`}>
       <div 
-        className="relative overflow-hidden"
+        className="relative"
         style={{ 
           width: size, 
           height: size,
+          overflow: 'hidden',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
         }}
       >
         <div
@@ -87,6 +91,8 @@ export const ChokiMascot: React.FC<ChokiMascotProps> = ({
             position: 'relative',
             transform: getTransform(),
             transition: 'transform 0.5s ease-in-out',
+            display: 'flex',
+            alignItems: 'center',
           }}
         >
           <Image
@@ -95,9 +101,9 @@ export const ChokiMascot: React.FC<ChokiMascotProps> = ({
             width={size * 3}
             height={size}
             style={{
-              width: size * 3,
-              height: size,
-              objectFit: 'cover',
+              width: '100%',
+              height: 'auto',
+              objectFit: 'contain',
             }}
             priority
           />
@@ -107,7 +113,7 @@ export const ChokiMascot: React.FC<ChokiMascotProps> = ({
       {/* Optional message that shows on hover */}
       {getMessage() && (
         <div 
-          className="absolute -bottom-10 left-1/2 transform -translate-x-1/2 whitespace-nowrap text-xs font-medium px-3 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity bg-white shadow-lg"
+          className="absolute -bottom-10 left-1/2 transform -translate-x-1/2 whitespace-nowrap text-xs font-extrabold px-3 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity bg-white shadow-lg"
           style={{ color: '#8B5A3C' }}
         >
           {getMessage()}
