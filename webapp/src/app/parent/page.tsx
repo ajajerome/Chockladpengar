@@ -32,7 +32,7 @@ export default function ParentHomePage() {
   return (
     <div className="min-h-screen pb-20" style={{ backgroundColor: '#FFF8F0' }}>
       {/* Header */}
-      <div className="relative overflow-hidden" style={{ 
+      <div className="relative overflow-visible" style={{ 
         background: 'linear-gradient(135deg, #A67C52 0%, #8B5A3C 50%, #6B4423 100%)'
       }}>
         <div className="max-w-4xl mx-auto p-6">
