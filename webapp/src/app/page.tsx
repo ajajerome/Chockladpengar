@@ -42,7 +42,7 @@ export default function HomePage() {
           {/* Logo med Choki */}
           <div className="mb-8">
             <div className="mb-6 flex justify-center">
-              <ChokiMascot size={160} mood="happy" className="animate-bounce-soft" />
+              <ChokiMascot size={180} mood="happy" className="animate-bounce-soft" />
             </div>
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-3 tracking-tight" style={{ 
               background: 'linear-gradient(to right, #8B5A3C, #FFD700, #8B5A3C)',
