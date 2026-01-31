@@ -41,7 +41,7 @@ export default function InvestmentsPage() {
       riskLevel: 'low',
       currentPrice: Math.round(prices.fund_1?.currentPrice || 10),
       priceHistory: [],
-      icon: '🥛',
+      icon: '',
       color: '#8B6F47',
     },
     {
@@ -51,7 +51,7 @@ export default function InvestmentsPage() {
       riskLevel: 'medium',
       currentPrice: Math.round(prices.fund_2?.currentPrice || 15),
       priceHistory: [],
-      icon: '🍯',
+      icon: '',
       color: '#C68642',
     },
     {
@@ -61,7 +61,7 @@ export default function InvestmentsPage() {
       riskLevel: 'high',
       currentPrice: Math.round(prices.fund_3?.currentPrice || 20),
       priceHistory: [],
-      icon: '✨',
+      icon: '',
       color: '#D4AF37',
     },
   ], [prices]);
@@ -146,7 +146,7 @@ export default function InvestmentsPage() {
             ← Tillbaka
           </button>
           
-          <h1 className="text-3xl font-bold mb-2" style={{ color: '#8B5A3C' }}>Fonder 📈</h1>
+          <h1 className="text-3xl font-bold mb-2" style={{ color: '#8B5A3C' }}>Fonder</h1>
           <p className="text-sm mb-4" style={{ color: '#6B4423' }}>Investera dina chokladpengar</p>
           
           {/* Saldo-kort */}
@@ -174,7 +174,9 @@ export default function InvestmentsPage() {
         {/* Info */}
         <div className="bg-white rounded-3xl shadow-md p-4 border-l-4" style={{ borderColor: '#A8D8FF' }}>
           <div className="flex items-start gap-3">
-            <div className="text-2xl">💡</div>
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #A8D8FF 0%, #64B5F6 100%)' }}>
+              <BarChartIcon size={24} />
+            </div>
             <div>
               <h3 className="font-bold mb-1" style={{ color: '#8B5A3C' }}>Choki-tips!</h3>
               <p className="text-sm" style={{ color: '#A67C52' }}>
@@ -202,7 +204,9 @@ export default function InvestmentsPage() {
                   <div key={inv.id} className="bg-white rounded-3xl shadow-md p-5 border-2" style={{ borderColor: '#A8D8FF' }}>
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-3">
-                        <div className="text-4xl">{fund.icon}</div>
+                        <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-white font-bold text-lg" style={{ backgroundColor: fund.color }}>
+                          {fund.name.charAt(0)}
+                        </div>
                         <div>
                           <h3 className="font-bold text-lg" style={{ color: '#8B5A3C' }}>{fund.name}</h3>
                           <p className="text-sm" style={{ color: '#A67C52' }}>{inv.shares} andelar</p>
@@ -256,9 +260,9 @@ export default function InvestmentsPage() {
               };
               
               const riskLabels = {
-                low: 'Låg risk 🛡️',
-                medium: 'Medel risk ⚖️',
-                high: 'Hög risk 🎲',
+                low: 'Låg risk',
+                medium: 'Medel risk',
+                high: 'Hög risk',
               };
               
               const colors = riskColors[fund.riskLevel];
@@ -268,7 +272,9 @@ export default function InvestmentsPage() {
                 <div key={fund.id} className="bg-white rounded-3xl shadow-md p-5 border-2" style={{ borderColor: colors.border }}>
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-3">
-                      <div className="text-4xl">{fund.icon}</div>
+                      <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-white font-bold text-2xl" style={{ backgroundColor: fund.color }}>
+                        {fund.name.charAt(0)}
+                      </div>
                       <div>
                         <h3 className="font-bold text-lg" style={{ color: '#8B5A3C' }}>{fund.name}</h3>
                         <p className="text-sm" style={{ color: '#A67C52' }}>{fund.description}</p>
