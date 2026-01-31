@@ -42,7 +42,7 @@ function AddParentContent() {
     setLoading(true)
     try {
       addParent(familyId!, name.trim(), pin)
-      alert('Föräldern har lagts till! ✅')
+      alert('Föräldern har lagts till!')
       router.push('/parent/settings')
     } catch (error) {
       setError('Kunde inte lägga till föräldern')
@@ -52,21 +52,23 @@ function AddParentContent() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="card max-w-md w-full">
+    <div className="min-h-screen flex items-center justify-center p-4" style={{ backgroundColor: '#FFF8F0' }}>
+      <div className="bg-white rounded-3xl shadow-lg p-6 max-w-md w-full">
         <div className="text-center mb-6">
           <div className="mb-4 flex justify-center">
-            <ChocolateCoinIcon size={64} color="#D4AF37" />
+            <div className="w-16 h-16 rounded-2xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #FFD700 0%, #FFE55C 100%)' }}>
+              <ChocolateCoinIcon size={48} />
+            </div>
           </div>
-          <h1 className="text-3xl font-bold text-primary mb-2">Lägg till förälder</h1>
-          <p className="text-secondary">
+          <h1 className="text-3xl font-bold mb-2" style={{ color: '#8B5A3C' }}>Lägg till förälder</h1>
+          <p style={{ color: '#A67C52' }}>
             Lägg till en annan förälder som kan hantera uppgifter och belöningar
           </p>
         </div>
 
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-primary mb-2">
+            <label className="block text-sm font-medium mb-2" style={{ color: '#8B5A3C' }}>
               Namn
             </label>
             <input
@@ -74,12 +76,13 @@ function AddParentContent() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="t.ex. Mamma, Pappa, Farmor"
-              className="input"
+              className="w-full px-4 py-3 rounded-2xl border-2 focus:outline-none focus:ring-2 transition-all"
+              style={{ borderColor: '#FFE55C', color: '#8B5A3C' }}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-primary mb-2">
+            <label className="block text-sm font-medium mb-2" style={{ color: '#8B5A3C' }}>
               PIN-kod (4 siffror)
             </label>
             <input
@@ -89,12 +92,13 @@ function AddParentContent() {
               value={pin}
               onChange={(e) => setPin(e.target.value.replace(/\D/g, ''))}
               placeholder="••••"
-              className="input"
+              className="w-full px-4 py-3 rounded-2xl border-2 focus:outline-none focus:ring-2 transition-all text-center text-2xl tracking-widest"
+              style={{ borderColor: '#FFE55C', color: '#8B5A3C' }}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-primary mb-2">
+            <label className="block text-sm font-medium mb-2" style={{ color: '#8B5A3C' }}>
               Bekräfta PIN-kod
             </label>
             <input
@@ -104,12 +108,13 @@ function AddParentContent() {
               value={confirmPin}
               onChange={(e) => setConfirmPin(e.target.value.replace(/\D/g, ''))}
               placeholder="••••"
-              className="input"
+              className="w-full px-4 py-3 rounded-2xl border-2 focus:outline-none focus:ring-2 transition-all text-center text-2xl tracking-widest"
+              style={{ borderColor: '#FFE55C', color: '#8B5A3C' }}
             />
           </div>
 
           {error && (
-            <div className="p-3 bg-red-100 border border-red-300 rounded-xl text-red-700 text-sm">
+            <div className="p-3 rounded-2xl border-2 text-sm" style={{ backgroundColor: '#FFEBEE', borderColor: '#FF6B6B', color: '#C62828' }}>
               {error}
             </div>
           )}
@@ -142,12 +147,14 @@ function AddParentContent() {
 export default function AddParentPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#FFF8F0' }}>
         <div className="text-center">
           <div className="mb-4 flex justify-center">
-            <ChocolateCoinIcon size={64} color="#D4AF37" />
+            <div className="w-16 h-16 rounded-2xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #FFD700 0%, #FFE55C 100%)' }}>
+              <ChocolateCoinIcon size={48} />
+            </div>
           </div>
-          <p className="text-secondary">Laddar...</p>
+          <p style={{ color: '#A67C52' }}>Laddar...</p>
         </div>
       </div>
     }>
@@ -155,6 +162,3 @@ export default function AddParentPage() {
     </Suspense>
   )
 }
-
-
-

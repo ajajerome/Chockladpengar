@@ -114,7 +114,9 @@ export default function RewardsPage() {
         {rewards.length > 0 && (
           <div className="mt-6 bg-white rounded-3xl shadow-md p-4 border-l-4" style={{ borderColor: '#FFE55C' }}>
             <div className="flex items-start gap-3">
-              <div className="text-2xl">💡</div>
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #FFE55C 0%, #FFD700 100%)' }}>
+                <GiftIcon size={20} />
+              </div>
               <p className="text-sm" style={{ color: '#A67C52' }}>
                 <strong style={{ color: '#8B5A3C' }}>Choki-tips:</strong> Spara dina chokladpengar för att köpa större belöningar!
               </p>

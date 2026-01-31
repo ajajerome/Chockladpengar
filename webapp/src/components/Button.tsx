@@ -21,14 +21,22 @@ export function Button({
   type = 'button',
   loading = false,
 }: ButtonProps) {
-  const baseClasses = 'font-medium rounded-xl transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100';
+  const baseClasses = 'font-medium rounded-2xl transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 shadow-md hover:shadow-lg';
   
   const variantClasses = {
-    primary: 'bg-gradient-to-r from-amber-600 to-orange-600 text-white hover:from-amber-700 hover:to-orange-700 shadow-lg',
-    secondary: 'bg-amber-100 text-amber-900 hover:bg-amber-200',
-    success: 'bg-green-500 text-white hover:bg-green-600 shadow-md',
-    danger: 'bg-red-500 text-white hover:bg-red-600 shadow-md',
-    ghost: 'bg-transparent text-amber-700 hover:bg-amber-50',
+    primary: 'text-white',
+    secondary: 'text-white',
+    success: 'text-white',
+    danger: 'bg-red-500 hover:bg-red-600 text-white',
+    ghost: 'bg-transparent hover:bg-gray-100 shadow-none',
+  };
+  
+  const variantStyles = {
+    primary: { background: 'linear-gradient(135deg, #FFD700 0%, #FFE55C 100%)', color: '#8B5A3C' },
+    secondary: { background: 'linear-gradient(135deg, #A67C52 0%, #8B5A3C 100%)', color: '#FFFFFF' },
+    success: { background: 'linear-gradient(135deg, #B4E7CE 0%, #4CAF50 100%)', color: '#FFFFFF' },
+    danger: {},
+    ghost: { color: '#8B5A3C' },
   };
   
   const sizeClasses = {
@@ -45,10 +53,11 @@ export function Button({
       onClick={onClick}
       disabled={disabled || loading}
       className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${widthClass}`}
+      style={variantStyles[variant]}
     >
       {loading ? (
         <div className="flex items-center justify-center gap-2">
-          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+          <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
           <span>Laddar...</span>
         </div>
       ) : (
