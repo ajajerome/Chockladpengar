@@ -71,8 +71,8 @@ export default function ParentHomePage() {
         </div>
         
         {/* Dekorativ Choki */}
-        <div className="absolute top-5 right-10 opacity-20">
-          <ChokiMascot size={120} mood="happy" />
+        <div className="absolute top-4 right-4 opacity-30 pointer-events-none" style={{ zIndex: 10 }}>
+          <ChokiMascot size={100} mood="happy" />
         </div>
       </div>
       
