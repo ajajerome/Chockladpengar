@@ -133,9 +133,7 @@ export default function ChildHomePage() {
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-4">
               <ChokiMascot 
-                size={80} 
-                withCoins={child.balance > 0} 
-                withWave={true} 
+                size={100} 
                 balance={child.balance}
                 className="animate-bounce-soft" 
               />

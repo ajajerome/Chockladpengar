@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useStore } from '@/store/useStore';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { Button } from '@/components/Button';
-import { ChocolateCoinIcon, GiftIcon, BarChartIcon, FactoryIcon, KeyIcon, EnvelopeIcon, UsersIcon, CheckCircleIcon, ArrowRightIcon } from '@/components/icons';
+import { GiftIcon, BarChartIcon, FactoryIcon, KeyIcon, EnvelopeIcon, UsersIcon, CheckCircleIcon, ArrowRightIcon } from '@/components/icons';
 import { ChokiMascot } from '@/components/icons/ChokiMascot';
 
 export default function HomePage() {
@@ -42,7 +42,7 @@ export default function HomePage() {
           {/* Logo med Choki */}
           <div className="mb-8">
             <div className="mb-6 flex justify-center">
-              <ChokiMascot size={140} withCoins={true} withWave={true} mood="excited" className="animate-bounce-soft" />
+              <ChokiMascot size={160} mood="happy" className="animate-bounce-soft" />
             </div>
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-3 tracking-tight" style={{ 
               background: 'linear-gradient(to right, #8B5A3C, #FFD700, #8B5A3C)',
