@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rensa Chokladpengar Data</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #FFE55C 0%, #FFBD7F 50%, #FFB4A2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .container {
+      background: white;
+      border-radius: 24px;
+      padding: 32px;
+      max-width: 400px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+    h1 {
+      color: #8B5A3C;
+      margin-bottom: 16px;
+    }
+    p {
+      color: #A67C52;
+      margin-bottom: 24px;
+    }
+    button {
+      background: linear-gradient(135deg, #FF9999 0%, #FFB4A2 100%);
+      color: #8B5A3C;
+      border: none;
+      padding: 16px 32px;
+      border-radius: 16px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+    }
+    button:hover {
+      transform: translateY(-2px);
+    }
+    button:active {
+      transform: translateY(0);
+    }
+    .success {
+      background: linear-gradient(135deg, #B4E7CE 0%, #4CAF50 100%);
+      padding: 16px;
+      border-radius: 16px;
+      margin-top: 20px;
+      color: white;
+      font-weight: bold;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🍫 Chokladpengar</h1>
+    <p><strong>Nödsituation?</strong><br>Tryck på knappen nedan för att rensa all sparad data och fixa problem.</p>
+    <p style="font-size: 14px;">⚠️ Detta raderar all lokal data (familj, uppgifter, belöningar). Du måste skapa en ny familj efteråt.</p>
+    <button onclick="clearAll()">Rensa ALL data</button>
+    <div class="success" id="success">
+      ✅ Data rensad! Gå tillbaka till appen och skapa en ny familj.
+    </div>
+  </div>
+
+  <script>
+    function clearAll() {
+      if (confirm('Är du SÄKER? Detta raderar allt och kan inte ångras!')) {
+        try {
+          // Clear all localStorage
+          localStorage.clear();
+          
+          // Clear all cookies
+          document.cookie.split(";").forEach(function(c) {
+            document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+          });
+          
+          // Show success
+          document.getElementById('success').style.display = 'block';
+          
+          // Redirect after 2 seconds
+          setTimeout(() => {
+            window.location.href = '/';
+          }, 2000);
+        } catch (error) {
+          alert('Fel: ' + error.message);
+        }
+      }
+    }
+  </script>
+</body>
+</html>
