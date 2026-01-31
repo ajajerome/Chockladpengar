@@ -55,7 +55,7 @@ export default function CreateRewardPage() {
           
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="title" className="block text-sm font-medium text-chocolate-dark mb-1">
+              <label htmlFor="title" className="block text-sm font-medium mb-1" style={{ color: '#8B5A3C' }}>
                 Belöningens namn
               </label>
               <input
@@ -65,12 +65,13 @@ export default function CreateRewardPage() {
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Extra TV-tid"
                 required
-                className="input-chocolate"
+                className="w-full px-4 py-3 rounded-2xl border-2 focus:outline-none focus:ring-2 transition-all"
+                style={{ borderColor: '#FFE55C', color: '#8B5A3C' }}
               />
             </div>
             
             <div>
-              <label htmlFor="description" className="block text-sm font-medium text-chocolate-dark mb-1">
+              <label htmlFor="description" className="block text-sm font-medium mb-1" style={{ color: '#8B5A3C' }}>
                 Beskrivning (valfritt)
               </label>
               <textarea
@@ -79,17 +80,18 @@ export default function CreateRewardPage() {
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Beskriv belöningen..."
                 rows={3}
-                className="input-chocolate resize-none"
+                className="w-full px-4 py-3 rounded-2xl border-2 focus:outline-none focus:ring-2 transition-all resize-none"
+                style={{ borderColor: '#FFE55C', color: '#8B5A3C' }}
               />
             </div>
             
             <div>
-              <label htmlFor="cost" className="block text-sm font-medium text-chocolate-dark mb-1">
+              <label htmlFor="cost" className="block text-sm font-medium mb-1" style={{ color: '#8B5A3C' }}>
                 Pris (chokladpengar)
               </label>
               <div className="relative">
                 <div className="absolute left-4 top-3">
-                  <ChocolateCoinIcon size={24} color="#D4AF37" />
+                  <ChocolateCoinIcon size={24} />
                 </div>
                 <input
                   type="number"
@@ -98,16 +100,17 @@ export default function CreateRewardPage() {
                   onChange={(e) => setCost(Number(e.target.value))}
                   min={1}
                   required
-                  className="input-chocolate pl-14"
+                  className="w-full px-4 py-3 rounded-2xl border-2 focus:outline-none focus:ring-2 transition-all pl-14"
+                  style={{ borderColor: '#FFE55C', color: '#8B5A3C' }}
                 />
               </div>
-              <p className="text-xs text-nougat-gold font-medium mt-1">
+              <p className="text-xs font-medium mt-1" style={{ color: '#FFD700' }}>
                 ≈ {(cost * chokladpengValue).toFixed(2)} kr
               </p>
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-chocolate-dark mb-2">
+              <label className="block text-sm font-medium mb-2" style={{ color: '#8B5A3C' }}>
                 Välj ikon
               </label>
               <div className="grid grid-cols-6 gap-2">
@@ -116,11 +119,12 @@ export default function CreateRewardPage() {
                     key={emoji}
                     type="button"
                     onClick={() => setIcon(emoji)}
-                    className={`p-3 rounded-2xl border-2 text-3xl transition-all ${
-                      icon === emoji
-                        ? 'border-nougat-gold bg-nougat-light/50 scale-110'
-                        : 'border-chocolate-light/30 hover:border-chocolate-light/50'
-                    }`}
+                    className="p-3 rounded-2xl border-2 text-3xl transition-all"
+                    style={{
+                      borderColor: icon === emoji ? '#FFD700' : 'rgba(139, 90, 60, 0.2)',
+                      backgroundColor: icon === emoji ? '#FFF8F0' : '#FFFFFF',
+                      transform: icon === emoji ? 'scale(1.1)' : 'scale(1)',
+                    }}
                   >
                     {emoji}
                   </button>
@@ -129,14 +133,14 @@ export default function CreateRewardPage() {
             </div>
             
             {/* Preview */}
-            <div className="bg-gradient-to-br from-nougat-light/50 to-cream rounded-2xl border-2 border-nougat-gold/30 p-4">
-              <p className="text-xs font-medium text-chocolate-medium mb-2">Förhandsvisning</p>
+            <div className="rounded-2xl border-2 p-4" style={{ background: 'linear-gradient(to bottom right, #FFFBF0, #FFF8F0)', borderColor: 'rgba(255, 215, 0, 0.3)' }}>
+              <p className="text-xs font-medium mb-2" style={{ color: '#A67C52' }}>Förhandsvisning</p>
               <div className="flex items-center gap-3">
                 <div className="text-4xl">{icon}</div>
                 <div className="flex-1">
-                  <h3 className="font-bold text-chocolate-dark">{title || 'Belöningens namn'}</h3>
-                  <div className="flex items-center gap-2 text-nougat-gold font-bold text-sm">
-                    <ChocolateCoinIcon size={16} color="#D4AF37" />
+                  <h3 className="font-bold" style={{ color: '#8B5A3C' }}>{title || 'Belöningens namn'}</h3>
+                  <div className="flex items-center gap-2 font-bold text-sm" style={{ color: '#FFD700' }}>
+                    <ChocolateCoinIcon size={16} />
                     <span>{cost}</span>
                   </div>
                 </div>
