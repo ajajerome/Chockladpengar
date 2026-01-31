@@ -125,21 +125,34 @@ export default function ChildHomePage() {
   
   return (
     <div className="min-h-screen pb-20" style={{ backgroundColor: '#FFF8F0' }}>
-      {/* Header med Choki */}
+      {/* Snygg Choki Header som i designen */}
       <div className="relative overflow-hidden" style={{ 
-        background: 'linear-gradient(135deg, #FFE55C 0%, #FFBD7F 50%, #FFB4A2 100%)'
+        background: 'linear-gradient(180deg, #FFB84D 0%, #FFA940 100%)',
+        boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
       }}>
-        <div className="max-w-4xl mx-auto p-6">
-          <div className="flex items-center justify-between mb-4">
+        <div className="max-w-4xl mx-auto p-6 relative">
+          {/* Logga ut knapp i hörnet */}
+          <button
+            onClick={logout}
+            className="absolute top-4 right-4 bg-white/90 hover:bg-white px-4 py-2 rounded-2xl text-sm font-medium transition-all shadow-md z-10"
+            style={{ color: '#8B5A3C' }}
+          >
+            Logga ut
+          </button>
+
+          {/* Huvudheader med Choki och balans */}
+          <div className="flex items-center justify-between gap-4 mb-6">
+            {/* Vänster: Choki maskot */}
             <div className="flex items-center gap-4">
               <ChokiMascot 
-                size={120} 
+                size={100} 
                 balance={child.balance}
-                className="animate-bounce-soft" 
               />
               <div>
-                <h1 className="text-3xl font-extrabold" style={{ color: '#8B5A3C' }}>Hej {currentUser.name}!</h1>
-                <p style={{ color: '#6B4423' }}>
+                <h1 className="text-2xl sm:text-3xl font-extrabold text-white" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.2)' }}>
+                  Hej {currentUser.name}!
+                </h1>
+                <p className="text-white/90 text-sm" style={{ textShadow: '1px 1px 2px rgba(0,0,0,0.2)' }}>
                   {child.balance === 0 ? 'Gör uppgifter för att tjäna pengar!' :
                    child.balance < 30 ? 'Du har lite chokladpengar!' :
                    child.balance < 100 ? 'Bra jobbat!' :
@@ -148,58 +161,52 @@ export default function ChildHomePage() {
                 </p>
               </div>
             </div>
-            <button
-              onClick={logout}
-              className="bg-white/90 hover:bg-white px-4 py-2 rounded-2xl text-sm font-medium transition-all shadow-md"
-              style={{ color: '#8B5A3C' }}
-            >
-              Logga ut
-            </button>
+
+            {/* Höger: Stor balans display som i designen */}
+            <div className="bg-white/95 rounded-3xl px-6 py-4 shadow-xl" style={{ border: '3px solid #FFD700' }}>
+              <p className="text-xs font-medium mb-1 text-center" style={{ color: '#8B5A3C' }}>Du har samlat ihop</p>
+              <div className="flex items-center gap-2">
+                <span 
+                  className={`text-4xl sm:text-5xl font-extrabold transition-all duration-300 ${isAnimating ? 'scale-110' : 'scale-100'}`} 
+                  style={{ color: '#FF8C00' }}
+                >
+                  {Math.floor(displayBalance)}
+                </span>
+                <ChocolateCoinIcon size={40} className={isAnimating ? 'animate-bounce' : ''} />
+              </div>
+              <p className="text-xs text-center mt-1" style={{ color: '#A67C52' }}>chokladpengar</p>
+            </div>
           </div>
-          
-          {/* Saldo-kort med uppdelning */}
-          <div className="bg-white rounded-3xl p-6 shadow-lg" style={{ borderLeft: '6px solid #FFD700' }}>
-            <p className="text-sm font-medium mb-3" style={{ color: '#8B5A3C' }}>Din totala förmögenhet</p>
-            <div className="flex items-center gap-3 mb-4">
-              <ChocolateCoinIcon size={48} className={isAnimating ? 'animate-bounce-soft' : ''} />
-              <span 
-                className={`text-5xl font-extrabold transition-all duration-300 ${isAnimating ? 'scale-110' : 'scale-100'}`} 
-                style={{ color: '#8B5A3C' }}
-              >
-                {Math.floor(displayBalance)}
-              </span>
+
+          {/* Uppdelning av tillgångar - kompakt under */}
+          <div className="grid grid-cols-3 gap-3">
+            <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-3 text-center shadow-md">
+              <ChocolateCoinIcon size={28} className="mx-auto mb-1" />
+              <p className="text-xs font-medium mb-1" style={{ color: '#8B5A3C' }}>Plånbok</p>
+              <p className="text-xl font-extrabold" style={{ color: '#FFD700' }}>{child.balance}</p>
             </div>
             
-            {/* Uppdelning */}
-            <div className="grid grid-cols-3 gap-2 mt-4">
-              <div className="bg-gradient-to-br from-yellow-50 to-amber-50 rounded-2xl p-3 text-center border" style={{ borderColor: '#FFE55C' }}>
-                <ChocolateCoinIcon size={32} className="mx-auto mb-1" />
-                <p className="text-xs font-medium mb-1" style={{ color: '#8B5A3C' }}>Plånbok</p>
-                <p className="text-lg font-extrabold" style={{ color: '#FFD700' }}>{child.balance}</p>
-              </div>
-              
-              <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-3 text-center border" style={{ borderColor: '#A8D8FF' }}>
-                <BarChartIcon size={32} className="mx-auto mb-1" />
-                <p className="text-xs font-medium mb-1" style={{ color: '#8B5A3C' }}>Fonder</p>
-                <p className="text-lg font-extrabold" style={{ color: '#64B5F6' }}>{Math.floor(investmentValue)}</p>
-              </div>
-              
-              <div className="bg-gradient-to-br from-orange-50 to-amber-50 rounded-2xl p-3 text-center border" style={{ borderColor: '#A67C52' }}>
-                <FactoryIcon size={32} className="mx-auto mb-1" />
-                <p className="text-xs font-medium mb-1" style={{ color: '#8B5A3C' }}>Fabriker</p>
-                <p className="text-lg font-extrabold" style={{ color: '#8B5A3C' }}>{Math.floor(factoryValue)}</p>
-              </div>
+            <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-3 text-center shadow-md">
+              <BarChartIcon size={28} className="mx-auto mb-1" />
+              <p className="text-xs font-medium mb-1" style={{ color: '#8B5A3C' }}>Fonder</p>
+              <p className="text-xl font-extrabold" style={{ color: '#64B5F6' }}>{Math.floor(investmentValue)}</p>
+            </div>
+            
+            <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-3 text-center shadow-md">
+              <FactoryIcon size={28} className="mx-auto mb-1" />
+              <p className="text-xs font-medium mb-1" style={{ color: '#8B5A3C' }}>Fabriker</p>
+              <p className="text-xl font-extrabold" style={{ color: '#8B5A3C' }}>{Math.floor(factoryValue)}</p>
             </div>
           </div>
         </div>
-        
-        {/* Dekorativa element */}
-        <div className="absolute top-10 right-10 opacity-20">
-          <ChocolateCoinIcon size={60} />
+
+        {/* Dekorativa stjärnor och mynt */}
+        <div className="absolute top-5 right-20 text-3xl opacity-60 animate-pulse">✨</div>
+        <div className="absolute top-12 right-40 text-2xl opacity-40 animate-pulse" style={{ animationDelay: '0.5s' }}>⭐</div>
+        <div className="absolute bottom-8 left-10 opacity-20">
+          <ChocolateCoinIcon size={50} />
         </div>
-        <div className="absolute bottom-10 left-10 opacity-15">
-          <ChocolateCoinIcon size={40} />
-        </div>
+        <div className="absolute top-20 left-20 text-xl opacity-30 animate-pulse" style={{ animationDelay: '1s' }}>✨</div>
       </div>
       
       <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
