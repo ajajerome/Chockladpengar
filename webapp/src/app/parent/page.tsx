@@ -153,10 +153,10 @@ export default function ParentHomePage() {
           <button
             onClick={() => router.push('/parent/settings')}
             className="bg-white rounded-3xl shadow-md hover:shadow-xl transition-all p-6 col-span-2 border-2"
-            style={{ borderColor: '#E5CCFF' }}
+            style={{ borderColor: '#FFD700' }}
           >
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #E5CCFF 0%, #BA68C8 100%)' }}>
+              <div className="w-12 h-12 rounded-2xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #FFD700 0%, #FFE55C 100%)' }}>
                 <SettingsIcon size={24} />
               </div>
               <div className="text-left">
