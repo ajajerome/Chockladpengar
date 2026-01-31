@@ -74,25 +74,22 @@ export const ChokiMascot: React.FC<ChokiMascotProps> = ({
   return (
     <div className={`relative inline-block group ${className}`}>
       <div 
-        className="relative"
         style={{ 
           width: size, 
           height: size,
           overflow: 'hidden',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
+          position: 'relative',
         }}
       >
         <div
           style={{
             width: size * 3, // The image contains 3 characters
             height: size,
-            position: 'relative',
+            position: 'absolute',
+            left: 0,
+            top: 0,
             transform: getTransform(),
             transition: 'transform 0.5s ease-in-out',
-            display: 'flex',
-            alignItems: 'center',
           }}
         >
           <Image
@@ -101,9 +98,10 @@ export const ChokiMascot: React.FC<ChokiMascotProps> = ({
             width={size * 3}
             height={size}
             style={{
-              width: '100%',
-              height: 'auto',
-              objectFit: 'contain',
+              width: size * 3,
+              height: size,
+              objectFit: 'cover',
+              display: 'block',
             }}
             priority
           />
