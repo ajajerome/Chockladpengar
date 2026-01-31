@@ -55,12 +55,51 @@ export default function ChildHomePage() {
   
   // Sätt initial displayBalance
   useEffect(() => {
-    if (child && previousBalanceRef.current === null) {
+    if (previousBalanceRef.current === null) {
       setDisplayBalance(totalAssets);
       previousBalanceRef.current = totalAssets;
     }
-  }, []);
+  }, [totalAssets]);
   
+  // Kontrollera om balansen har ökat och spela ljud + animera
+  useEffect(() => {
+    const currentBalance = totalAssets;
+    
+    // Om vi har ett tidigare värde och balansen har ökat
+    if (previousBalanceRef.current !== null && currentBalance > previousBalanceRef.current) {
+      playSuccessSound();
+      setIsAnimating(true);
+      
+      // Animera siffror från gammalt till nytt värde
+      const startBalance = previousBalanceRef.current;
+      const endBalance = currentBalance;
+      const duration = 1000; // 1 sekund
+      const startTime = Date.now();
+      
+      const animate = () => {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        // Easing function för smidig animation
+        const easeOut = 1 - Math.pow(1 - progress, 3);
+        const newValue = Math.floor(startBalance + (endBalance - startBalance) * easeOut);
+        
+        setDisplayBalance(newValue);
+        
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        } else {
+          setIsAnimating(false);
+        }
+      };
+      
+      animate();
+    }
+    
+    previousBalanceRef.current = currentBalance;
+  }, [totalAssets]);
+  
+  // Early return AFTER all hooks
   if (!currentUser || currentUser.role !== 'child') {
     router.push('/');
     return null;
@@ -68,48 +107,6 @@ export default function ChildHomePage() {
   
   // Type guard - nu är currentUser garanterat Child
   const child = currentUser as Child;
-  
-  // Kontrollera om balansen har ökat och spela ljud + animera
-  useEffect(() => {
-    if (child) {
-      const currentBalance = totalAssets;
-      
-      // Om vi har ett tidigare värde och balansen har ökat
-      if (previousBalanceRef.current !== null && currentBalance > previousBalanceRef.current) {
-        playSuccessSound();
-        setIsAnimating(true);
-        
-        // Animera siffror från gammalt till nytt värde
-        const startBalance = previousBalanceRef.current;
-        const endBalance = currentBalance;
-        const duration = 1000; // 1 sekund
-        const startTime = Date.now();
-        
-        const animate = () => {
-          const elapsed = Date.now() - startTime;
-          const progress = Math.min(elapsed / duration, 1);
-          
-          // Easing function för smidig animation
-          const easeOut = 1 - Math.pow(1 - progress, 3);
-          const newValue = Math.floor(startBalance + (endBalance - startBalance) * easeOut);
-          
-          setDisplayBalance(newValue);
-          
-          if (progress < 1) {
-            requestAnimationFrame(animate);
-          } else {
-            setIsAnimating(false);
-          }
-        };
-        
-        animate();
-      } else if (previousBalanceRef.current === null) {
-        setDisplayBalance(currentBalance);
-      }
-      
-      previousBalanceRef.current = currentBalance;
-    }
-  }, [totalAssets]);
   
   return (
     <div className="min-h-screen pb-20" style={{ backgroundColor: '#FFF8F0' }}>
