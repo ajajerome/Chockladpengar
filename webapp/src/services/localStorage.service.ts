@@ -39,8 +39,13 @@ export class LocalStorageService {
   
   static getUser(): User | null {
     if (typeof window !== 'undefined') {
-      const data = localStorage.getItem(STORAGE_KEYS.USER);
-      return data ? JSON.parse(data) : null;
+      try {
+        const data = localStorage.getItem(STORAGE_KEYS.USER);
+        return data ? JSON.parse(data) : null;
+      } catch (error) {
+        console.error('Error loading user from localStorage:', error);
+        return null;
+      }
     }
     return null;
   }
@@ -58,8 +63,13 @@ export class LocalStorageService {
   
   static getFamily(): Family | null {
     if (typeof window !== 'undefined') {
-      const data = localStorage.getItem(STORAGE_KEYS.FAMILY);
-      return data ? JSON.parse(data) : null;
+      try {
+        const data = localStorage.getItem(STORAGE_KEYS.FAMILY);
+        return data ? JSON.parse(data) : null;
+      } catch (error) {
+        console.error('Error loading family from localStorage:', error);
+        return null;
+      }
     }
     return null;
   }
@@ -73,8 +83,13 @@ export class LocalStorageService {
   
   static getTasks(): Task[] {
     if (typeof window !== 'undefined') {
-      const data = localStorage.getItem(STORAGE_KEYS.TASKS);
-      return data ? JSON.parse(data) : [];
+      try {
+        const data = localStorage.getItem(STORAGE_KEYS.TASKS);
+        return data ? JSON.parse(data) : [];
+      } catch (error) {
+        console.error('Error loading tasks from localStorage:', error);
+        return [];
+      }
     }
     return [];
   }
@@ -88,8 +103,13 @@ export class LocalStorageService {
   
   static getRewards(): Reward[] {
     if (typeof window !== 'undefined') {
-      const data = localStorage.getItem(STORAGE_KEYS.REWARDS);
-      return data ? JSON.parse(data) : [];
+      try {
+        const data = localStorage.getItem(STORAGE_KEYS.REWARDS);
+        return data ? JSON.parse(data) : [];
+      } catch (error) {
+        console.error('Error loading rewards from localStorage:', error);
+        return [];
+      }
     }
     return [];
   }
