@@ -15,6 +15,7 @@ import type { Child } from '@/types';
 
 // Force dynamic rendering (no static generation)
 export const dynamic = 'force-dynamic';
+// Updated layout: Choki and balance on same row
 
 export default function ChildHomePage() {
   const router = useRouter();
@@ -140,42 +141,50 @@ export default function ChildHomePage() {
             Logga ut
           </button>
 
-          {/* Huvudheader med Choki och balans - responsiv layout */}
-          <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-4 mb-6">
-            {/* Vänster: Choki maskot */}
-            <div className="flex items-center gap-3 sm:gap-4">
-              <ChokiMascot 
-                size={90} 
-                balance={child.balance}
-              />
-              <div>
-                <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-white" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.2)' }}>
-                  Hej {currentUser.name}!
-                </h1>
-                <p className="text-white/90 text-xs sm:text-sm" style={{ textShadow: '1px 1px 2px rgba(0,0,0,0.2)' }}>
-                  {child.balance === 0 ? 'Gör uppgifter för att tjäna pengar!' :
-                   child.balance < 30 ? 'Du har lite chokladpengar!' :
-                   child.balance < 100 ? 'Bra jobbat!' :
-                   child.balance < 200 ? 'Du sparar bra!' :
-                   'Wow! Du är rik!'}
-                </p>
+          {/* Huvudheader med Choki och balans - allt på samma rad */}
+          <div className="bg-white/95 rounded-3xl px-4 sm:px-6 py-3 sm:py-4 shadow-xl mb-6" style={{ border: '3px solid #FFD700' }}>
+            <div className="flex items-center justify-between gap-3 sm:gap-4">
+              {/* Vänster: Choki maskot och namn */}
+              <div className="flex items-center gap-2 sm:gap-3">
+                <ChokiMascot 
+                  size={70} 
+                  balance={child.balance}
+                />
+                <div>
+                  <h1 className="text-base sm:text-xl md:text-2xl font-extrabold" style={{ color: '#8B5A3C' }}>
+                    Hej {currentUser.name}!
+                  </h1>
+                  <p className="text-xs sm:text-sm" style={{ color: '#A67C52' }}>
+                    Du har samlat ihop
+                  </p>
+                </div>
               </div>
-            </div>
 
-            {/* Höger: Stor balans display som i designen */}
-            <div className="bg-white/95 rounded-3xl px-4 sm:px-6 py-3 sm:py-4 shadow-xl" style={{ border: '3px solid #FFD700' }}>
-              <p className="text-xs font-medium mb-1 text-center" style={{ color: '#8B5A3C' }}>Du har samlat ihop</p>
-              <div className="flex items-center gap-2 justify-center">
-                <span 
-                  className={`text-3xl sm:text-4xl md:text-5xl font-extrabold transition-all duration-300 ${isAnimating ? 'scale-110' : 'scale-100'}`} 
-                  style={{ color: '#FF8C00' }}
-                >
-                  {Math.floor(displayBalance)}
-                </span>
-                <ChocolateCoinIcon size={36} className={isAnimating ? 'animate-bounce' : ''} />
+              {/* Höger: Stor balans display */}
+              <div className="text-right">
+                <div className="flex items-center gap-2 justify-end">
+                  <span 
+                    className={`text-2xl sm:text-3xl md:text-4xl font-extrabold transition-all duration-300 ${isAnimating ? 'scale-110' : 'scale-100'}`} 
+                    style={{ color: '#FF8C00' }}
+                  >
+                    {Math.floor(displayBalance)}
+                  </span>
+                  <ChocolateCoinIcon size={32} className={isAnimating ? 'animate-bounce' : ''} />
+                </div>
+                <p className="text-xs" style={{ color: '#A67C52' }}>chokladpengar</p>
               </div>
-              <p className="text-xs text-center mt-1" style={{ color: '#A67C52' }}>chokladpengar</p>
             </div>
+          </div>
+
+          {/* Status-meddelande under */}
+          <div className="text-center mb-6">
+            <p className="text-white/90 text-sm sm:text-base font-medium" style={{ textShadow: '1px 1px 2px rgba(0,0,0,0.2)' }}>
+              {child.balance === 0 ? 'Gör uppgifter för att tjäna pengar!' :
+               child.balance < 30 ? 'Du har lite chokladpengar!' :
+               child.balance < 100 ? 'Bra jobbat!' :
+               child.balance < 200 ? 'Du sparar bra!' :
+               'Wow! Du är rik!'}
+            </p>
           </div>
 
           {/* Uppdelning av tillgångar - kompakt och responsiv */}
