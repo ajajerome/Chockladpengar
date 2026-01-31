@@ -136,3 +136,4 @@ Om du ser `❌` istället, läs felmeddelandet och följ instruktionerna ovan.
 - Kolla Firebase Console för felmeddelanden
 - Öppna webbläsarens konsol (F12) för detaljerade fel
 
+

@@ -19,7 +19,7 @@ export default function LoginPage() {
     
     try {
       await joinFamilyAsChild(familyCode, childName);
-      router.push('/child');
+        router.push('/child');
     } catch (err) {
       console.error('Failed to join family:', err);
     }

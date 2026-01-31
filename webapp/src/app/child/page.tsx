@@ -10,6 +10,7 @@ import { BalanceDisplay } from '@/components/BalanceDisplay';
 import { GiftIcon, BarChartIcon, FactoryIcon, CheckIcon, ChocolateCoinIcon } from '@/components/icons';
 import { ChokiMascot } from '@/components/icons/ChokiMascot';
 import { playSuccessSound } from '@/utils/sounds';
+import { FUND_BASE_PRICES } from '@/utils/fundPrices';
 import type { Child } from '@/types';
 
 // Force dynamic rendering (no static generation)
@@ -29,9 +30,15 @@ export default function ChildHomePage() {
     const child = currentUser as Child;
     let total = child.balance;
     
-    // Lägg till värde av investeringar (placeholder - ska uppdateras med faktiska priser)
+    // Lägg till värde av investeringar med aktuella priser
     investments.forEach(inv => {
-      total += inv.shares * inv.purchasePrice; // TODO: använd currentPrice
+      const fundPriceData = FUND_BASE_PRICES[inv.fundId];
+      if (fundPriceData) {
+        total += inv.shares * fundPriceData.currentPrice;
+      } else {
+        // Fallback till inköpspris om aktuellt pris inte finns
+        total += inv.shares * inv.purchasePrice;
+      }
     });
     
     // TODO: Lägg till värde av fabriker
@@ -40,9 +47,17 @@ export default function ChildHomePage() {
   }, [currentUser, investments]);
   
   const investmentValue = useMemo(() => {
+    // Använd fundPrices för att få aktuella priser
     let value = 0;
     investments.forEach(inv => {
-      value += inv.shares * inv.purchasePrice;
+      // Hitta motsvarande fond för att få aktuellt pris
+      const fundPriceData = FUND_BASE_PRICES[inv.fundId];
+      if (fundPriceData) {
+        value += inv.shares * fundPriceData.currentPrice;
+      } else {
+        // Fallback till inköpspris om aktuellt pris inte finns
+        value += inv.shares * inv.purchasePrice;
+      }
     });
     return value;
   }, [investments]);
@@ -51,7 +66,7 @@ export default function ChildHomePage() {
   const factoryValue = useMemo(() => {
     // TODO: Implementera när factory-funktionen är färdig
     return 0;
-  }, [ownedFactories]);
+  }, []);
   
   // Sätt initial displayBalance
   useEffect(() => {

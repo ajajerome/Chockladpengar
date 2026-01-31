@@ -19,7 +19,7 @@ export function useFirebaseSync() {
       if (user) useStore.getState().login(user);
     });
     return unsubscribe;
-  }, [mode, currentUser?.id]);
+  }, [mode, currentUser]);
 
   // Listen to family updates
   useEffect(() => {
@@ -29,7 +29,7 @@ export function useFirebaseSync() {
       if (updatedFamily) useStore.getState().setFamily(updatedFamily);
     });
     return unsubscribe;
-  }, [mode, family?.id]);
+  }, [mode, family]);
 
   // Listen to family members
   useEffect(() => {
@@ -39,7 +39,7 @@ export function useFirebaseSync() {
       useStore.getState().setFamilyMembers(members);
     });
     return unsubscribe;
-  }, [mode, family?.id]);
+  }, [mode, family]);
 
   // Listen to tasks
   useEffect(() => {
@@ -49,7 +49,7 @@ export function useFirebaseSync() {
       useStore.getState().setTasks(tasks);
     });
     return unsubscribe;
-  }, [mode, family?.id]);
+  }, [mode, family]);
 
   // Listen to rewards
   useEffect(() => {
@@ -59,7 +59,7 @@ export function useFirebaseSync() {
       useStore.getState().setRewards(rewards);
     });
     return unsubscribe;
-  }, [mode, family?.id]);
+  }, [mode, family]);
 
   // Listen to transactions
   useEffect(() => {
@@ -69,7 +69,7 @@ export function useFirebaseSync() {
       useStore.getState().setTransactions(transactions);
     });
     return unsubscribe;
-  }, [mode, currentUser?.id]);
+  }, [mode, currentUser]);
 
   // Listen to purchased rewards (for parents to see what children bought)
   useEffect(() => {
@@ -79,6 +79,6 @@ export function useFirebaseSync() {
       useStore.getState().setPurchasedRewards(purchases);
     });
     return unsubscribe;
-  }, [mode, family?.id]);
+  }, [mode, family]);
 }
 

@@ -101,3 +101,4 @@ Om du fortfarande får Firebase-fel:
 - `webapp/src/components/FirebaseStatus.tsx` - NY: Visar Firebase-status
 - `webapp/FIREBASE_TROUBLESHOOTING.md` - NY: Felsökningsguide
 
+

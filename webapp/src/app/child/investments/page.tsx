@@ -72,6 +72,7 @@ export default function InvestmentsPage() {
     investments.forEach(inv => {
       const fund = AVAILABLE_FUNDS.find(f => f.id === inv.fundId);
       if (fund) {
+        // Använd aktuellt pris, inte inköpspris
         total += inv.shares * fund.currentPrice;
       }
     });

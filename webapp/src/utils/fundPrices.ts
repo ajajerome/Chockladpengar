@@ -83,12 +83,16 @@ export function getPriceChange(fundId: string): number {
 export function initializePrices(): void {
   if (typeof window === 'undefined') return;
   
-  const saved = localStorage.getItem('fund_prices');
-  if (saved) {
-    const data = JSON.parse(saved);
-    Object.keys(data).forEach(fundId => {
-      FUND_BASE_PRICES[fundId] = data[fundId];
-    });
+  try {
+    const saved = localStorage.getItem('fund_prices');
+    if (saved) {
+      const data = JSON.parse(saved);
+      Object.keys(data).forEach(fundId => {
+        FUND_BASE_PRICES[fundId] = data[fundId];
+      });
+    }
+  } catch (error) {
+    console.error('Failed to initialize prices:', error);
   }
 }
 
@@ -98,7 +102,11 @@ export function initializePrices(): void {
 export function savePrices(): void {
   if (typeof window === 'undefined') return;
   
-  localStorage.setItem('fund_prices', JSON.stringify(FUND_BASE_PRICES));
+  try {
+    localStorage.setItem('fund_prices', JSON.stringify(FUND_BASE_PRICES));
+  } catch (error) {
+    console.error('Failed to save prices:', error);
+  }
 }
 
 /**
@@ -126,4 +134,5 @@ export function startPriceUpdates(intervalMs: number = 30000): () => void {
   
   return () => clearInterval(interval);
 }
+
 

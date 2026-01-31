@@ -112,23 +112,23 @@ export function useAuth() {
           throw new Error('Familj hittades inte. Kontrollera koden.');
         }
         
-        // Barn: kolla om förälder redan lagt till detta barn – då loggar vi in på det kontot
-        const members = await FirebaseService.getFamilyMembers(foundFamily.id);
+          // Barn: kolla om förälder redan lagt till detta barn – då loggar vi in på det kontot
+          const members = await FirebaseService.getFamilyMembers(foundFamily.id);
         const nameNorm = childName.trim().toLowerCase();
-        const existingChild = members.find(
-          (m): m is Child => m.role === 'child' && m.name.trim().toLowerCase() === nameNorm
-        );
+          const existingChild = members.find(
+            (m): m is Child => m.role === 'child' && m.name.trim().toLowerCase() === nameNorm
+          );
         
         let user: Child;
-        if (existingChild) {
-          user = existingChild;
-        } else {
-          user = await FirebaseService.createChild({
+          if (existingChild) {
+            user = existingChild;
+          } else {
+            user = await FirebaseService.createChild({
             name: childName.trim(),
-            familyId: foundFamily.id,
-            parentId: foundFamily.ownerId,
-          });
-        }
+              familyId: foundFamily.id,
+              parentId: foundFamily.ownerId,
+            });
+          }
         
         useStore.getState().setFamily(foundFamily);
         useStore.getState().login(user);
