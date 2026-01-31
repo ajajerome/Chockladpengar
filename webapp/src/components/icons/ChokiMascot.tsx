@@ -76,7 +76,7 @@ export const ChokiMascot: React.FC<ChokiMascotProps> = ({
       <div 
         style={{ 
           width: size, 
-          height: size * 1.1, // Lite extra höjd för att inte klippa
+          height: size * 1.2, // Mer höjd för att inte klippa
           overflow: 'hidden',
           position: 'relative',
           display: 'flex',
@@ -87,7 +87,7 @@ export const ChokiMascot: React.FC<ChokiMascotProps> = ({
         <div
           style={{
             width: size * 3, // The image contains 3 characters
-            height: size * 1.1,
+            height: size * 1.2,
             position: 'absolute',
             left: 0,
             top: 0,
@@ -99,10 +99,10 @@ export const ChokiMascot: React.FC<ChokiMascotProps> = ({
             src="/choki-mascot.png"
             alt="Choki mascot"
             width={size * 3}
-            height={size}
+            height={size * 1.2}
             style={{
               width: size * 3,
-              height: 'auto',
+              height: size * 1.2,
               objectFit: 'contain',
               display: 'block',
             }}
