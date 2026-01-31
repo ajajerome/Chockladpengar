@@ -140,19 +140,19 @@ export default function ChildHomePage() {
             Logga ut
           </button>
 
-          {/* Huvudheader med Choki och balans */}
-          <div className="flex items-center justify-between gap-4 mb-6">
+          {/* Huvudheader med Choki och balans - responsiv layout */}
+          <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-4 mb-6">
             {/* Vänster: Choki maskot */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3 sm:gap-4">
               <ChokiMascot 
-                size={100} 
+                size={90} 
                 balance={child.balance}
               />
               <div>
-                <h1 className="text-2xl sm:text-3xl font-extrabold text-white" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.2)' }}>
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-white" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.2)' }}>
                   Hej {currentUser.name}!
                 </h1>
-                <p className="text-white/90 text-sm" style={{ textShadow: '1px 1px 2px rgba(0,0,0,0.2)' }}>
+                <p className="text-white/90 text-xs sm:text-sm" style={{ textShadow: '1px 1px 2px rgba(0,0,0,0.2)' }}>
                   {child.balance === 0 ? 'Gör uppgifter för att tjäna pengar!' :
                    child.balance < 30 ? 'Du har lite chokladpengar!' :
                    child.balance < 100 ? 'Bra jobbat!' :
@@ -163,39 +163,39 @@ export default function ChildHomePage() {
             </div>
 
             {/* Höger: Stor balans display som i designen */}
-            <div className="bg-white/95 rounded-3xl px-6 py-4 shadow-xl" style={{ border: '3px solid #FFD700' }}>
+            <div className="bg-white/95 rounded-3xl px-4 sm:px-6 py-3 sm:py-4 shadow-xl" style={{ border: '3px solid #FFD700' }}>
               <p className="text-xs font-medium mb-1 text-center" style={{ color: '#8B5A3C' }}>Du har samlat ihop</p>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 justify-center">
                 <span 
-                  className={`text-4xl sm:text-5xl font-extrabold transition-all duration-300 ${isAnimating ? 'scale-110' : 'scale-100'}`} 
+                  className={`text-3xl sm:text-4xl md:text-5xl font-extrabold transition-all duration-300 ${isAnimating ? 'scale-110' : 'scale-100'}`} 
                   style={{ color: '#FF8C00' }}
                 >
                   {Math.floor(displayBalance)}
                 </span>
-                <ChocolateCoinIcon size={40} className={isAnimating ? 'animate-bounce' : ''} />
+                <ChocolateCoinIcon size={36} className={isAnimating ? 'animate-bounce' : ''} />
               </div>
               <p className="text-xs text-center mt-1" style={{ color: '#A67C52' }}>chokladpengar</p>
             </div>
           </div>
 
-          {/* Uppdelning av tillgångar - kompakt under */}
-          <div className="grid grid-cols-3 gap-3">
-            <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-3 text-center shadow-md">
-              <ChocolateCoinIcon size={28} className="mx-auto mb-1" />
+          {/* Uppdelning av tillgångar - kompakt och responsiv */}
+          <div className="grid grid-cols-3 gap-2 sm:gap-3">
+            <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-2 sm:p-3 text-center shadow-md">
+              <ChocolateCoinIcon size={24} className="mx-auto mb-1" />
               <p className="text-xs font-medium mb-1" style={{ color: '#8B5A3C' }}>Plånbok</p>
-              <p className="text-xl font-extrabold" style={{ color: '#FFD700' }}>{child.balance}</p>
+              <p className="text-lg sm:text-xl font-extrabold" style={{ color: '#FFD700' }}>{child.balance}</p>
             </div>
             
-            <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-3 text-center shadow-md">
-              <BarChartIcon size={28} className="mx-auto mb-1" />
+            <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-2 sm:p-3 text-center shadow-md">
+              <BarChartIcon size={24} className="mx-auto mb-1" />
               <p className="text-xs font-medium mb-1" style={{ color: '#8B5A3C' }}>Fonder</p>
-              <p className="text-xl font-extrabold" style={{ color: '#64B5F6' }}>{Math.floor(investmentValue)}</p>
+              <p className="text-lg sm:text-xl font-extrabold" style={{ color: '#64B5F6' }}>{Math.floor(investmentValue)}</p>
             </div>
             
-            <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-3 text-center shadow-md">
-              <FactoryIcon size={28} className="mx-auto mb-1" />
+            <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-2 sm:p-3 text-center shadow-md">
+              <FactoryIcon size={24} className="mx-auto mb-1" />
               <p className="text-xs font-medium mb-1" style={{ color: '#8B5A3C' }}>Fabriker</p>
-              <p className="text-xl font-extrabold" style={{ color: '#8B5A3C' }}>{Math.floor(factoryValue)}</p>
+              <p className="text-lg sm:text-xl font-extrabold" style={{ color: '#8B5A3C' }}>{Math.floor(factoryValue)}</p>
             </div>
           </div>
         </div>
