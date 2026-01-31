@@ -7,6 +7,7 @@ import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { Button } from '@/components/Button';
 import { GiftIcon, BarChartIcon, FactoryIcon, KeyIcon, EnvelopeIcon, UsersIcon, CheckCircleIcon, ArrowRightIcon } from '@/components/icons';
 import { ChokiMascot } from '@/components/icons/ChokiMascot';
+import Image from 'next/image';
 
 export default function HomePage() {
   const router = useRouter();
@@ -39,20 +40,20 @@ export default function HomePage() {
     <div className="min-h-screen" style={{ backgroundColor: '#FFF8F0' }}>
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-md mx-auto text-center">
-          {/* Logo med Choki */}
+          {/* Choki Header */}
           <div className="mb-8">
             <div className="mb-6 flex justify-center">
-              <ChokiMascot size={180} mood="happy" className="animate-bounce-soft" />
+              <Image 
+                src="/choki-header.png" 
+                alt="Choki maskot" 
+                width={300} 
+                height={220}
+                priority
+              />
             </div>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-3 tracking-tight" style={{ 
-              background: 'linear-gradient(to right, #8B5A3C, #FFD700, #8B5A3C)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text'
-            }}>
-              Chokladpengar
-            </h1>
-            <p className="text-base sm:text-lg font-medium px-2" style={{ color: '#A67C52' }}>Lär barn ekonomi på ett roligt sätt 🍫</p>
+            <p className="text-lg sm:text-xl font-bold px-4 leading-relaxed" style={{ color: '#8B5A3C' }}>
+              Hej, jag är Choki! Jag hjälper dig tjäna chokladpengar och lär dig att hjälpa till, klara uppgifter och investera 🍫✨
+            </p>
           </div>
           
           {/* Features */}
