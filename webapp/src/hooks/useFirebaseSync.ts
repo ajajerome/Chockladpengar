@@ -58,8 +58,10 @@ export function useFirebaseSync() {
   useEffect(() => {
     if (typeof window === 'undefined' || mode !== 'firebase' || !family || !isFirebaseConfigured()) return;
 
+    console.log('🔔 Setting up tasks listener for family:', family.id);
     try {
       const unsubscribe = FirebaseService.listenToFamilyTasks(family.id, (tasks) => {
+        console.log('📋 Tasks updated:', tasks.length, 'tasks');
         useStore.getState().setTasks(tasks);
       });
       return unsubscribe;
@@ -72,8 +74,10 @@ export function useFirebaseSync() {
   useEffect(() => {
     if (typeof window === 'undefined' || mode !== 'firebase' || !family || !isFirebaseConfigured()) return;
 
+    console.log('🔔 Setting up rewards listener for family:', family.id);
     try {
       const unsubscribe = FirebaseService.listenToFamilyRewards(family.id, (rewards) => {
+        console.log('🎁 Rewards updated:', rewards.length, 'rewards');
         useStore.getState().setRewards(rewards);
       });
       return unsubscribe;
@@ -109,5 +113,33 @@ export function useFirebaseSync() {
       console.error('Error listening to purchased rewards:', error);
     }
   }, [mode, family]);
+
+  // Listen to investments (for child)
+  useEffect(() => {
+    if (typeof window === 'undefined' || mode !== 'firebase' || !currentUser || currentUser.role !== 'child' || !isFirebaseConfigured()) return;
+
+    try {
+      const unsubscribe = FirebaseService.listenToChildInvestments(currentUser.id, (investments) => {
+        useStore.getState().setInvestments(investments);
+      });
+      return unsubscribe;
+    } catch (error) {
+      console.error('Error listening to investments:', error);
+    }
+  }, [mode, currentUser]);
+
+  // Listen to factories (for child)
+  useEffect(() => {
+    if (typeof window === 'undefined' || mode !== 'firebase' || !currentUser || currentUser.role !== 'child' || !isFirebaseConfigured()) return;
+
+    try {
+      const unsubscribe = FirebaseService.listenToChildFactories(currentUser.id, (factories) => {
+        useStore.getState().setOwnedFactories(factories);
+      });
+      return unsubscribe;
+    } catch (error) {
+      console.error('Error listening to factories:', error);
+    }
+  }, [mode, currentUser]);
 }
 

@@ -50,13 +50,25 @@ export function useAuth() {
         
         // Update family with owner
         await FirebaseService.updateFamily(newFamily.id, { ownerId: parent.id });
+        const updatedFamily = { ...newFamily, ownerId: parent.id };
         
-        // Set in store
-        useStore.getState().setFamily({ ...newFamily, ownerId: parent.id });
-        useStore.getState().login(parent);
         await useStore.getState().switchMode('firebase');
+        useStore.getState().setFamily(updatedFamily);
+        useStore.getState().login(parent);
         
-        return { family: newFamily, user: parent };
+        const [members, tasks, rewards] = await Promise.all([
+          FirebaseService.getFamilyMembers(newFamily.id),
+          FirebaseService.getFamilyTasks(newFamily.id),
+          FirebaseService.getFamilyRewards(newFamily.id),
+        ]);
+        
+        useStore.getState().setFamilyMembers(members);
+        useStore.getState().setTasks(tasks);
+        useStore.getState().setRewards(rewards);
+        
+        console.log('✅ Familj skapad - hämtade initial data');
+        
+        return { family: updatedFamily, user: parent };
       } else {
         // Local mode (Firebase inte konfigurerat)
         const newFamily: Family = {
@@ -130,9 +142,28 @@ export function useAuth() {
             });
           }
         
-        useStore.getState().setFamily(foundFamily);
-        useStore.getState().login(user);
         await useStore.getState().switchMode('firebase');
+        useStore.getState().setFamily(foundFamily);
+        useStore.getState().setFamilyMembers(members);
+        useStore.getState().login(user);
+        
+        const [tasks, rewards, transactions, investments, ownedFactories, purchasedRewards] = await Promise.all([
+          FirebaseService.getFamilyTasks(foundFamily.id),
+          FirebaseService.getFamilyRewards(foundFamily.id),
+          FirebaseService.getUserTransactions(user.id),
+          FirebaseService.getChildInvestments(user.id),
+          FirebaseService.getChildFactories(user.id),
+          FirebaseService.getFamilyPurchasedRewards(foundFamily.id),
+        ]);
+        
+        useStore.getState().setTasks(tasks);
+        useStore.getState().setRewards(rewards);
+        useStore.getState().setTransactions(transactions);
+        useStore.getState().setInvestments(investments);
+        useStore.getState().setOwnedFactories(ownedFactories);
+        useStore.getState().setPurchasedRewards(purchasedRewards);
+        
+        console.log('✅ Inloggning klar - hämtade data:', { tasks: tasks.length, rewards: rewards.length, transactions: transactions.length });
         
         return { family: foundFamily, user };
       } else {
@@ -166,9 +197,23 @@ export function useAuth() {
           pin,
         });
         
+        await useStore.getState().switchMode('firebase');
         useStore.getState().setFamily(foundFamily);
         useStore.getState().login(user);
-        await useStore.getState().switchMode('firebase');
+        
+        const [members, tasks, rewards, purchasedRewards] = await Promise.all([
+          FirebaseService.getFamilyMembers(foundFamily.id),
+          FirebaseService.getFamilyTasks(foundFamily.id),
+          FirebaseService.getFamilyRewards(foundFamily.id),
+          FirebaseService.getFamilyPurchasedRewards(foundFamily.id),
+        ]);
+        
+        useStore.getState().setFamilyMembers(members);
+        useStore.getState().setTasks(tasks);
+        useStore.getState().setRewards(rewards);
+        useStore.getState().setPurchasedRewards(purchasedRewards);
+        
+        console.log('✅ Förälder inloggad - hämtade data:', { members: members.length, tasks: tasks.length, rewards: rewards.length });
         
         return { family: foundFamily, user };
       } else {
