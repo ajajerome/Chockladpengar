@@ -10,17 +10,14 @@ export default function FamilySettingsPage() {
   const router = useRouter()
   const currentUser = useStore((state) => state.currentUser)
   const family = useStore((state) => state.family)
+  const familyMembers = useStore((state) => state.familyMembers)
   const tasks = useStore((state) => state.tasks)
   const rewards = useStore((state) => state.rewards)
   const deleteTask = useStore((state) => state.deleteTask)
   const deleteReward = useStore((state) => state.deleteReward)
   const deleteChild = useStore((state) => state.deleteChild)
-  const parents = useStore((state) =>
-    state.familyMembers.filter((u) => u.role === 'parent')
-  )
-  const children = useStore((state) =>
-    state.familyMembers.filter((u) => u.role === 'child')
-  ) as Child[]
+  const parents = familyMembers?.filter((u) => u.role === 'parent') || []
+  const children = (familyMembers?.filter((u) => u.role === 'child') || []) as Child[]
   const [inviteLink, setInviteLink] = useState('')
 
   useEffect(() => {
@@ -196,14 +193,14 @@ export default function FamilySettingsPage() {
             </button>
           </div>
 
-          {tasks.length === 0 ? (
+          {(tasks || []).length === 0 ? (
             <div className="bg-white rounded-3xl shadow-md text-center p-8">
               <CheckIcon size={48} />
               <p className="mt-3" style={{ color: '#A67C52' }}>Inga uppgifter ännu</p>
             </div>
           ) : (
             <div className="space-y-3">
-              {tasks.map((task) => {
+              {(tasks || []).map((task) => {
                 const assignedChild = children.find(c => c.id === task.assignedTo);
                 return (
                   <div key={task.id} className="bg-white rounded-3xl shadow-md p-5">
@@ -253,14 +250,14 @@ export default function FamilySettingsPage() {
             </button>
           </div>
 
-          {rewards.length === 0 ? (
+          {(rewards || []).length === 0 ? (
             <div className="bg-white rounded-3xl shadow-md text-center p-8">
               <GiftIcon size={48} />
               <p className="mt-3" style={{ color: '#A67C52' }}>Inga belöningar ännu</p>
             </div>
           ) : (
             <div className="space-y-3">
-              {rewards.map((reward) => (
+              {(rewards || []).map((reward) => (
                 <div key={reward.id} className="bg-white rounded-3xl shadow-md p-5">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-start gap-3 flex-1">
