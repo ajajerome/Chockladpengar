@@ -89,6 +89,8 @@ export function useTasks() {
     
     try {
       await useStore.getState().submitTaskForReview(taskId);
+      // Play success sound when task is submitted
+      playSuccessSound();
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to submit task';
       setError(message);

@@ -10,6 +10,7 @@ interface TaskCardProps {
   onDelete?: () => void;
   showActions?: boolean;
   userRole?: 'parent' | 'child';
+  isSubmitting?: boolean;
 }
 
 export function TaskCard({
@@ -20,6 +21,7 @@ export function TaskCard({
   onDelete,
   showActions = true,
   userRole,
+  isSubmitting = false,
 }: TaskCardProps) {
   const statusColors = {
     pending: { bg: '#FFF8F0', border: '#FFE55C', text: '#8B5A3C' },
@@ -83,13 +85,21 @@ export function TaskCard({
           {userRole === 'child' && task.status === 'pending' && onSubmit && (
             <button
               onClick={onSubmit}
-              className="flex-1 py-2 px-4 rounded-2xl font-medium shadow-md hover:shadow-lg transition-all text-white"
+              disabled={isSubmitting}
+              className="flex-1 py-3 px-4 rounded-2xl font-bold shadow-md hover:shadow-xl transition-all text-white disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden"
               style={{ background: 'linear-gradient(135deg, #B4E7CE 0%, #4CAF50 100%)' }}
             >
-              <div className="flex items-center justify-center gap-2">
-                <CheckIcon size={20} />
-                <span>Markera som klar</span>
-              </div>
+              {isSubmitting ? (
+                <div className="flex items-center justify-center gap-2">
+                  <div className="w-5 h-5 border-3 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <span>Skickar...</span>
+                </div>
+              ) : (
+                <div className="flex items-center justify-center gap-2">
+                  <CheckIcon size={22} />
+                  <span>✨ Markera som klar!</span>
+                </div>
+              )}
             </button>
           )}
           

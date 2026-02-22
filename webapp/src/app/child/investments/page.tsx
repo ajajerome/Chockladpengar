@@ -108,7 +108,8 @@ export default function InvestmentsPage() {
     
     try {
       await buyFundShares(selectedFund.id, amount, selectedFund.currentPrice);
-      alert(`Du köpte ${amount} andelar i ${selectedFund.name}!`);
+      const totalCost = selectedFund.currentPrice * amount;
+      alert(`🎉 Grattis!\n\nDu investerade ${Math.floor(totalCost)} chokladpengar i ${selectedFund.name}!\n\nDu köpte ${amount} andelar à ${selectedFund.currentPrice} chokladpengar styck.`);
       setSelectedFund(null);
       setAmount(1);
     } catch (error) {
@@ -168,8 +169,8 @@ export default function InvestmentsPage() {
             <div className="bg-white rounded-3xl p-4 shadow-lg">
               <p className="text-xs font-medium mb-1" style={{ color: '#8B5A3C' }}>I fonder</p>
               <div className="flex items-center gap-2">
-                <BarChartIcon size={32} />
-                <span className="text-2xl font-extrabold" style={{ color: '#64B5F6' }}>{Math.floor(totalInvestedValue)}</span>
+                <ChocolateCoinIcon size={32} />
+                <span className="text-2xl font-extrabold" style={{ color: '#FFD700' }}>{Math.floor(totalInvestedValue)}</span>
               </div>
             </div>
           </div>
@@ -186,7 +187,7 @@ export default function InvestmentsPage() {
             <div>
               <h3 className="font-extrabold mb-1" style={{ color: '#8B5A3C' }}>Choki-tips!</h3>
               <p className="text-sm" style={{ color: '#A67C52' }}>
-                Köp andelar i fonder! Priset kan gå upp eller ner. Sälj när priset är högt för att tjäna pengar!
+                Investera dina chokladpengar i fonder! Priset kan gå upp eller ner. Sälj när värdet är högre än när du köpte för att tjäna pengar! 💰
               </p>
             </div>
           </div>
@@ -220,7 +221,15 @@ export default function InvestmentsPage() {
                         </div>
                         <div>
                           <h3 className="font-extrabold text-lg" style={{ color: '#8B5A3C' }}>{fund.name}</h3>
-                          <p className="text-sm" style={{ color: '#A67C52' }}>{inv.shares} andelar</p>
+                          <div className="flex items-center gap-2 mt-1">
+                            <ChocolateCoinIcon size={24} />
+                            <span className="text-xl font-extrabold" style={{ color: '#FFD700' }}>
+                              {Math.floor(currentValue)}
+                            </span>
+                          </div>
+                          <p className="text-xs mt-1" style={{ color: '#A67C52' }}>
+                            ({inv.shares} andelar à {fund.currentPrice} st)
+                          </p>
                         </div>
                       </div>
                       <button
@@ -239,16 +248,23 @@ export default function InvestmentsPage() {
                     <div className="grid grid-cols-3 gap-3 mt-3 pt-3 border-t" style={{ borderColor: '#F5E6D3' }}>
                       <div>
                         <p className="text-xs" style={{ color: '#A67C52' }}>Nuvarande värde</p>
-                        <p className="font-extrabold" style={{ color: '#8B5A3C' }}>{Math.floor(currentValue)}</p>
+                        <div className="flex items-center gap-1">
+                          <ChocolateCoinIcon size={20} />
+                          <p className="font-extrabold" style={{ color: '#FFD700' }}>{Math.floor(currentValue)}</p>
+                        </div>
                       </div>
                       <div>
                         <p className="text-xs" style={{ color: '#A67C52' }}>Inköpsvärde</p>
-                        <p className="font-extrabold" style={{ color: '#8B5A3C' }}>{Math.floor(purchaseValue)}</p>
+                        <div className="flex items-center gap-1">
+                          <ChocolateCoinIcon size={20} />
+                          <p className="font-extrabold" style={{ color: '#A67C52' }}>{Math.floor(purchaseValue)}</p>
+                        </div>
                       </div>
                       <div>
                         <p className="text-xs" style={{ color: '#A67C52' }}>Vinst/Förlust</p>
-                        <p className={`font-extrabold ${profit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                          {profit >= 0 ? '+' : ''}{Math.floor(profit)} ({profitPercent}%)
+                        <p className={`font-extrabold text-lg ${profit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                          {profit >= 0 ? '+' : ''}{Math.floor(profit)} 
+                          <span className="text-xs ml-1">({profitPercent}%)</span>
                         </p>
                       </div>
                     </div>

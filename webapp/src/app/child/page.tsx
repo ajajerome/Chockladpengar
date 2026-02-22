@@ -20,10 +20,11 @@ export const dynamic = 'force-dynamic';
 export default function ChildHomePage() {
   const router = useRouter();
   const { currentUser, investments, ownedFactories, logout } = useStore();
-  const { pendingTasks, submitForReview } = useTasks();
+  const { pendingTasks, submitForReview, isLoading } = useTasks();
   const previousBalanceRef = useRef<number | null>(null);
   const [displayBalance, setDisplayBalance] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [submittingTaskId, setSubmittingTaskId] = useState<string | null>(null);
   
   // Beräkna total förmögenhet
   const totalAssets = useMemo(() => {
@@ -187,9 +188,9 @@ export default function ChildHomePage() {
             </div>
             
             <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-2 sm:p-3 text-center shadow-md">
-              <BarChartIcon size={24} className="mx-auto mb-1" />
-              <p className="text-xs font-medium mb-1" style={{ color: '#8B5A3C' }}>Fonder</p>
-              <p className="text-lg sm:text-xl font-extrabold" style={{ color: '#64B5F6' }}>{Math.floor(investmentValue)}</p>
+              <ChocolateCoinIcon size={24} className="mx-auto mb-1" />
+              <p className="text-xs font-medium mb-1" style={{ color: '#8B5A3C' }}>I fonder</p>
+              <p className="text-lg sm:text-xl font-extrabold" style={{ color: '#FFD700' }}>{Math.floor(investmentValue)}</p>
             </div>
             
             <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-2 sm:p-3 text-center shadow-md">
@@ -288,9 +289,19 @@ export default function ChildHomePage() {
                   key={task.id}
                   task={task}
                   userRole="child"
-                  onSubmit={() => {
-                    if (confirm(`Är du klar med "${task.title}"?`)) {
-                      submitForReview(task.id);
+                  isSubmitting={submittingTaskId === task.id}
+                  onSubmit={async () => {
+                    if (confirm(`Är du klar med "${task.title}"? 🎉\n\nSkicka till förälder för godkännande!`)) {
+                      try {
+                        setSubmittingTaskId(task.id);
+                        await submitForReview(task.id);
+                        // Show success message
+                        alert(`✅ Bra jobbat!\n\n"${task.title}" är skickad för granskning.\n\nDu får ${task.reward} chokladpengar när föräldern godkänner! 🍫`);
+                      } catch (error) {
+                        alert('❌ Något gick fel. Försök igen!');
+                      } finally {
+                        setSubmittingTaskId(null);
+                      }
                     }
                   }}
                 />
