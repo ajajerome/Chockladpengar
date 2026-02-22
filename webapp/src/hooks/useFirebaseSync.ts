@@ -18,7 +18,12 @@ export function useFirebaseSync() {
 
     try {
       const unsubscribe = FirebaseService.listenToUser(currentUser.id, (user) => {
-        if (user) useStore.getState().login(user);
+        if (user) {
+          // Use queueMicrotask to avoid updating during render
+          queueMicrotask(() => {
+            useStore.getState().login(user);
+          });
+        }
       });
       return unsubscribe;
     } catch (error) {
@@ -32,7 +37,11 @@ export function useFirebaseSync() {
 
     try {
       const unsubscribe = FirebaseService.listenToFamily(family.id, (updatedFamily) => {
-        if (updatedFamily) useStore.getState().setFamily(updatedFamily);
+        if (updatedFamily) {
+          queueMicrotask(() => {
+            useStore.getState().setFamily(updatedFamily);
+          });
+        }
       });
       return unsubscribe;
     } catch (error) {
@@ -46,7 +55,9 @@ export function useFirebaseSync() {
 
     try {
       const unsubscribe = FirebaseService.listenToFamilyMembers(family.id, (members) => {
-        useStore.getState().setFamilyMembers(members);
+        queueMicrotask(() => {
+          useStore.getState().setFamilyMembers(members);
+        });
       });
       return unsubscribe;
     } catch (error) {
@@ -62,7 +73,9 @@ export function useFirebaseSync() {
     try {
       const unsubscribe = FirebaseService.listenToFamilyTasks(family.id, (tasks) => {
         console.log('📋 Tasks updated:', tasks.length, 'tasks');
-        useStore.getState().setTasks(tasks);
+        queueMicrotask(() => {
+          useStore.getState().setTasks(tasks);
+        });
       });
       return unsubscribe;
     } catch (error) {
@@ -78,7 +91,9 @@ export function useFirebaseSync() {
     try {
       const unsubscribe = FirebaseService.listenToFamilyRewards(family.id, (rewards) => {
         console.log('🎁 Rewards updated:', rewards.length, 'rewards');
-        useStore.getState().setRewards(rewards);
+        queueMicrotask(() => {
+          useStore.getState().setRewards(rewards);
+        });
       });
       return unsubscribe;
     } catch (error) {
@@ -92,7 +107,9 @@ export function useFirebaseSync() {
 
     try {
       const unsubscribe = FirebaseService.listenToUserTransactions(currentUser.id, (transactions) => {
-        useStore.getState().setTransactions(transactions);
+        queueMicrotask(() => {
+          useStore.getState().setTransactions(transactions);
+        });
       });
       return unsubscribe;
     } catch (error) {
@@ -106,7 +123,9 @@ export function useFirebaseSync() {
 
     try {
       const unsubscribe = FirebaseService.listenToFamilyPurchasedRewards(family.id, (purchases) => {
-        useStore.getState().setPurchasedRewards(purchases);
+        queueMicrotask(() => {
+          useStore.getState().setPurchasedRewards(purchases);
+        });
       });
       return unsubscribe;
     } catch (error) {
@@ -120,7 +139,9 @@ export function useFirebaseSync() {
 
     try {
       const unsubscribe = FirebaseService.listenToChildInvestments(currentUser.id, (investments) => {
-        useStore.getState().setInvestments(investments);
+        queueMicrotask(() => {
+          useStore.getState().setInvestments(investments);
+        });
       });
       return unsubscribe;
     } catch (error) {
@@ -134,7 +155,9 @@ export function useFirebaseSync() {
 
     try {
       const unsubscribe = FirebaseService.listenToChildFactories(currentUser.id, (factories) => {
-        useStore.getState().setOwnedFactories(factories);
+        queueMicrotask(() => {
+          useStore.getState().setOwnedFactories(factories);
+        });
       });
       return unsubscribe;
     } catch (error) {
@@ -148,14 +171,16 @@ export function useFirebaseSync() {
 
     try {
       const unsubscribe = FirebaseService.listenToFundPrices((prices) => {
-        // Uppdatera FUND_BASE_PRICES
-        const { FUND_BASE_PRICES } = require('@/utils/fundPrices');
-        Object.keys(prices).forEach(fundId => {
-          if (FUND_BASE_PRICES[fundId]) {
-            FUND_BASE_PRICES[fundId] = prices[fundId];
-          }
+        queueMicrotask(() => {
+          // Uppdatera FUND_BASE_PRICES
+          const { FUND_BASE_PRICES } = require('@/utils/fundPrices');
+          Object.keys(prices).forEach(fundId => {
+            if (FUND_BASE_PRICES[fundId]) {
+              FUND_BASE_PRICES[fundId] = prices[fundId];
+            }
+          });
+          console.log('📊 Fondpriser uppdaterade från Firebase');
         });
-        console.log('📊 Fondpriser uppdaterade från Firebase');
       });
       return unsubscribe;
     } catch (error) {
