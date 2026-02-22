@@ -141,5 +141,26 @@ export function useFirebaseSync() {
       console.error('Error listening to factories:', error);
     }
   }, [mode, currentUser]);
+
+  // Listen to fund prices (global for all users)
+  useEffect(() => {
+    if (typeof window === 'undefined' || mode !== 'firebase' || !isFirebaseConfigured()) return;
+
+    try {
+      const unsubscribe = FirebaseService.listenToFundPrices((prices) => {
+        // Uppdatera FUND_BASE_PRICES
+        const { FUND_BASE_PRICES } = require('@/utils/fundPrices');
+        Object.keys(prices).forEach(fundId => {
+          if (FUND_BASE_PRICES[fundId]) {
+            FUND_BASE_PRICES[fundId] = prices[fundId];
+          }
+        });
+        console.log('📊 Fondpriser uppdaterade från Firebase');
+      });
+      return unsubscribe;
+    } catch (error) {
+      console.error('Error listening to fund prices:', error);
+    }
+  }, [mode]);
 }
 

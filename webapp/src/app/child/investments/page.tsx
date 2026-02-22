@@ -21,14 +21,18 @@ export default function InvestmentsPage() {
   
   // Initiera och uppdatera priser
   useEffect(() => {
-    initializePrices();
-    setPrices({...FUND_BASE_PRICES});
-    
-    // Uppdatera priser var 30:e sekund
-    const interval = setInterval(() => {
-      updateAllPrices();
+    const init = async () => {
+      await initializePrices();
       setPrices({...FUND_BASE_PRICES});
-    }, 30000);
+    };
+    
+    init();
+    
+    // Uppdatera priser var 60:e sekund (minskad frekvens)
+    const interval = setInterval(async () => {
+      await updateAllPrices();
+      setPrices({...FUND_BASE_PRICES});
+    }, 60000);
     
     return () => clearInterval(interval);
   }, []);

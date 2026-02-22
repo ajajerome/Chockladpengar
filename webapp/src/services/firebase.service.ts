@@ -692,5 +692,42 @@ export class FirebaseService {
     
     return () => off(factoriesQuery);
   }
+
+  // ============= FUND PRICES =============
+
+  static async getFundPrices(): Promise<Record<string, any>> {
+    const db = getDatabase();
+    const pricesRef = ref(db, 'fundPrices');
+    const snapshot = await get(pricesRef);
+    return snapshot.exists() ? snapshot.val() : {};
+  }
+
+  static async updateFundPrices(prices: Record<string, any>) {
+    const db = getDatabase();
+    await set(ref(db, 'fundPrices'), prices);
+  }
+
+  static async initializeFundPrices(defaultPrices: Record<string, any>) {
+    const db = getDatabase();
+    const pricesRef = ref(db, 'fundPrices');
+    const snapshot = await get(pricesRef);
+    
+    // Om inga priser finns, sätt default
+    if (!snapshot.exists()) {
+      await set(pricesRef, defaultPrices);
+      console.log('💾 Initierade fondpriser i Firebase');
+    }
+  }
+
+  static listenToFundPrices(callback: (prices: Record<string, any>) => void) {
+    const db = getDatabase();
+    const pricesRef = ref(db, 'fundPrices');
+    
+    onValue(pricesRef, (snapshot) => {
+      callback(snapshot.exists() ? snapshot.val() : {});
+    });
+    
+    return () => off(pricesRef);
+  }
 }
 

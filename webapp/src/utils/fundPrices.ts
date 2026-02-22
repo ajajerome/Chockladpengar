@@ -5,15 +5,16 @@ export interface FundPriceData {
   currentPrice: number;
   volatility: number; // Hur mycket priset kan svänga (0-1)
   trend: number; // -1 till 1, där positiv = uppåtgående trend
+  lastUpdate?: string; // ISO timestamp
 }
 
 const PRICE_HISTORY: { [fundId: string]: number[] } = {};
 
 // Initial prices och volatilitet
 export const FUND_BASE_PRICES: { [fundId: string]: FundPriceData } = {
-  fund_1: { basePrice: 10, currentPrice: 10, volatility: 0.02, trend: 0.3 }, // Låg risk
-  fund_2: { basePrice: 15, currentPrice: 15, volatility: 0.05, trend: 0 },   // Medel risk
-  fund_3: { basePrice: 20, currentPrice: 20, volatility: 0.1, trend: -0.2 },  // Hög risk
+  fund_1: { basePrice: 10, currentPrice: 10, volatility: 0.02, trend: 0.3, lastUpdate: new Date().toISOString() }, // Låg risk
+  fund_2: { basePrice: 15, currentPrice: 15, volatility: 0.05, trend: 0, lastUpdate: new Date().toISOString() },   // Medel risk
+  fund_3: { basePrice: 20, currentPrice: 20, volatility: 0.1, trend: -0.2, lastUpdate: new Date().toISOString() },  // Hög risk
 };
 
 /**
@@ -78,18 +79,48 @@ export function getPriceChange(fundId: string): number {
 }
 
 /**
- * Initiera priser från localStorage eller default
+ * Initiera priser från Firebase eller localStorage eller default
  */
-export function initializePrices(): void {
+export async function initializePrices(): Promise<void> {
   if (typeof window === 'undefined') return;
   
   try {
+    // Försök hämta från Firebase först
+    const { isFirebaseConfigured } = await import('@/lib/firebase');
+    const { FirebaseService } = await import('@/services/firebase.service');
+    
+    if (isFirebaseConfigured()) {
+      try {
+        const firebasePrices = await FirebaseService.getFundPrices();
+        
+        if (firebasePrices && Object.keys(firebasePrices).length > 0) {
+          // Använd Firebase-priser
+          Object.keys(firebasePrices).forEach(fundId => {
+            if (FUND_BASE_PRICES[fundId]) {
+              FUND_BASE_PRICES[fundId] = { ...FUND_BASE_PRICES[fundId], ...firebasePrices[fundId] };
+            }
+          });
+          console.log('📊 Fondpriser hämtade från Firebase');
+          return;
+        } else {
+          // Inga priser finns i Firebase, initiera med defaults
+          await FirebaseService.initializeFundPrices(FUND_BASE_PRICES);
+          console.log('📊 Initierade fondpriser i Firebase för första gången');
+          return;
+        }
+      } catch (error) {
+        console.warn('⚠️ Kunde inte hämta priser från Firebase, använder localStorage:', error);
+      }
+    }
+    
+    // Fallback till localStorage
     const saved = localStorage.getItem('fund_prices');
     if (saved) {
       const data = JSON.parse(saved);
       Object.keys(data).forEach(fundId => {
         FUND_BASE_PRICES[fundId] = data[fundId];
       });
+      console.log('📊 Fondpriser hämtade från localStorage');
     }
   } catch (error) {
     console.error('Failed to initialize prices:', error);
@@ -97,13 +128,27 @@ export function initializePrices(): void {
 }
 
 /**
- * Spara priser till localStorage
+ * Spara priser till Firebase och localStorage
  */
-export function savePrices(): void {
+export async function savePrices(): Promise<void> {
   if (typeof window === 'undefined') return;
   
   try {
+    // Spara till localStorage som fallback
     localStorage.setItem('fund_prices', JSON.stringify(FUND_BASE_PRICES));
+    
+    // Försök spara till Firebase
+    const { isFirebaseConfigured } = await import('@/lib/firebase');
+    const { FirebaseService } = await import('@/services/firebase.service');
+    
+    if (isFirebaseConfigured()) {
+      try {
+        await FirebaseService.updateFundPrices(FUND_BASE_PRICES);
+        console.log('💾 Fondpriser sparade till Firebase');
+      } catch (error) {
+        console.warn('⚠️ Kunde inte spara priser till Firebase:', error);
+      }
+    }
   } catch (error) {
     console.error('Failed to save prices:', error);
   }
@@ -111,21 +156,37 @@ export function savePrices(): void {
 
 /**
  * Uppdatera alla fondpriser (körs periodiskt)
+ * Ska endast anropas på EN plats (t.ex. server eller en enda klient)
  */
-export function updateAllPrices(): void {
+export async function updateAllPrices(): Promise<void> {
+  const now = new Date();
+  
   Object.keys(FUND_BASE_PRICES).forEach(fundId => {
     const data = FUND_BASE_PRICES[fundId];
+    
+    // Kolla om vi ska uppdatera (max en gång per minut)
+    if (data.lastUpdate) {
+      const lastUpdate = new Date(data.lastUpdate);
+      const minutesSinceUpdate = (now.getTime() - lastUpdate.getTime()) / (1000 * 60);
+      
+      // Om det gått mindre än 1 minut, skippa uppdateringen
+      if (minutesSinceUpdate < 1) {
+        return;
+      }
+    }
+    
     const newPrice = simulatePriceChange(fundId, data.currentPrice, data);
     FUND_BASE_PRICES[fundId].currentPrice = newPrice;
+    FUND_BASE_PRICES[fundId].lastUpdate = now.toISOString();
   });
   
-  savePrices();
+  await savePrices();
 }
 
 /**
  * Hook för att uppdatera priser automatiskt
  */
-export function startPriceUpdates(intervalMs: number = 30000): () => void {
+export function startPriceUpdates(intervalMs: number = 60000): () => void {
   initializePrices();
   
   const interval = setInterval(() => {
@@ -134,6 +195,7 @@ export function startPriceUpdates(intervalMs: number = 30000): () => void {
   
   return () => clearInterval(interval);
 }
+
 
 
 
