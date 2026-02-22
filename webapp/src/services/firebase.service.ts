@@ -337,11 +337,6 @@ export class FirebaseService {
   static async approveTask(taskId: string, childId: string) {
     const task = await this.getTask(taskId);
     if (task && task.status === 'in_review') {
-      await this.updateTask(taskId, {
-        status: 'approved',
-        reviewedAt: new Date().toISOString(),
-      });
-      
       // Add reward to child's balance
       await this.updateUserBalance(childId, task.reward);
       
@@ -354,12 +349,16 @@ export class FirebaseService {
         relatedId: taskId,
       });
       
-      // If frequency is once, we can delete or mark as complete
+      // Handle task based on frequency
       if (task.frequency === 'once') {
+        // Delete immediately for one-time tasks
         await this.deleteTask(taskId);
       } else {
         // Reset to pending for recurring tasks
-        await this.updateTask(taskId, { status: 'pending' });
+        await this.updateTask(taskId, { 
+          status: 'pending',
+          reviewedAt: new Date().toISOString(),
+        });
       }
     }
   }

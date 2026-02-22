@@ -167,14 +167,15 @@ export default function FamilySettingsPage() {
                   </div>
                   <button
                     onClick={() => {
-                      if (confirm(`Är du säker på att du vill ta bort ${child.name}? Detta tar bort ALLA barnets data (uppgifter, investeringar, transaktioner etc).`)) {
+                      if (confirm(`⚠️ VARNING!\n\nÄr du säker på att du vill ta bort ${child.name}?\n\nDetta tar bort:\n• Barnet från familjen\n• Alla uppgifter\n• Alla investeringar\n• Alla transaktioner\n• Alla fabriker\n\nDetta går INTE att ångra!`)) {
                         deleteChild(child.id);
                       }
                     }}
-                    className="text-red-500 hover:text-red-700 text-3xl font-extrabold leading-none w-10 h-10 flex items-center justify-center rounded-xl hover:bg-red-50 transition-all"
+                    className="text-white font-extrabold text-sm px-4 py-2 rounded-xl hover:bg-red-700 transition-all shadow-md"
+                    style={{ backgroundColor: '#FF6B6B' }}
                     title="Ta bort barn"
                   >
-                    ×
+                    🗑️ Ta bort
                   </button>
                 </div>
               ))
@@ -221,14 +222,15 @@ export default function FamilySettingsPage() {
                       </div>
                       <button
                         onClick={() => {
-                          if (confirm(`Vill du ta bort uppgiften "${task.title}"?`)) {
+                          if (confirm(`Vill du ta bort uppgiften "${task.title}"?\n\nOBS: Detta tar bara bort uppgiften från listan, inte från historiken.`)) {
                             deleteTask(task.id);
                           }
                         }}
-                        className="text-red-500 hover:text-red-700 text-3xl font-extrabold leading-none w-10 h-10 flex items-center justify-center rounded-xl hover:bg-red-50 transition-all"
+                        className="text-white font-extrabold text-sm px-4 py-2 rounded-xl hover:bg-red-700 transition-all shadow-md"
+                        style={{ backgroundColor: '#FF6B6B' }}
                         title="Ta bort uppgift"
                       >
-                        ×
+                        🗑️ Ta bort
                       </button>
                     </div>
                   </div>
@@ -274,14 +276,15 @@ export default function FamilySettingsPage() {
                     </div>
                     <button
                       onClick={() => {
-                        if (confirm(`Vill du ta bort belöningen "${reward.title}"?`)) {
+                        if (confirm(`Vill du ta bort belöningen "${reward.title}" från butiken?`)) {
                           deleteReward(reward.id);
                         }
                       }}
-                      className="text-red-500 hover:text-red-700 text-3xl font-extrabold leading-none w-10 h-10 flex items-center justify-center rounded-xl hover:bg-red-50 transition-all"
+                      className="text-white font-extrabold text-sm px-4 py-2 rounded-xl hover:bg-red-700 transition-all shadow-md"
+                      style={{ backgroundColor: '#FF6B6B' }}
                       title="Ta bort belöning"
                     >
-                      ×
+                      🗑️ Ta bort
                     </button>
                   </div>
                 </div>
