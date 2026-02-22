@@ -19,10 +19,10 @@ export function useFirebaseSync() {
     try {
       const unsubscribe = FirebaseService.listenToUser(currentUser.id, (user) => {
         if (user) {
-          // Use queueMicrotask to avoid updating during render
-          queueMicrotask(() => {
+          // Use setTimeout 0 to schedule after current render
+          setTimeout(() => {
             useStore.getState().login(user);
-          });
+          }, 0);
         }
       });
       return unsubscribe;
@@ -38,9 +38,9 @@ export function useFirebaseSync() {
     try {
       const unsubscribe = FirebaseService.listenToFamily(family.id, (updatedFamily) => {
         if (updatedFamily) {
-          queueMicrotask(() => {
+          setTimeout(() => {
             useStore.getState().setFamily(updatedFamily);
-          });
+          }, 0);
         }
       });
       return unsubscribe;
@@ -55,9 +55,9 @@ export function useFirebaseSync() {
 
     try {
       const unsubscribe = FirebaseService.listenToFamilyMembers(family.id, (members) => {
-        queueMicrotask(() => {
+        setTimeout(() => {
           useStore.getState().setFamilyMembers(members);
-        });
+        }, 0);
       });
       return unsubscribe;
     } catch (error) {
@@ -73,9 +73,9 @@ export function useFirebaseSync() {
     try {
       const unsubscribe = FirebaseService.listenToFamilyTasks(family.id, (tasks) => {
         console.log('📋 Tasks updated:', tasks.length, 'tasks');
-        queueMicrotask(() => {
+        setTimeout(() => {
           useStore.getState().setTasks(tasks);
-        });
+        }, 0);
       });
       return unsubscribe;
     } catch (error) {
@@ -91,9 +91,9 @@ export function useFirebaseSync() {
     try {
       const unsubscribe = FirebaseService.listenToFamilyRewards(family.id, (rewards) => {
         console.log('🎁 Rewards updated:', rewards.length, 'rewards');
-        queueMicrotask(() => {
+        setTimeout(() => {
           useStore.getState().setRewards(rewards);
-        });
+        }, 0);
       });
       return unsubscribe;
     } catch (error) {
@@ -107,9 +107,9 @@ export function useFirebaseSync() {
 
     try {
       const unsubscribe = FirebaseService.listenToUserTransactions(currentUser.id, (transactions) => {
-        queueMicrotask(() => {
+        setTimeout(() => {
           useStore.getState().setTransactions(transactions);
-        });
+        }, 0);
       });
       return unsubscribe;
     } catch (error) {
@@ -123,9 +123,9 @@ export function useFirebaseSync() {
 
     try {
       const unsubscribe = FirebaseService.listenToFamilyPurchasedRewards(family.id, (purchases) => {
-        queueMicrotask(() => {
+        setTimeout(() => {
           useStore.getState().setPurchasedRewards(purchases);
-        });
+        }, 0);
       });
       return unsubscribe;
     } catch (error) {
@@ -139,9 +139,9 @@ export function useFirebaseSync() {
 
     try {
       const unsubscribe = FirebaseService.listenToChildInvestments(currentUser.id, (investments) => {
-        queueMicrotask(() => {
+        setTimeout(() => {
           useStore.getState().setInvestments(investments);
-        });
+        }, 0);
       });
       return unsubscribe;
     } catch (error) {
@@ -155,9 +155,9 @@ export function useFirebaseSync() {
 
     try {
       const unsubscribe = FirebaseService.listenToChildFactories(currentUser.id, (factories) => {
-        queueMicrotask(() => {
+        setTimeout(() => {
           useStore.getState().setOwnedFactories(factories);
-        });
+        }, 0);
       });
       return unsubscribe;
     } catch (error) {
@@ -171,7 +171,7 @@ export function useFirebaseSync() {
 
     try {
       const unsubscribe = FirebaseService.listenToFundPrices((prices) => {
-        queueMicrotask(() => {
+        setTimeout(() => {
           // Uppdatera FUND_BASE_PRICES
           const { FUND_BASE_PRICES } = require('@/utils/fundPrices');
           Object.keys(prices).forEach(fundId => {
@@ -180,7 +180,7 @@ export function useFirebaseSync() {
             }
           });
           console.log('📊 Fondpriser uppdaterade från Firebase');
-        });
+        }, 0);
       });
       return unsubscribe;
     } catch (error) {
